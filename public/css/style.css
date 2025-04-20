@@ -1,134 +1,444 @@
 /* Custom Styles for Butterfly Swimming Course */
 
-/* Global Styles */
+/* Google Fonts (Contoh: Poppins) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Variabel Warna */
 :root {
     --primary-color: #0066cc;
+    /* Biru Primer */
     --secondary-color: #00aaff;
+    /* Biru Sekunder */
     --accent-color: #ff9900;
-    --dark-color: #333333;
+    /* Oranye Aksen */
+    --dark-color: #343a40;
+    /* Abu-abu Gelap untuk Teks */
     --light-color: #f8f9fa;
+    /* Abu-abu Sangat Terang untuk Background */
+    --white-color: #ffffff;
+    --gray-muted: #6c757d;
+    /* Abu-abu untuk teks muted */
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
 }
 
+/* Global Styles */
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+    /* Sedikit lebih tebal */
     color: var(--dark-color);
 }
 
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+/* Utility Classes */
+.fw-bold {
+    font-weight: 700 !important;
+}
+
+.fw-semibold {
+    font-weight: 600 !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.text-muted {
+    color: var(--gray-muted) !important;
+}
+
+.bg-light {
+    background-color: var(--light-color) !important;
+}
+
 /* Navbar Styles */
+.navbar {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: var(--white-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
 .navbar-brand {
     font-weight: 700;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+    color: var(--primary-color);
 }
 
-.nav-link {
+.navbar-nav .nav-link {
     font-weight: 500;
-    transition: all 0.3s ease;
+    color: var(--light-color);
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.nav-link:hover {
-    transform: translateY(-2px);
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: var(--primary-color);
+    background-color: rgb(255, 255, 255);
+    /* Warna primer transparan */
 }
 
 /* Hero Carousel */
-.carousel-item {
-    height: 80vh;
-    min-height: 400px;
-    background: no-repeat center center scroll;
-    background-size: cover;
+#heroCarousel .carousel-item {
+    height: 75vh;
+    /* Sedikit lebih pendek dari 80vh */
+    min-height: 450px;
+    position: relative;
+    /* Diperlukan untuk overlay */
 }
 
-.carousel-item img {
+#heroCarousel .carousel-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    /* Overlay gelap */
+    z-index: 1;
+    /* Di bawah caption */
+}
+
+
+#heroCarousel .carousel-item img {
     object-fit: cover;
     height: 100%;
     width: 100%;
-    filter: brightness(0.7);
+    /* Filter brightness dihapus, diganti overlay */
 }
 
-.carousel-caption {
-    bottom: 25%;
-    z-index: 10;
+#heroCarousel .carousel-caption {
+    bottom: 20%;
+    /* Naikkan sedikit */
+    left: 10%;
+    right: 10%;
+    z-index: 2;
+    /* Di atas overlay */
+    text-align: center;
+    /* Pusatkan teks */
+    color: var(--white-color);
+    /* Pastikan teks putih */
 }
 
-.carousel-caption h1 {
-    font-size: 3rem;
+#heroCarousel .carousel-caption h1 {
+    font-size: 2.5rem;
+    /* Sesuaikan ukuran */
     font-weight: 700;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1rem;
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    /* Shadow lebih halus */
 }
 
-.carousel-caption p {
-    font-size: 1.25rem;
+#heroCarousel .carousel-caption p {
+    font-size: 1.15rem;
+    /* Sesuaikan ukuran */
     margin-bottom: 1.5rem;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-/* Card Styles */
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 0.5rem;
-    overflow: hidden;
+#heroCarousel .carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    margin: 0 5px;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+#heroCarousel .carousel-indicators .active {
+    background-color: var(--white-color);
 }
 
-.card-img-top {
-    height: 200px;
-    object-fit: cover;
+#heroCarousel .carousel-control-prev-icon,
+#heroCarousel .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.3);
+    /* Background semi-transparan */
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    background-size: 50% 50%;
+    /* Ukuran ikon di dalamnya */
 }
 
 /* Section Styles */
 section {
-    padding: 5rem 0;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
 }
 
-section h2 {
+section h2.fw-bold {
     position: relative;
-    padding-bottom: 1rem;
+    display: inline-block;
+    /* Agar garis bawah sesuai lebar teks */
+    padding-bottom: 0.8rem;
     margin-bottom: 1rem;
 }
 
-section h2:after {
-    content: '';
+section h2.fw-bold::after {
+    content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
+    width: 70px;
+    /* Lebar garis bawah */
+    height: 4px;
+    /* Ketebalan garis bawah */
     background-color: var(--primary-color);
+    border-radius: 2px;
+    /* Sudut tumpul */
 }
 
-/* Testimonial Styles */
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    width: 3rem;
-    height: 3rem;
-    padding: 1.5rem;
+section .lead {
+    max-width: 600px;
+    /* Batasi lebar lead text */
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 3rem;
+    /* Jarak ke konten */
+}
+
+/* Card Styles (Program) */
+.card {
+    border: none;
+    /* Hapus border default */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 0.75rem;
+    /* Sedikit lebih bulat */
+    overflow: hidden;
+    /* Pastikan gambar tidak keluar */
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    /* Efek hover lebih jelas */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+.program-card-img {
+    /* Class khusus untuk gambar program */
+    height: 220px;
+    /* Tinggi gambar konsisten */
+    object-fit: cover;
+}
+
+.card-title.fw-bold {
+    color: var(--primary-color);
+}
+
+.card .badge {
+    font-size: 0.8rem;
+    padding: 0.4em 0.7em;
+}
+
+.card .btn-outline-primary {
+    font-weight: 500;
+}
+
+/* Why Choose Us Section */
+#keunggulan .icon-circle {
+    width: 70px;
+    height: 70px;
+}
+
+#keunggulan h5 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+/* Testimonial Section */
+#testimoni .card {
+    background-color: var(--white-color);
+    /* Pastikan background putih */
+}
+
+#testimoni .blockquote p {
+    font-size: 1.1rem;
+    /* Ukuran font kutipan */
+    color: var(--dark-color);
+}
+
+/* Testimonial Image - Style yang sudah benar */
+.testimonial-img {
+    width: 80px;
+    /* Lebar gambar */
+    height: 80px;
+    /* Tinggi gambar (sama dengan lebar) */
+    border-radius: 50%;
+    /* Membuat bentuk lingkaran sempurna */
+    object-fit: cover;
+    /* Memastikan gambar mengisi area tanpa distorsi */
+    border: 3px solid var(--primary-color);
+    /* Border opsional */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Shadow halus */
+}
+
+#testimoni .carousel-control-prev-icon,
+#testimoni .carousel-control-next-icon {
+    background-color: var(--primary-color);
+    /* Warna ikon kontrol */
+    width: 2.5rem;
+    /* Ukuran ikon kontrol lebih kecil */
+    height: 2.5rem;
+}
+
+/* CTA Section */
+#cta {
+    border-radius: 0.5rem;
+    /* Beri sedikit lengkungan jika diinginkan */
+    margin-left: auto;
+    /* Tengahkan jika container tidak full width */
+    margin-right: auto;
+}
+
+#cta h2 {
+    color: var(--white-color);
+}
+
+#cta p {
+    color: rgba(255, 255, 255, 0.85);
+    /* Putih agak transparan */
+}
+
+#cta .btn-light {
+    color: var(--light-color);
+    /* Teks tombol warna primer */
+    padding: 0.8rem 1.8rem;
+    /* Padding tombol lebih besar */
+}
+
+/* Footer Styles (Asumsi ada di layout) */
+footer {
+    padding: 2rem 0;
+    background-color: var(--dark-color);
+    color: var(--light-color);
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: var(--secondary-color);
+}
+
+footer a:hover {
+    color: var(--white-color);
 }
 
 /* Responsive Adjustments */
-@media (max-width: 768px) {
-    .carousel-caption h1 {
+@media (max-width: 992px) {
+    #heroCarousel .carousel-caption h1 {
         font-size: 2rem;
     }
 
-    .carousel-caption p {
+    #heroCarousel .carousel-caption p {
         font-size: 1rem;
     }
 
-    .carousel-item {
-        height: 60vh;
+    #heroCarousel .carousel-item {
+        height: 65vh;
+    }
+
+    section {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
     }
 }
 
-@media (max-width: 576px) {
-    .carousel-caption {
+@media (max-width: 768px) {
+    #heroCarousel .carousel-caption {
         bottom: 15%;
     }
 
-    .carousel-caption h1 {
+    #heroCarousel .carousel-caption h1 {
+        font-size: 1.8rem;
+    }
+
+    #heroCarousel .carousel-caption p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    #heroCarousel .carousel-item {
+        height: 60vh;
+        min-height: 400px;
+    }
+
+    .program-card-img {
+        height: 180px;
+    }
+
+    #keunggulan .col-md-3 {
+        margin-bottom: 2rem;
+        /* Beri jarak antar item keunggulan di mobile */
+    }
+
+    /* Sembunyikan caption hero di layar sangat kecil jika perlu */
+    /* .carousel-caption { display: none; } */
+}
+
+@media (max-width: 576px) {
+    #heroCarousel .carousel-caption h1 {
         font-size: 1.5rem;
+    }
+
+    #heroCarousel .carousel-caption .btn {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+
+    #heroCarousel .carousel-item {
+        height: 55vh;
+    }
+
+    section h2.fw-bold::after {
+        width: 50px;
+        height: 3px;
+    }
+
+    section .lead {
+        font-size: 1rem;
+    }
+
+    .testimonial-img {
+        width: 150px;
+        height: 150px;
+        border-width: 2px;
+    }
+
+    #testimoni .blockquote p {
+        font-size: 1rem;
     }
 }
