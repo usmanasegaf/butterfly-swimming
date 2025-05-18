@@ -1,19 +1,56 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SwimmingCourseController;
+use App\Http\Controllers\RegistrationController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
 */
 
-Route::get('/', [HomeController::class, 'index']);
-Route::get('/program', [HomeController::class, 'program']);
-Route::get('/program/{id}', [HomeController::class, 'programDetail']);
-Route::get('/jadwal', [HomeController::class, 'jadwal']);
-Route::get('/pelatih', [HomeController::class, 'pelatih']);
-Route::get('/tentang', [HomeController::class, 'tentang']);
-Route::get('/kontak', [HomeController::class, 'kontak']);
-Route::get('/daftar', [HomeController::class, 'daftar']);
+// Route untuk halaman utama
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Route untuk autentikasi
+Route::controller(AuthController::class)->group(function () {
+    Route::get('register', 'register')->name('register');
+    Route::post('register', 'registerSave')->name('register.save');
+
+    Route::get('login', 'login')->name('login');
+    Route::post('login', 'loginAction')->name('login.action');
+
+    Route::get('logout', 'logout')->name('logout');
+});
+
+// Route yang memerlukan autentikasi
+Route::middleware('auth')->group(function () {
+    Route::get('dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::controller(AuthController::class)->group(function () {
+        Route::get('profile', 'profile')->name('profile');
+        Route::put('profile', 'profileUpdate')->name('profile.update');
+    });
+
+    // Route untuk kursus renang (hanya admin yang bisa CRUD)
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('swimming-courses', SwimmingCourseController::class);
+        Route::resource('registrations', RegistrationController::class)->except(['create', 'store']);
+        Route::put('registrations/{registration}/status', [RegistrationController::class, 'updateStatus'])->name('registrations.update-status');
+    });
+
+    // Route untuk pendaftaran kursus (semua user)
+    Route::get('my-registrations', [RegistrationController::class, 'myRegistrations'])->name('my-registrations');
+    Route::get('register-course', [RegistrationController::class, 'create'])->name('register-course');
+    Route::post('register-course', [RegistrationController::class, 'store'])->name('register-course.store');
+});

@@ -1,0 +1,133 @@
+/* Custom Styles for Butterfly Swimming Course Admin */
+
+:root {
+  --primary-color: #0066cc;
+  --secondary-color: #00aaff;
+  --accent-color: #ff9900;
+  --dark-color: #333333;
+  --light-color: #f8f9fa;
+}
+
+/* Sidebar Customization */
+.sidebar .nav-item .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .nav-item .nav-link:active,
+.sidebar .nav-item .nav-link:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Card Customization */
+.card {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Customization */
+.btn {
+  border-radius: 0.25rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #0055aa;
+  border-color: #0055aa;
+}
+
+/* Table Customization */
+.table th {
+  background-color: #f8f9fc;
+  font-weight: 600;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border-color: #e3e6f0;
+}
+
+/* Form Customization */
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+}
+
+/* Timeline Styles */
+.timeline-item {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.timeline-item-date {
+  min-width: 50px;
+  color: #6c757d;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding-right: 15px;
+}
+
+.timeline-item-title {
+  font-weight: 600;
+}
+
+.timeline-item-subtitle {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+/* Badge Customization */
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+  border-radius: 0.25rem;
+}
+
+/* Swimming Course Specific Styles */
+.course-level-badge {
+  padding: 0.5em 1em;
+  font-weight: 600;
+  border-radius: 2rem;
+}
+
+.course-level-beginner {
+  background-color: #28a745;
+  color: white;
+}
+
+.course-level-intermediate {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.course-level-advanced {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.course-level-professional {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .timeline-item {
+    flex-direction: column;
+  }
+
+  .timeline-item-date {
+    margin-bottom: 5px;
+  }
+}
