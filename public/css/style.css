@@ -85,11 +85,7 @@ a:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.navbar-brand {
-    font-weight: 700;
-    font-size: 1.6rem;
-    color: var(--primary-color);
-}
+
 
 .navbar-nav .nav-link {
     font-weight: 500;

@@ -222,6 +222,18 @@
 
 @push('scripts')
 <script>
+    // Memastikan gambar dimuat dengan benar
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+            img.onerror = function() {
+                console.error('Error loading image:', this.src);
+                // Optional: set fallback image
+                this.src = '{{ asset('images/placeholder.jpg') }}';
+            };
+        });
+    });
+
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
