@@ -5,7 +5,7 @@
 @push('styles')
 <style>
     .hero-section {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('images/hero-bg.jpg') }}');
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('images/pool1.jpg') }}');
         background-size: cover;
         background-position: center;
         color: white;
@@ -61,7 +61,7 @@
     
     .stat-text {
         font-size: 1.1rem;
-        color: #6c757d;
+        color:rgb(0, 0, 0);
     }
 </style>
 @endpush
@@ -70,7 +70,7 @@
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container text-center">
-        <h1 class="display-4 fw-bold mb-4">Belajar Berenang dengan Metode Terbaik</h1>
+        <h1 class="display-4 fw-bold mb-4" style="color: #F8F8FF;">Belajar Berenang dengan Metode Terbaik</h1>
         <p class="lead mb-5">Butterfly Swimming Course menawarkan program kursus renang untuk semua usia dan tingkat kemampuan dengan pelatih profesional dan bersertifikat.</p>
         <a href="{{ route('register') }}" class="btn btn-primary btn-lg px-5 py-3 me-3">Daftar Sekarang</a>
         <a href="#program" class="btn btn-outline-light btn-lg px-5 py-3">Lihat Program</a>
@@ -173,9 +173,6 @@
             </div>
             @endforeach
         </div>
-        <div class="text-center mt-5">
-            <a href="/program" class="btn btn-outline-primary">Lihat Semua Program</a>
-        </div>
     </div>
 </section>
 
@@ -213,7 +210,7 @@
 <!-- CTA Section -->
 <section class="cta-section py-5">
     <div class="container text-center py-4">
-        <h2 class="fw-bold mb-4">Siap Untuk Mulai Berenang?</h2>
+        <h2 class="fw-bold mb-4" style="color: #F8F8FF;">Siap Untuk Mulai Berenang?</h2>
         <p class="lead mb-4">Daftar sekarang dan mulai perjalanan berenang Anda bersama kami!</p>
         <a href="{{ route('register') }}" class="btn btn-light btn-lg px-5">Daftar Sekarang</a>
     </div>

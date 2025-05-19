@@ -44,21 +44,21 @@ class HomeController extends Controller
                 'role' => 'Orang Tua Murid',
                 'message' => 'Anak saya sangat menikmati kursus renang di Butterfly Swimming Course. Pelatihnya sangat profesional dan sabar.',
                 'rating' => 5,
-                'image' => 'testimonial1.jpg'
+                'image' => 'testimonial-3.jpg'
             ],
             [
                 'name' => 'Siti Rahayu',
-                'role' => 'Murid Dewasa',
+                'role' => 'Pemula Renang',
                 'message' => 'Saya belajar berenang dari nol di usia 30 tahun, dan berkat pelatih yang hebat, sekarang saya bisa berenang dengan percaya diri.',
                 'rating' => 5,
-                'image' => 'testimonial2.jpg'
+                'image' => 'testimonial-2.jpg'
             ],
             [
                 'name' => 'Ahmad Rizki',
                 'role' => 'Atlet Renang',
                 'message' => 'Program lanjutan sangat membantu meningkatkan teknik dan kecepatan saya. Fasilitas kolam juga sangat baik.',
-                'rating' => 4,
-                'image' => 'testimonial3.jpg'
+                'rating' => 5,
+                'image' => 'testimonial-1.jpg'
             ]
         ];
 

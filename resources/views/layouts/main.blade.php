@@ -51,7 +51,6 @@
                         <a class="nav-link" href="/kontak">Kontak</a>
                     </li>
                     @auth
-                    @else
                         <li class="nav-item">
                             <a class="nav-link btn btn-outline-light btn-sm ms-2 px-3" href="{{ route('login') }}">Login</a>
                         </li>
@@ -71,7 +70,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4 mb-md-0">
-                    <h5 class="mb-4">Butterfly Swimming Course</h5>
+                    <h5 class="mb-4" style="color: #F8F8FF;">Butterfly Swimming Course</h5>
                     <p>Kursus renang terbaik untuk semua usia dengan pelatih profesional dan bersertifikat.</p>
                     <div class="social-icons mt-3">
                         <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
@@ -81,16 +80,14 @@
                     </div>
                 </div>
                 <div class="col-md-4 mb-4 mb-md-0">
-                    <h5 class="mb-4">Kontak Kami</h5>
-                    <p><i class="fas fa-map-marker-alt me-2"></i> TKI Sport Center, Jl. Contoh No. 123, Jakarta</p>
+                    <h5 class="mb-4" style="color: #F8F8FF;">Kontak Kami</h5>
+                    <p><i class="fas fa-map-marker-alt me-2"></i> TKI Sport Center, Belakang Griya TKI 2, Bandung</p>
                     <p><i class="fas fa-phone me-2"></i> (021) 1234-5678</p>
                     <p><i class="fas fa-envelope me-2"></i> info@butterflyswimming.com</p>
                 </div>
                 <div class="col-md-4">
-                    <h5 class="mb-4">Jam Operasional</h5>
-                    <p>Senin - Jumat: 08.00 - 20.00</p>
-                    <p>Sabtu: 08.00 - 18.00</p>
-                    <p>Minggu: 09.00 - 16.00</p>
+                    <h5 class="mb-4" style="color: #F8F8FF;">Jam Operasional</h5>
+                    <p>Senin - Minggu: 07.00 - 18.00</p>
                 </div>
             </div>
             <hr class="my-4">
