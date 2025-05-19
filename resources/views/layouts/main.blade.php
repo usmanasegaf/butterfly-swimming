@@ -51,9 +51,6 @@
                         <a class="nav-link" href="/kontak">Kontak</a>
                     </li>
                     @auth
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-                        </li>
                     @else
                         <li class="nav-item">
                             <a class="nav-link btn btn-outline-light btn-sm ms-2 px-3" href="{{ route('login') }}">Login</a>
