@@ -55,8 +55,6 @@ Route::middleware('auth')->group(function () {
 
     // --- Rute Khusus Admin ---
     Route::prefix('admin')->middleware('role:admin')->group(function () {
-        // Rute untuk Manajemen Kursus Renang (CRUD penuh)
-        // Permission checks dilakukan di dalam controller
         Route::resource('swimming-course-management', SwimmingCourseManagementController::class);
 
         // Rute untuk Manajemen Pendaftaran
