@@ -4,8 +4,8 @@ use Illuminate\Http\Request; // Tambahkan ini jika belum ada
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\SwimmingCourseController;
-use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\Admin\SwimmingCourseManagementController; // Diubah!
+use App\Http\Controllers\Admin\RegistrationManagementController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -56,4 +56,15 @@ Route::middleware('auth')->group(function () {
     Route::get('my-registrations', [RegistrationController::class, 'myRegistrations'])->name('my-registrations');
     Route::get('register-course', [RegistrationController::class, 'create'])->name('register-course');
     Route::post('register-course', [RegistrationController::class, 'store'])->name('register-course.store');
+
+        // --- Rute Khusus Admin ---
+    // Tambahkan blok ini untuk rute admin
+    Route::prefix('admin')->middleware('role:admin')->group(function () {
+        // Rute untuk Manajemen Kursus Renang (CRUD penuh)
+        Route::resource('swimming-course-management', SwimmingCourseManagementController::class);
+
+        // Rute untuk Manajemen Pendaftaran
+        Route::resource('registration-management', RegistrationManagementController::class)->except(['create', 'store', 'edit']);
+    });
+    // --- Akhir dari Rute Admin ---
 });

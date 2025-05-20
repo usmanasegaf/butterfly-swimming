@@ -23,17 +23,19 @@
             Manajemen
         </div>
 
-        <li class="nav-item {{ request()->routeIs('swimming-courses.*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('swimming-courses.index') }}">
+        {{-- SESUAIKAN DENGAN NAMA RUTE BARU --}}
+        <li class="nav-item {{ request()->routeIs('swimming-course-management.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('swimming-course-management.index') }}">
                 <i class="fas fa-fw fa-graduation-cap"></i>
-                <span>Kursus Renang</span>
+                <span>Manajemen Kursus Renang</span>
             </a>
         </li>
 
-        <li class="nav-item {{ request()->routeIs('registrations.*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('registrations.index') }}">
+        {{-- SESUAIKAN DENGAN NAMA RUTE BARU --}}
+        <li class="nav-item {{ request()->routeIs('registration-management.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('registration-management.index') }}">
                 <i class="fas fa-fw fa-clipboard-list"></i>
-                <span>Pendaftaran</span>
+                <span>Manajemen Pendaftaran</span>
             </a>
         </li>
     @else {{-- Jika role adalah 'user' --}}
