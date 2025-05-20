@@ -1,70 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Butterfly Swimming - Login</title>
-
-    <!-- Custom fonts for this template-->
-    <link href="{{ asset('admin_assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="{{ asset('admin_assets/css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
-
-<body class="bg-gradient-primary">
-    <div class="container">
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
-            <div class="col-xl-10 col-lg-12 col-md-9">
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-lg-6 d-none d-lg-block bg-login-image" style="background-image: url('{{ asset('images/pool2.jpg') }}'); background-position: center; background-size: cover;"></div>
-                            <div class="col-lg-6">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Selamat Datang Kembali!</h1>
-                                    </div>
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul class="mb-0">
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-                                    <form action="{{ route('login.action') }}" method="POST" class="user">
-                                        @csrf
-                                        <div class="form-group">
-                                            <input name="email" type="email" class="form-control form-control-user" id="email" aria-describedby="emailHelp" placeholder="Masukkan Alamat Email..." value="{{ old('email') }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <input name="password" type="password" class="form-control form-control-user" id="password" placeholder="Password">
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="custom-control custom-checkbox small">
-                                                <input name="remember" type="checkbox" class="custom-control-input" id="remember">
-                                                <label class="custom-control-label" for="remember">Ingat Saya</label>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">Login</button>
-                                    </form>
-                                    <hr>
-                                    <div class="text-center">
-                                        <a class="small" href="{{ route('register') }}">Buat Akun Baru!</a>
-                                    </div>
+<body class="bg-light">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card shadow-lg rounded-5">
+                    <div class="card-body p-5 text-center">
+                        <h2 class="fw-bold mb-4 text-primary">Selamat Datang</h2>
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <form action="{{ route('login.action') }}" method="POST">
+                            @csrf
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    <input type="email" name="email" class="form-control rounded-pill" id="email" placeholder="Masukkan Alamat Email" value="{{ old('email') }}">
+                                    <label for="email" class="form-label">Email</label>
                                 </div>
                             </div>
-                        </div>
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    <input type="password" name="password" class="form-control rounded-pill" id="password" placeholder="Password">
+                                    <label for="password" class="form-label">Password</label>
+                                </div>
+                            </div>
+                            <div class="form-check d-flex justify-content-start mb-4">
+                                <input class="form-check-input me-2 rounded border-primary" type="checkbox" name="remember" id="remember">
+                                <label class="form-check-label" for="remember">
+                                    Ingat Saya
+                                </label>
+                            </div>
+                            <button class="btn btn-primary btn-lg w-100 rounded-pill" type="submit">Login</button>
+                        </form>
+                        <hr class="my-4">
+                        <p class="mb-0">Belum punya akun? <a href="{{ route('register') }}" class="text-primary fw-bold">Daftar di sini</a></p>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const floatingInputs = document.querySelectorAll('.form-floating input');
+        floatingInputs.forEach(input => {
+            if (input.value) {
+                const label = input.nextElementSibling;
+                if (label && label.classList.contains('form-label')) {
+                    label.classList.add('floating');
+                }
+            }
+
+            input.addEventListener('focus', function() {
+                const label = this.nextElementSibling;
+                if (label && label.classList.contains('form-label')) {
+                    label.classList.add('floating');
+                }
+            });
+
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    const label = this.nextElementSibling;
+                    if (label && label.classList.contains('form-label')) {
+                        label.classList.remove('floating');
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

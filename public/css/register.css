@@ -1,0 +1,70 @@
+body.bg-light {
+    background-color: #f3f6f9 !important;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.card {
+    border-radius: 1rem;
+    border: none;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.form-control {
+    border: 2px solid #aad1f8;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    opacity: 0.65;
+    transform: translate(0, 0.5rem) scale(.85);
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-control.form-select ~ label,
+.form-label.floating { /* Gaya label saat mengambang */
+    opacity: 0.85;
+    transform: translate(0, -.9rem) scale(.85);
+    color: #000000;
+}
+
+.form-label.floating { /* Definisi gaya untuk class 'floating' */
+    opacity: 0.85;
+    transform: translate(0, -.9rem) scale(.85);
+    color: #000000;
+}
+
+.btn-primary {
+    background-color: #007bff; /* Warna primer Bootstrap */
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.rounded-pill {
+    border-radius: 2rem !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+}
+
+.text-primary {
+    color: #007bff !important;
+}
+
+.alert-danger {
+    border-radius: 0.5rem;
+}

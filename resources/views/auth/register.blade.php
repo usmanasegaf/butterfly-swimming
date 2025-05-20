@@ -1,82 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Butterfly Swimming - Register</title>
-
-    <!-- Custom fonts for this template-->
-    <link href="{{ asset('admin_assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="{{ asset('admin_assets/css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/register.css') }}">
 </head>
-
-<body class="bg-gradient-primary">
-    <div class="container">
-        <div class="card o-hidden border-0 shadow-lg my-5">
-            <div class="card-body p-0">
-                <!-- Nested Row within Card Body -->
-                <div class="row">
-                    <div class="col-lg-5 d-none d-lg-block bg-register-image" style="background-image: url('{{ asset('images/pool1.jpg') }}'); background-position: center; background-size: cover;"></div>
-                    <div class="col-lg-7">
-                        <div class="p-5">
-                            <div class="text-center">
-                                <h1 class="h4 text-gray-900 mb-4">Buat Akun Baru!</h1>
+<body class="bg-light">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                <div class="card shadow-lg rounded-5">
+                    <div class="card-body p-5">
+                        <h2 class="fw-bold mb-4 text-primary text-center">Buat Akun Baru</h2>
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
                             </div>
-                            @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul class="mb-0">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
+                        @endif
+                        <form action="{{ route('register.save') }}" method="POST">
+                            @csrf
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    <input type="text" name="name" class="form-control rounded-pill" id="name" placeholder="Nama Lengkap" value="{{ old('name') }}">
+                                    <label for="name" class="form-label">Nama Lengkap</label>
                                 </div>
-                            @endif
-                            <form action="{{ route('register.save') }}" method="POST" class="user">
-                                @csrf
-                                <div class="form-group">
-                                    <input name="name" type="text" class="form-control form-control-user" id="name" placeholder="Nama Lengkap" value="{{ old('name') }}">
-                                </div>
-                                <div class="form-group">
-                                    <input name="email" type="email" class="form-control form-control-user" id="email" placeholder="Alamat Email" value="{{ old('email') }}">
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input name="password" type="password" class="form-control form-control-user" id="password" placeholder="Password">
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <input name="password_confirmation" type="password" class="form-control form-control-user" id="password_confirmation" placeholder="Ulangi Password">
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-user btn-block">Daftar Akun</button>
-                            </form>
-                            <hr>
-                            <div class="text-center">
-                                <a class="small" href="{{ route('login') }}">Sudah punya akun? Login!</a>
                             </div>
-                        </div>
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    <input type="email" name="email" class="form-control rounded-pill" id="email" placeholder="Alamat Email" value="{{ old('email') }}">
+                                    <label for="email" class="form-label">Email</label>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3 mb-md-0">
+                                        <input type="password" name="password" class="form-control rounded-pill" id="password" placeholder="Password">
+                                        <label for="password" class="form-label">Password</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="password" name="password_confirmation" class="form-control rounded-pill" id="password_confirmation" placeholder="Ulangi Password">
+                                        <label for="password_confirmation" class="form-label">Ulangi Password</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-lg w-100 rounded-pill" type="submit">Daftar Akun</button>
+                        </form>
+                        <hr class="my-4">
+                        <p class="mb-0 text-center">Sudah punya akun? <a href="{{ route('login') }}" class="text-primary fw-bold">Login di sini</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const floatingInputs = document.querySelectorAll('.form-floating input');
+        floatingInputs.forEach(input => {
+            if (input.value) {
+                const label = input.nextElementSibling;
+                if (label && label.classList.contains('form-label')) {
+                    label.classList.add('floating');
+                }
+            }
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="{{ asset('admin_assets/vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+            input.addEventListener('focus', function() {
+                const label = this.nextElementSibling;
+                if (label && label.classList.contains('form-label')) {
+                    label.classList.add('floating');
+                }
+            });
 
-    <!-- Core plugin JavaScript-->
-    <script src="{{ asset('admin_assets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="{{ asset('admin_assets/js/sb-admin-2.min.js') }}"></script>
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    const label = this.nextElementSibling;
+                    if (label && label.classList.contains('form-label')) {
+                        label.classList.remove('floating');
+                    }
+                }
+            });
+        });
+    });
+</script>
 </body>
-
 </html>
