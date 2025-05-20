@@ -53,7 +53,12 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $middlewareAliases = [
-
+        // Custom role middleware (kept for backward compatibility)
         'role' => \App\Http\Middleware\CheckRole::class,
+        
+        // Spatie Permission middleware
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
     ];
 }

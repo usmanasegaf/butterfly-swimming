@@ -1,11 +1,11 @@
 <?php
 
-use Illuminate\Http\Request; // Tambahkan ini jika belum ada
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Admin\SwimmingCourseManagementController; // Diubah!
-use App\Http\Controllers\Admin\RegistrationManagementController; 
+use App\Http\Controllers\Admin\SwimmingCourseManagementController;
+use App\Http\Controllers\Admin\RegistrationManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +29,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('login', 'login')->name('login');
     Route::post('login', 'loginAction')->name('login.action');
 
-    // Ubah dari Route::get menjadi Route::post untuk logout
     Route::post('logout', 'logout')->name('logout');
 });
 
@@ -41,29 +40,27 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(AuthController::class)->group(function () {
         Route::get('profile', 'profile')->name('profile');
-        // Pastikan ini juga POST/PUT sesuai penggunaan form di profile.blade.php
-        Route::post('profile', 'profileUpdate')->name('profile.update'); // Biasanya PUT/PATCH, tapi jika form di blade pakai POST, ini harus POST juga
-    });
-
-    // Route untuk kursus renang (hanya admin yang bisa CRUD)
-    Route::middleware('role:admin')->group(function () {
-        Route::resource('swimming-courses', SwimmingCourseController::class);
-        Route::resource('registrations', RegistrationController::class)->except(['create', 'store']);
-        Route::put('registrations/{registration}/status', [RegistrationController::class, 'updateStatus'])->name('registrations.update-status');
+        Route::post('profile', 'profileUpdate')->name('profile.update');
     });
 
     // Route untuk pendaftaran kursus (semua user)
-    Route::get('my-registrations', [RegistrationController::class, 'myRegistrations'])->name('my-registrations');
-    Route::get('register-course', [RegistrationController::class, 'create'])->name('register-course');
-    Route::post('register-course', [RegistrationController::class, 'store'])->name('register-course.store');
+    Route::middleware('permission:view own registrations')->group(function() {
+        Route::get('my-registrations', [RegistrationController::class, 'myRegistrations'])->name('my-registrations');
+    });
+    
+    Route::middleware('permission:register to course')->group(function() {
+        Route::get('register-course', [RegistrationController::class, 'create'])->name('register-course');
+        Route::post('register-course', [RegistrationController::class, 'store'])->name('register-course.store');
+    });
 
-        // --- Rute Khusus Admin ---
-    // Tambahkan blok ini untuk rute admin
+    // --- Rute Khusus Admin ---
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         // Rute untuk Manajemen Kursus Renang (CRUD penuh)
+        // Permission checks dilakukan di dalam controller
         Route::resource('swimming-course-management', SwimmingCourseManagementController::class);
 
         // Rute untuk Manajemen Pendaftaran
+        // Permission checks dilakukan di dalam controller
         Route::resource('registration-management', RegistrationManagementController::class)->except(['create', 'store', 'edit']);
     });
     // --- Akhir dari Rute Admin ---

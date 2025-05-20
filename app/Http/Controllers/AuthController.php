@@ -23,12 +23,15 @@ class AuthController extends Controller
             'password' => 'required|confirmed'
         ])->validate();
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user'
+            'role' => 'user' // Keep for backward compatibility
         ]);
+        
+        // Assign default user role using Spatie
+        $user->assignRole('user');
 
         return redirect()->route('login');
     }

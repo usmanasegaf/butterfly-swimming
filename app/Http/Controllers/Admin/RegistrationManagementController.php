@@ -12,6 +12,14 @@ use Illuminate\Validation\Rule; // Untuk validasi enum
 class RegistrationManagementController extends Controller
 {
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('permission:view registrations');
+    }
+    
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -45,6 +53,15 @@ class RegistrationManagementController extends Controller
      */
     public function update(Request $request, Registration $registration)
     {
+        // Validasi permisi approve/reject
+        if ($request->status === 'Approved' && !auth()->user()->can('approve registration')) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menyetujui pendaftaran.');
+        }
+        
+        if ($request->status === 'Rejected' && !auth()->user()->can('reject registration')) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menolak pendaftaran.');
+        }
+        
         $request->validate([
             // Validasi status. Pastikan status adalah salah satu dari enum yang diizinkan di model Registration
             'status' => ['required', 'string', Rule::in(['Pending', 'Approved', 'Rejected'])],
@@ -64,19 +81,13 @@ class RegistrationManagementController extends Controller
      */
     public function destroy(Registration $registration)
     {
+        // Check if user has permission to delete
+        if (!auth()->user()->can('delete registration')) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menghapus pendaftaran.');
+        }
+        
         $registration->delete();
 
         return redirect()->route('registration-management.index')->with('success', 'Pendaftaran berhasil dihapus!');
     }
-
-    // public function updateStatus(Request $request, Registration $registration)
-    // {
-    //     $request->validate([
-    //         'status' => ['required', 'string', Rule::in(['Pending', 'Approved', 'Rejected'])],
-    //     ]);
-
-    //     $registration->update(['status' => $request->status]);
-
-    //     return redirect()->route('registration-management.index')->with('success', 'Status pendaftaran berhasil diperbarui!');
-    // }
 }
