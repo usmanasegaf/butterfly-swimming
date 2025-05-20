@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request; // Tambahkan ini jika belum ada
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
@@ -28,7 +29,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('login', 'login')->name('login');
     Route::post('login', 'loginAction')->name('login.action');
 
-    Route::get('logout', 'logout')->name('logout');
+    // Ubah dari Route::get menjadi Route::post untuk logout
+    Route::post('logout', 'logout')->name('logout');
 });
 
 // Route yang memerlukan autentikasi
@@ -39,7 +41,8 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(AuthController::class)->group(function () {
         Route::get('profile', 'profile')->name('profile');
-        Route::put('profile', 'profileUpdate')->name('profile.update');
+        // Pastikan ini juga POST/PUT sesuai penggunaan form di profile.blade.php
+        Route::post('profile', 'profileUpdate')->name('profile.update'); // Biasanya PUT/PATCH, tapi jika form di blade pakai POST, ini harus POST juga
     });
 
     // Route untuk kursus renang (hanya admin yang bisa CRUD)
