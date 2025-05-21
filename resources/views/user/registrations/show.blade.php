@@ -115,12 +115,12 @@
         </div>
 
         <div class="px-6 py-4 bg-gray-50 flex justify-between items-center">
-            <a href="{{ route('my-registrations') }}" class="text-blue-600 hover:text-blue-900">
+            <a href="{{ route('user.registrations.index') }}" class="text-blue-600 hover:text-blue-900">
                 &larr; Kembali ke Daftar Pendaftaran
             </a>
             
             @if($registration->status == 'Pending')
-                <form action="{{ route('registration.cancel', $registration->id) }}" method="POST">
+                <form action="{{ route('user.registrations.cancel', $registration->id) }}" method="POST">
                     @csrf
                     @method('PATCH')
                     <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded" 

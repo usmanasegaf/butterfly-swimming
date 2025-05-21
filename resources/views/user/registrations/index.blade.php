@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Pendaftaran Kursus Renang Saya</h1>
-        <a href="{{ route('register-course') }}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+        <a href="{{ route('user.registrations.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
             Daftar Kursus Baru
         </a>
     </div>
@@ -26,7 +26,7 @@
     @if($registrations->isEmpty())
         <div class="bg-gray-100 p-6 rounded-lg text-center">
             <p>Anda belum memiliki pendaftaran kursus renang.</p>
-            <a href="{{ route('register-course') }}" class="text-blue-500 hover:underline mt-2 inline-block">
+            <a href="{{ route('user.registrations.create') }}" class="text-blue-500 hover:underline mt-2 inline-block">
                 Daftar Kursus Sekarang
             </a>
         </div>
@@ -82,12 +82,12 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="{{ route('registration.show', $registration->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">
+                                <a href="{{ route('user.registrations.show', $registration->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">
                                     Detail
                                 </a>
                                 
                                 @if($registration->status == 'Pending')
-                                    <form action="{{ route('registration.cancel', $registration->id) }}" method="POST" class="inline">
+                                    <form action="{{ route('user.registrations.cancel', $registration->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Apakah Anda yakin ingin membatalkan pendaftaran ini?')">

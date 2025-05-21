@@ -28,7 +28,7 @@
         </div>
     @else
         <div class="bg-white p-6 rounded-lg shadow-md">
-            <form action="{{ route('register-course.store') }}" method="POST">
+            <form action="{{ route('user.registrations.store') }}" method="POST">
                 @csrf
                 
                 <div class="mb-4">
@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="flex items-center justify-between mt-6">
-                    <a href="{{ route('my-registrations') }}" class="text-sm text-gray-600 hover:text-gray-900">
+                    <a href="{{ route('user.registrations.index') }}" class="text-sm text-gray-600 hover:text-gray-900">
                         Kembali ke daftar pendaftaran
                     </a>
                     <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded">

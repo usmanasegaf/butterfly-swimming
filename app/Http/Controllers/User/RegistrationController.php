@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
-
 class RegistrationController extends Controller
 {
     /**
@@ -16,7 +15,7 @@ class RegistrationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission:view own registrations')->only(['myRegistrations', 'show']);
+        $this->middleware('permission:view own registrations')->only(['index', 'show']);
         $this->middleware('permission:register to course')->only(['create', 'store']);
         $this->middleware('permission:cancel own registration')->only(['cancel']);
     }
@@ -24,7 +23,7 @@ class RegistrationController extends Controller
     /**
      * Display a listing of the user's registrations.
      */
-    public function myRegistrations()
+    public function index()
     {
         // Get current user's registrations with course details
         $registrations = Auth::user()->registrations()
@@ -78,7 +77,7 @@ class RegistrationController extends Controller
             'notes' => $request->notes,
         ]);
 
-        return redirect()->route('my-registrations')
+        return redirect()->route('user.registrations.index')
             ->with('success', 'Pendaftaran kursus renang berhasil dibuat. Mohon tunggu persetujuan admin.');
     }
 
@@ -112,7 +111,7 @@ class RegistrationController extends Controller
         $registration->status = 'Cancelled';
         $registration->save();
 
-        return redirect()->route('my-registrations')
+        return redirect()->route('user.registrations.index')
             ->with('success', 'Pendaftaran berhasil dibatalkan.');
     }
 }
