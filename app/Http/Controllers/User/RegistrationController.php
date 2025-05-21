@@ -37,14 +37,17 @@ class RegistrationController extends Controller
     /**
      * Show the form for creating a new registration.
      */
-    public function create()
+    public function create(Request $request)
     {
         // Get only active courses for registration
         $courses = SwimmingCourse::where('is_active', true)
                                 ->orderBy('name')
                                 ->get();
-
-        return view('user.registrations.create', compact('courses'));
+                                
+        // Pre-select course if course_id is provided
+        $selectedCourseId = $request->query('course_id');
+        
+        return view('user.registrations.create', compact('courses', 'selectedCourseId'));
     }
 
     /**

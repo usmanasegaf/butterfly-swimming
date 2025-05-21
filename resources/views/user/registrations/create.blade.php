@@ -35,15 +35,15 @@
                     <label for="swimming_course_id" class="block text-sm font-medium text-gray-700 mb-1">
                         Pilih Kursus Renang
                     </label>
-                    <select id="swimming_course_id" name="swimming_course_id" required
-                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                        <option value="">-- Pilih Kursus --</option>
-                        @foreach($courses as $course)
-                            <option value="{{ $course->id }}" {{ old('swimming_course_id') == $course->id ? 'selected' : '' }}>
-                                {{ $course->name }} - {{ $course->level }} (Rp{{ number_format($course->price, 0, ',', '.') }})
-                            </option>
-                        @endforeach
-                    </select>
+<select id="swimming_course_id" name="swimming_course_id" required
+        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+    <option value="">-- Pilih Kursus --</option>
+    @foreach($courses as $course)
+        <option value="{{ $course->id }}" {{ (old('swimming_course_id') == $course->id || isset($selectedCourseId) && $selectedCourseId == $course->id) ? 'selected' : '' }}>
+            {{ $course->name }} - {{ $course->level }} (Rp{{ number_format($course->price, 0, ',', '.') }})
+        </option>
+    @endforeach
+</select>
                 </div>
 
                 <div id="courseDetails" class="mb-4 p-4 bg-gray-50 rounded-md hidden">
