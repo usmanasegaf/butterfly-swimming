@@ -91,7 +91,7 @@
                     <a href="{{ route('user.registrations.index') }}" class="text-sm text-gray-600 hover:text-gray-900">
                         Kembali ke daftar pendaftaran
                     </a>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-black font-medium py-2 px-4 rounded">
                         Daftar Kursus
                     </button>
                 </div>

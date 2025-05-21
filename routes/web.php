@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\SwimmingCourseManagementController;
 use App\Http\Controllers\Admin\RegistrationManagementController;
+use App\Http\Controllers\User\CourseController;
+use App\Http\Controllers\User\RegistrationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,12 +47,23 @@ Route::middleware('auth')->group(function () {
 
     // Route untuk pendaftaran kursus (semua user)
     Route::middleware('permission:view own registrations')->group(function() {
-        Route::get('my-registrations', [RegistrationController::class, 'myRegistrations'])->name('my-registrations');
+        // Replace myRegistrations with index since that's the method name in your controller
+        Route::get('my-registrations', [RegistrationController::class, 'index'])->name('my-registrations');
     });
     
     Route::middleware('permission:register to course')->group(function() {
         Route::get('register-course', [RegistrationController::class, 'create'])->name('register-course');
         Route::post('register-course', [RegistrationController::class, 'store'])->name('register-course.store');
+    });
+
+    // --- User Routes for swimming courses ---
+    Route::name('user.')->prefix('user')->group(function () {
+        // Course routes
+        Route::resource('courses', CourseController::class)->only(['index', 'show']);
+        
+        // Registration routes
+        Route::resource('registrations', RegistrationController::class)->only(['index', 'create', 'store', 'show']);
+        Route::patch('registrations/{registration}/cancel', [RegistrationController::class, 'cancel'])->name('registrations.cancel');
     });
 
     // --- Rute Khusus Admin ---
