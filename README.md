@@ -46,15 +46,6 @@ Sumber daya untuk mempelajari Laravel:
 - [Laravel Bootcamp](https://bootcamp.laravel.com)
 - [Video Tutorial Laracasts](https://laracasts.com)
 
-## Sponsor
-
-Dikembangkan dengan dukungan:
-
-### Mitra Premium
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[64 Robots](https://64robots.com)**
-
 ## Kontribusi
 
 Panduan kontribusi tersedia di [dokumentasi Laravel](https://laravel.com/docs/contributions).
