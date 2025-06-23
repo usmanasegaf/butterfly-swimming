@@ -23,7 +23,7 @@
             Manajemen
         </div>
 
-        {{-- SESUAIKAN DENGAN NAMA RUTE BARU --}}
+
         <li class="nav-item {{ request()->routeIs('swimming-course-management.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('swimming-course-management.index') }}">
                 <i class="fas fa-fw fa-graduation-cap"></i>
@@ -31,7 +31,7 @@
             </a>
         </li>
 
-        {{-- SESUAIKAN DENGAN NAMA RUTE BARU --}}
+  
         <li class="nav-item {{ request()->routeIs('registration-management.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('registration-management.index') }}">
                 <i class="fas fa-fw fa-clipboard-list"></i>
