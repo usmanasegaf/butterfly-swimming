@@ -55,5 +55,3 @@ Panduan kontribusi tersedia di [dokumentasi Laravel](https://laravel.com/docs/co
 ## Lisensi
 
 Aplikasi ini open-source dibawah lisensi [MIT](https://opensource.org/licenses/MIT).
-
-tapi sudah segini saja..
