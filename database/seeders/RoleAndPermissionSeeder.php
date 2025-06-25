@@ -1,10 +1,9 @@
 <?php
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleAndPermissionSeeder extends Seeder
 {
@@ -23,13 +22,13 @@ class RoleAndPermissionSeeder extends Seeder
             'create swimming course',
             'edit swimming course',
             'delete swimming course',
-            
+
             // Registration permissions
             'view registrations',
             'approve registration',
             'reject registration',
             'delete registration',
-            
+
             // User registrations permissions
             'register to course',
             'view own registrations',
@@ -43,8 +42,8 @@ class RoleAndPermissionSeeder extends Seeder
         $adminRole = Role::create(['name' => 'admin']);
         $adminRole->givePermissionTo(Permission::all());
 
-        $userRole = Role::create(['name' => 'user']);
-        $userRole->givePermissionTo([
+        $guruRole = Role::create(['name' => 'guru']);
+        $guruRole->givePermissionTo([
             'view swimming courses',
             'register to course',
             'view own registrations',

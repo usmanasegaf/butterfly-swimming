@@ -1,9 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -18,22 +17,23 @@ class AuthController extends Controller
     public function registerSave(Request $request)
     {
         Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed'
+            'name'     => 'required',
+            'email'    => 'required|email|unique:users',
+            'password' => 'required|confirmed',
+            'role'     => 'required|in:guru,murid',
         ])->validate();
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user' // Keep for backward compatibility
+            'role'     => $request->role,
+            'status'   => 'pending', // status default, akan dipakai di tahap berikutnya
         ]);
-        
-        // Assign default user role using Spatie
-        $user->assignRole('user');
 
-        return redirect()->route('login');
+        $user->assignRole($request->role);
+
+        return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Silakan tunggu verifikasi.');
     }
 
     public function login()
@@ -44,12 +44,18 @@ class AuthController extends Controller
     public function loginAction(Request $request)
     {
         Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required'
+            'email'    => 'required|email',
+            'password' => 'required',
         ])->validate();
 
-        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             return redirect()->back()->withErrors(['email' => 'Email atau password salah']);
+        }
+
+        $user = Auth::user();
+        if ($user->status !== 'active') {
+            Auth::logout();
+            return redirect()->route('belum.verifikasi');
         }
 
         return redirect()->route('dashboard');
@@ -67,7 +73,7 @@ class AuthController extends Controller
     public function profile()
     {
         return view('profile', [
-            'user' => Auth::user()
+            'user' => Auth::user(),
         ]);
     }
 
@@ -76,14 +82,14 @@ class AuthController extends Controller
         $user = Auth::user();
 
         Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|confirmed'
+            'name'     => 'required',
+            'email'    => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|confirmed',
         ])->validate();
 
-        $user->name = $request->name;
+        $user->name  = $request->name;
         $user->email = $request->email;
-        
+
         if ($request->password) {
             $user->password = Hash::make($request->password);
         }

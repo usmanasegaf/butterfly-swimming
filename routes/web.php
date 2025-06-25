@@ -1,14 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\RegistrationManagementController;
+use App\Http\Controllers\Admin\SwimmingCourseManagementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Admin\SwimmingCourseManagementController;
-use App\Http\Controllers\Admin\RegistrationManagementController;
 use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\RegistrationController;
-
+use Illuminate\Support\Facades\Route;
 
 // Route untuk halaman utama
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -36,12 +34,12 @@ Route::middleware('auth')->group(function () {
     });
 
     // Route untuk pendaftaran kursus (semua user)
-    Route::middleware('permission:view own registrations')->group(function() {
+    Route::middleware('permission:view own registrations')->group(function () {
         // Replace myRegistrations with index since that's the method name in your controller
         Route::get('my-registrations', [RegistrationController::class, 'index'])->name('my-registrations');
     });
-    
-    Route::middleware('permission:register to course')->group(function() {
+
+    Route::middleware('permission:register to course')->group(function () {
         Route::get('register-course', [RegistrationController::class, 'create'])->name('register-course');
         Route::post('register-course', [RegistrationController::class, 'store'])->name('register-course.store');
     });
@@ -50,7 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::name('user.')->prefix('user')->group(function () {
         // Course routes
         Route::resource('courses', CourseController::class)->only(['index', 'show']);
-        
+
         // Registration routes
         Route::resource('registrations', RegistrationController::class)->only(['index', 'create', 'store', 'show']);
         Route::patch('registrations/{registration}/cancel', [RegistrationController::class, 'cancel'])->name('registrations.cancel');
@@ -65,5 +63,25 @@ Route::middleware('auth')->group(function () {
         Route::resource('registration-management', RegistrationManagementController::class)->except(['create', 'store', 'edit']);
     });
     // --- Akhir dari Rute Admin ---
+
+    // --- Rute verifikasi ---
+    // verifikasi guru oleh admin
+    Route::middleware(['auth', 'role:admin'])->group(function () {
+        Route::get('/admin/guru-pending', [App\Http\Controllers\Admin\GuruVerificationController::class, 'index'])->name('admin.guru.pending');
+        Route::post('/admin/guru-verifikasi/{user}', [App\Http\Controllers\Admin\GuruVerificationController::class, 'verify'])->name('admin.guru.verify');
+        Route::post('/admin/guru-tolak/{user}', [App\Http\Controllers\Admin\GuruVerificationController::class, 'reject'])->name('admin.guru.reject');
+    });
+
+    // verifikasi murid oleh guru
+    Route::middleware(['auth', 'role:guru'])->group(function () {
+        Route::get('/guru/murid-pending', [App\Http\Controllers\Guru\MuridVerificationController::class, 'index'])->name('guru.murid.pending');
+        Route::post('/guru/murid-verifikasi/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'verify'])->name('guru.murid.verify');
+        Route::post('/guru/murid-tolak/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'reject'])->name('guru.murid.reject');
+    });
+
+    // Rute akun belum terverifikasi
+    Route::get('/belum-verifikasi', function () {
+        return view('auth.belum_verifikasi');
+    })->name('belum.verifikasi');
 });
 // checkpoint
