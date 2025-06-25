@@ -56,4 +56,4 @@ Panduan kontribusi tersedia di [dokumentasi Laravel](https://laravel.com/docs/co
 
 Aplikasi ini open-source dibawah lisensi [MIT](https://opensource.org/licenses/MIT).
 
-sehingga ditambah commitnya dengan update readme agar setimpal dengan perubahannya, worth 4-5 commit
+tapi sudah segini saja..
