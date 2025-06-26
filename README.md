@@ -60,5 +60,3 @@ Aplikasi ini open-source dibawah lisensi [MIT](https://opensource.org/licenses/M
 
 2
 
-3
-
