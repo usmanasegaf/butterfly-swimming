@@ -56,3 +56,11 @@ Panduan kontribusi tersedia di [dokumentasi Laravel](https://laravel.com/docs/co
 
 Aplikasi ini open-source dibawah lisensi [MIT](https://opensource.org/licenses/MIT).
 
+1
+
+2
+
+3
+
+4
+
