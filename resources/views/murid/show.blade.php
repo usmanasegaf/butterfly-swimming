@@ -4,20 +4,20 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    @if(auth()->user() && auth()->user()->student)
-    @foreach(auth()->user()->student->notifications as $notification)
+    @if(auth()->user() && auth()->user()->murid)
+    @foreach(auth()->user()->murid->notifications as $notification)
         <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-2">
             {{ $notification->data['message'] }}
         </div>
     @endforeach
     @endif
-    <h1 class="text-2xl font-bold mb-4">Detail Murid: {{ $student->name }}</h1>
+    <h1 class="text-2xl font-bold mb-4">Detail Murid: {{ $murid->name }}</h1>
     <div class="mb-4">
-        <strong>Email:</strong> {{ $student->email ?? '-' }}<br>
-        <strong>Telepon:</strong> {{ $student->phone ?? '-' }}<br>
+        <strong>Email:</strong> {{ $murid->email ?? '-' }}<br>
+        <strong>Telepon:</strong> {{ $murid->phone ?? '-' }}<br>
         <strong>Masa Aktif:</strong>
-        @if($student->expired_at)
-            {{ \Carbon\Carbon::parse($student->expired_at)->format('d M Y') }}
+        @if($murid->expired_at)
+            {{ \Carbon\Carbon::parse($murid->expired_at)->format('d M Y') }}
             @if($expired_in !== null)
                 @if($expired_in < 0)
                     <span class="text-red-600">(Expired {{ abs($expired_in) }} hari lalu)</span>
@@ -45,6 +45,6 @@
         @endif
     </div>
 
-    <a href="{{ route('student.index') }}" class="text-blue-600 hover:underline">&larr; Kembali ke daftar murid</a>
+    <a href="{{ route('murid.index') }}" class="text-blue-600 hover:underline">&larr; Kembali ke daftar murid</a>
 </div>
 @endsection

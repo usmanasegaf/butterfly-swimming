@@ -4,12 +4,12 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Schedule;
-use App\Notifications\StudentScheduleReminder;
+use App\Notifications\MuridScheduleReminder;
 use Carbon\Carbon;
 
-class SendStudentScheduleInAppReminder extends Command
+class SendMuridScheduleInAppReminder extends Command
 {
-    protected $signature = 'student:send-inapp-schedule-reminder';
+    protected $signature = 'murid:send-inapp-schedule-reminder';
     protected $description = 'Kirim in-app notification ke murid 10 menit sebelum jadwal les';
 
     public function handle()
@@ -23,9 +23,9 @@ class SendStudentScheduleInAppReminder extends Command
             ->get();
 
         foreach ($schedules as $schedule) {
-            $student = $schedule->student;
-            if ($student) {
-                $student->notify(new StudentScheduleReminder($schedule));
+            $murid = $schedule->murid;
+            if ($murid) {
+                $murid->notify(new MuridScheduleReminder($schedule));
             }
         }
 

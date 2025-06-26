@@ -83,5 +83,23 @@ Route::middleware('auth')->group(function () {
     Route::get('/belum-verifikasi', function () {
         return view('auth.belum_verifikasi');
     })->name('belum.verifikasi');
+
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'guru') {
+            return redirect()->route('guru.dashboard');
+        } elseif ($user->role === 'murid') {
+            return redirect()->route('murid.dashboard');
+        }
+        abort(403);
+    })->middleware('auth')->name('dashboard');
+
+    Route::get('/admin/dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('admin.dashboard')->middleware(['auth', 'role:admin']);
+
+    Route::get('/guru/dashboard', [App\Http\Controllers\Guru\GuruDashboardController::class, 'index'])->name('guru.dashboard')->middleware(['auth', 'role:guru']);
+
+    Route::get('/murid/dashboard', [App\Http\Controllers\Murid\MuridDashboardController::class, 'index'])->name('murid.dashboard')->middleware(['auth', 'role:murid']);
 });
 // checkpoint

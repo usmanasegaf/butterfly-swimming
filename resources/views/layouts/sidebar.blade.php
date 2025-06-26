@@ -20,40 +20,88 @@
 
     @if (auth()->user()->role == 'admin')
         <div class="sidebar-heading">
-            Manajemen
+            Dashboard & Statistik
         </div>
+        <li class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard Admin</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('admin.statistik') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.statistik') }}">
+                <i class="fas fa-fw fa-chart-bar"></i>
+                <span>Statistik Pengajaran & Pemasukan</span>
+            </a>
+        </li>
 
+        <hr class="sidebar-divider">
 
+        <div class="sidebar-heading">
+            Manajemen Data
+        </div>
         <li class="nav-item {{ request()->routeIs('swimming-course-management.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('swimming-course-management.index') }}">
                 <i class="fas fa-fw fa-graduation-cap"></i>
                 <span>Manajemen Kursus Renang</span>
             </a>
         </li>
-
-  
         <li class="nav-item {{ request()->routeIs('registration-management.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('registration-management.index') }}">
                 <i class="fas fa-fw fa-clipboard-list"></i>
                 <span>Manajemen Pendaftaran</span>
             </a>
         </li>
-    @else {{-- Jika role adalah 'user' --}}
-        <div class="sidebar-heading">
-            Aktivitas
-        </div>
-
-        <li class="nav-item {{ request()->routeIs('my-registrations') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('my-registrations') }}">
-                <i class="fas fa-fw fa-book"></i>
-                <span>Kursus Saya</span>
+        <li class="nav-item {{ request()->routeIs('admin.guru.list') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.guru.list') }}">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Daftar Guru & Murid per Guru</span>
             </a>
         </li>
 
-        <li class="nav-item {{ request()->routeIs('register-course') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('register-course') }}">
-                <i class="fas fa-fw fa-plus-circle"></i>
-                <span>Daftar Kursus Baru</span>
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading">
+            Verifikasi
+        </div>
+        <li class="nav-item {{ request()->routeIs('admin.guru.pending') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.guru.pending') }}">
+                <i class="fas fa-fw fa-user-check"></i>
+                <span>Verifikasi Guru</span>
+            </a>
+        </li>
+        {{-- untuk guru --}}
+    @elseif (auth()->user()->role == 'guru')
+        <div class="sidebar-heading">
+            Guru
+        </div>
+        <li class="nav-item {{ request()->routeIs('guru.dashboard') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('guru.dashboard') }}">
+                <i class="fas fa-fw fa-chalkboard-teacher"></i>
+                <span>Dashboard Guru</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('guru.murid.pending') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('guru.murid.pending') }}">
+                <i class="fas fa-fw fa-user-check"></i>
+                <span>Verifikasi Murid</span>
+            </a>
+        </li>
+        {{-- untuk murid --}}
+    @elseif (auth()->user()->role == 'murid')
+        <div class="sidebar-heading">
+            Murid
+        </div>
+        <li class="nav-item {{ request()->routeIs('murid.dashboard') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('murid.dashboard') }}">
+                <i class="fas fa-fw fa-user"></i>
+                <span>Dashboard Murid</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('murid.index') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('murid.index') }}">
+                <i class="fas fa-fw fa-book"></i>
+                <span>Kursus Saya</span>
             </a>
         </li>
     @endif

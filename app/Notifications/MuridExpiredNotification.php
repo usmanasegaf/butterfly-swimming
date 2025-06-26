@@ -5,15 +5,15 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class StudentExpiredNotification extends Notification
+class MuridExpiredNotification extends Notification
 {
     use Queueable;
 
-    public $student;
+    public $murid;
 
-    public function __construct($student)
+    public function __construct($murid)
     {
-        $this->student = $student;
+        $this->murid = $murid;
     }
 
     public function via($notifiable)
@@ -25,7 +25,7 @@ class StudentExpiredNotification extends Notification
     {
         return (new \Illuminate\Notifications\Messages\MailMessage)
             ->subject('Paket Les Anda Telah Expired')
-            ->greeting('Halo ' . $this->student->name . ',')
+            ->greeting('Halo ' . $this->murid->name . ',')
             ->line('Masa aktif les Anda telah berakhir. Silakan hubungi guru untuk memperpanjang.');
     }
 }

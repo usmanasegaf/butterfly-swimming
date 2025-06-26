@@ -9,8 +9,8 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule)
     {
-            $schedule->command('student:send-inapp-schedule-reminder')->everyMinute();
-        $schedule->command('student:send-expired-reminder')->daily();
+            $schedule->command('murid:send-inapp-schedule-reminder')->everyMinute();
+        $schedule->command('murid:send-expired-reminder')->daily();
     }
 
     protected function commands()

@@ -48,5 +48,11 @@ class RoleAndPermissionSeeder extends Seeder
             'register to course',
             'view own registrations',
         ]);
+
+        $muridRole = Role::create(['name' => 'murid']);
+        $muridRole->givePermissionTo([
+            'view swimming courses',
+            // tambahkan permission lain jika perlu
+        ]);
     }
 }

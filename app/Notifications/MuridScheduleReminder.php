@@ -5,7 +5,7 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class StudentScheduleReminder extends Notification
+class MuridScheduleReminder extends Notification
 {
     use Queueable;
 

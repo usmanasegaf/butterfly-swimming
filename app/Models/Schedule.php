@@ -10,13 +10,13 @@ class Schedule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'student_id', 'date', 'start_time', 'end_time', 'location'
+        'murid_id', 'date', 'start_time', 'end_time', 'location'
     ];
 
     protected $dates = ['date', 'start_time', 'end_time'];
 
-    public function student()
+    public function murid()
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(Murid::class);
     }
 }
