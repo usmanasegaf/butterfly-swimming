@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/guru-pending', [App\Http\Controllers\Admin\GuruVerificationController::class, 'index'])->name('admin.guru.pending');
         Route::post('/admin/guru-verifikasi/{user}', [App\Http\Controllers\Admin\GuruVerificationController::class, 'verify'])->name('admin.guru.verify');
         Route::post('/admin/guru-tolak/{user}', [App\Http\Controllers\Admin\GuruVerificationController::class, 'reject'])->name('admin.guru.reject');
+        Route::get('/admin/guru-list', [App\Http\Controllers\Admin\GuruListController::class, 'index'])->name('admin.guru.list');
     });
 
     // verifikasi murid oleh guru

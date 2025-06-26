@@ -24,7 +24,8 @@ class UserSeeder extends Seeder
             'name'     => 'Admin Butterfly',
             'email'    => 'admin@butterfly.com',
             'password' => Hash::make('admin.bsc777'),
-            'role'     => 'admin', // Keep for backwards compatibility or other app logic
+            'role'     => 'admin',  // Keep for backwards compatibility or other app logic
+            'status'   => 'active', // Set status to active for admin
         ]);
                                         // Assign admin role using Spatie
         $admin->assignRole($adminRole); // Assign the role object or name 'admin'
@@ -34,11 +35,24 @@ class UserSeeder extends Seeder
         $guru     = User::create([
             'name'     => 'Guru Butterfly',
             'email'    => 'guru@butterfly.com',
-            'password' => Hash::make('guru123'),
+            'password' => Hash::make('guru.bsc123'),
             'role'     => 'guru',
+            'status'   => 'active', // Set status to active for guru
         ]);
 
         // Assign user role using Spatie
         $guru->assignRole($guruRole);
+
+        // Buat user murid pertama (manual)
+        $murid = User::create([
+            'name'     => 'Murid Butterfly',
+            'email'    => 'murid@butterfly.com',
+            'password' => Hash::make('murid.bsc123'),
+            'role'     => 'murid',
+            'status'   => 'active',
+        ]);
+        $murid->assignRole('murid');
+        
+        $guru->murids()->attach($murid->id);
     }
 }

@@ -28,8 +28,8 @@
                 <span>Dashboard Admin</span>
             </a>
         </li>
-        <li class="nav-item {{ request()->routeIs('admin.statistik') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.statistik') }}">
+        <li class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.dashboard') }}">
                 <i class="fas fa-fw fa-chart-bar"></i>
                 <span>Statistik Pengajaran & Pemasukan</span>
             </a>

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+
 // Added this trait
 
 class User extends Authenticatable
@@ -65,5 +66,16 @@ class User extends Authenticatable
             'id',
             'swimming_course_id'
         );
+    }
+// Untuk guru: dapatkan semua murid bimbingan
+    public function murids()
+    {
+        return $this->belongsToMany(User::class, 'guru_murid', 'guru_id', 'murid_id');
+    }
+
+// Untuk murid: dapatkan semua guru pembimbing
+    public function gurus()
+    {
+        return $this->belongsToMany(User::class, 'guru_murid', 'murid_id', 'guru_id');
     }
 }

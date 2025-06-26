@@ -18,6 +18,7 @@
     <link href="{{ asset('css/butterfly-swimming.css') }}" rel="stylesheet">
     
     @stack('styles')
+    @stack('scripts')
 </head>
 
 <body id="page-top">
