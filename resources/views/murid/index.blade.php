@@ -1,36 +1,35 @@
+{{-- filepath: resources/views/murid/index.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Daftar Murid')
+@section('title', 'Dashboard Murid')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold mb-4">Daftar Murid</h1>
-    <a href="{{ route('murid.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Murid</a>
-    <table class="min-w-full bg-white">
-        <thead>
-            <tr>
-                <th class="py-2 px-4">Nama</th>
-                <th class="py-2 px-4">Expired</th>
-                <th class="py-2 px-4">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($murids as $murid)
-            <tr>
-                <td class="py-2 px-4">{{ $murid->name }}</td>
-                <td class="py-2 px-4">
-                    @if($murid->expired_at)
-                        {{ \Carbon\Carbon::parse($murid->expired_at)->diffForHumans() }}
-                    @else
-                        -
-                    @endif
-                </td>
-                <td class="py-2 px-4">
-                    <a href="{{ route('murid.show', $murid->id) }}" class="text-blue-600 hover:underline">Detail</a>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <h1 class="text-2xl font-bold mb-4">Dashboard Murid</h1>
+
+    <div class="mb-6">
+        <h2 class="text-lg font-semibold">Sisa Waktu Les</h2>
+        @if($expired_at)
+            <p>
+                Expired pada: <strong>{{ \Carbon\Carbon::parse($expired_at)->format('d-m-Y') }}</strong><br>
+                Sisa hari: <strong>{{ $sisa_hari > 0 ? $sisa_hari . ' hari' : 'Sudah expired' }}</strong>
+            </p>
+        @else
+            <p>Belum ada data expired.</p>
+        @endif
+    </div>
+
+    <div class="mb-6">
+        <h2 class="text-lg font-semibold">Jadwal Les Selanjutnya</h2>
+        @if($jadwal_selanjutnya)
+            <p>
+                Tanggal: <strong>{{ $jadwal_selanjutnya->tanggal }}</strong><br>
+                Jam: <strong>{{ $jadwal_selanjutnya->jam }}</strong><br>
+                Lokasi: <strong>{{ $jadwal_selanjutnya->location->name ?? '-' }}</strong>
+            </p>
+        @else
+            <p>Tidak ada jadwal les selanjutnya.</p>
+        @endif
+    </div>
 </div>
 @endsection

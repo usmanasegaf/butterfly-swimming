@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('swimming_course_id')->constrained()->onDelete('cascade');
-            $table->string('day_of_week');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->date('tanggal')->nullable(); 
+            $table->time('jam')->nullable();
             $table->string('location')->nullable();
             $table->string('instructor')->nullable();
             $table->boolean('is_active')->default(true);
