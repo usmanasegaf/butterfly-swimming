@@ -102,5 +102,27 @@ Route::middleware('auth')->group(function () {
     Route::get('/guru/dashboard', [App\Http\Controllers\Guru\GuruDashboardController::class, 'index'])->name('guru.dashboard')->middleware(['auth', 'role:guru']);
 
     Route::get('/murid/dashboard', [App\Http\Controllers\Murid\MuridDashboardController::class, 'index'])->name('murid.dashboard')->middleware(['auth', 'role:murid']);
+    Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {
+        Route::get('attendance', [App\Http\Controllers\Guru\GuruAttendanceController::class, 'index'])->name('attendance.index');
+        Route::get('attendance/create/{schedule_id}', [App\Http\Controllers\Guru\GuruAttendanceController::class, 'create'])->name('attendance.create');
+        Route::post('attendance/store', [App\Http\Controllers\Guru\GuruAttendanceController::class, 'store'])->name('attendance.store');
+
+        Route::get('murid', [App\Http\Controllers\Guru\GuruMuridController::class, 'index'])->name('murid.index');
+        Route::get('murid/create', [App\Http\Controllers\Guru\GuruMuridController::class, 'create'])->name('murid.create');
+        Route::post('murid/store', [App\Http\Controllers\Guru\GuruMuridController::class, 'store'])->name('murid.store');
+        Route::delete('murid/{id}', [App\Http\Controllers\Guru\GuruMuridController::class, 'destroy'])->name('murid.destroy');
+
+        Route::get('jadwal', [App\Http\Controllers\Guru\GuruScheduleController::class, 'index'])->name('jadwal.index');
+        Route::get('jadwal/create', [App\Http\Controllers\Guru\GuruScheduleController::class, 'create'])->name('jadwal.create');
+        Route::post('jadwal/store', [App\Http\Controllers\Guru\GuruScheduleController::class, 'store'])->name('jadwal.store');
+        Route::get('jadwal/{id}/edit', [App\Http\Controllers\Guru\GuruScheduleController::class, 'edit'])->name('jadwal.edit');
+        Route::put('jadwal/{id}', [App\Http\Controllers\Guru\GuruScheduleController::class, 'update'])->name('jadwal.update');
+        Route::delete('jadwal/{id}', [App\Http\Controllers\Guru\GuruScheduleController::class, 'destroy'])->name('jadwal.destroy');
+
+        Route::get('kursus', [App\Http\Controllers\Guru\GuruCourseController::class, 'index'])->name('kursus.index');
+        Route::get('kursus/{id}', [App\Http\Controllers\Guru\GuruCourseController::class, 'show'])->name('kursus.show');
+
+    });
+
 });
 // checkpoint

@@ -9,15 +9,6 @@
 
     <hr class="sidebar-divider my-0">
 
-    <li class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('dashboard') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-        </a>
-    </li>
-
-    <hr class="sidebar-divider">
-
     @if (auth()->user()->role == 'admin')
         <div class="sidebar-heading">
             Dashboard & Statistik
@@ -28,13 +19,6 @@
                 <span>Dashboard Admin</span>
             </a>
         </li>
-        <li class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                <i class="fas fa-fw fa-chart-bar"></i>
-                <span>Statistik Pengajaran & Pemasukan</span>
-            </a>
-        </li>
-
         <hr class="sidebar-divider">
 
         <div class="sidebar-heading">
