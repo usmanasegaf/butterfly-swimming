@@ -58,11 +58,5 @@ Aplikasi ini open-source dibawah lisensi [MIT](https://opensource.org/licenses/M
 
 checkpoint projek:
 
-akun role admin clear
-
-akun role murid clear
-
-akun role guru clear
-
-Semua sudah bisa diakses 
+check apa semua menu tersedia dan memiliki tampilan dan fugnsi yang benar
 
