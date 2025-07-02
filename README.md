@@ -57,5 +57,8 @@ Panduan kontribusi tersedia di [dokumentasi Laravel](https://laravel.com/docs/co
 Aplikasi ini open-source dibawah lisensi [MIT](https://opensource.org/licenses/MIT).
 
 checkpoint projek:
-akun role murid
+akun role admin clear /n
+akun role murid clear /n
+akun role guru clear /n
+Semua sudah bisa diakses 
 
