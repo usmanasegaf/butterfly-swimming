@@ -82,10 +82,10 @@
                 <span>Dashboard Murid</span>
             </a>
         </li>
-        {{-- <li class="nav-item {{ request()->routeIs('murid.index') ? 'active' : '' }}">
+        <li class="nav-item {{ request()->routeIs('murid.index') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('murid.index') }}">
                 <i class="fas fa-fw fa-book"></i>
-                <span>Kursus Saya</span> --}}
+                <span>Kursus Saya</span>
             </a>
         </li>
     @endif

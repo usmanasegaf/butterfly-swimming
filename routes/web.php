@@ -102,7 +102,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/guru/dashboard', [App\Http\Controllers\Guru\GuruDashboardController::class, 'index'])->name('guru.dashboard')->middleware(['auth', 'role:guru']);
 
     Route::get('/murid/dashboard', [App\Http\Controllers\Murid\MuridDashboardController::class, 'index'])->name('murid.dashboard')->middleware(['auth', 'role:murid']);
-    
+
     Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {
         Route::get('attendance', [App\Http\Controllers\Guru\GuruAttendanceController::class, 'index'])->name('attendance.index');
         Route::get('attendance/create/{schedule_id}', [App\Http\Controllers\Guru\GuruAttendanceController::class, 'create'])->name('attendance.create');
@@ -124,6 +124,8 @@ Route::middleware('auth')->group(function () {
         Route::get('kursus/{id}', [App\Http\Controllers\Guru\GuruCourseController::class, 'show'])->name('kursus.show');
 
     });
+
+    Route::get('/murid', [App\Http\Controllers\Murid\MuridController::class, 'index'])->name('murid.index')->middleware(['auth', 'role:murid']);
 
 });
 // checkpoint

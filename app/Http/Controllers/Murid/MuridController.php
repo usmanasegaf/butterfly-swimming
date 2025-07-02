@@ -1,19 +1,30 @@
 <?php
-
 namespace App\Http\Controllers\Murid;
 
+use App\Http\Controllers\Controller;
 use App\Models\Murid;
-use App\Models\Schedule;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class MuridController extends Controller
 {
-    // List semua murid
     public function index()
     {
-        $murids = Murid::with('schedules')->get();
-        return view('murid.index', compact('murids'));
+        $murid     = auth()->user();
+        $schedules = $murid->schedules()->with('swimmingCourse', 'location')->get();
+
+        $expired_at = $murid->expired_at ?? null;
+        $sisa_hari  = $expired_at ? now()->diffInDays($expired_at, false) : null;
+
+        // Ambil jadwal les selanjutnya (jadwal terdekat >= hari ini)
+        $jadwal_selanjutnya = $murid->schedules()
+            ->where('tanggal', '>=', now()->toDateString())
+            ->orderBy('tanggal')
+            ->orderBy('jam')
+            ->with('location')
+            ->first();
+
+        return view('murid.index', compact('schedules', 'expired_at', 'sisa_hari', 'jadwal_selanjutnya'));
     }
 
     // Detail murid & jadwal
@@ -44,10 +55,10 @@ class MuridController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'nullable|email',
-            'phone' => 'nullable',
-            'expired_at' => 'required|date'
+            'name'       => 'required',
+            'email'      => 'nullable|email',
+            'phone'      => 'nullable',
+            'expired_at' => 'required|date',
         ]);
         Murid::create($request->all());
         return redirect()->route('murid.index')->with('success', 'Murid berhasil ditambahkan');
