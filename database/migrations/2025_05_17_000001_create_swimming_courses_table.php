@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+            $table->unsignedBigInteger('guru_id')->nullable();
+            $table->foreign('guru_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

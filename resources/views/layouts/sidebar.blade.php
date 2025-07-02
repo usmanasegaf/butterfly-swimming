@@ -71,6 +71,30 @@
                 <span>Verifikasi Murid</span>
             </a>
         </li>
+        <li class="nav-item {{ request()->routeIs('guru.murid.index') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('guru.murid.index') }}">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Daftar Murid Bimbingan</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('guru.jadwal.index') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('guru.jadwal.index') }}">
+                <i class="fas fa-fw fa-calendar-alt"></i>
+                <span>Jadwal Kursus</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('guru.attendance.index') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('guru.attendance.index') }}">
+                <i class="fas fa-fw fa-clipboard-list"></i>
+                <span>Absensi</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('guru.kursus.index') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('guru.kursus.index') }}">
+                <i class="fas fa-fw fa-book"></i>
+                <span>Kursus yang Dipegang</span>
+            </a>
+        </li>
         {{-- untuk murid --}}
     @elseif (auth()->user()->role == 'murid')
         <div class="sidebar-heading">

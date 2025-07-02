@@ -24,6 +24,7 @@ class SwimmingCourseSeeder extends Seeder
                 'instructor' => 'Muhammad daffa',
                 'image' => 'beginner.jpg',
                 'is_active' => true,
+                'guru_id' => 1,
             ],
             [
                 'name' => 'Kelas Menengah',

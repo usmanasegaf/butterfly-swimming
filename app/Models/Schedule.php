@@ -36,4 +36,8 @@ class Schedule extends Model
     {
         return $this->belongsTo(Location::class, 'location_id');
     }
+    public function guru()
+    {
+        return $this->belongsTo(User::class, 'guru_id');
+    }
 }
