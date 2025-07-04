@@ -58,5 +58,8 @@ Aplikasi ini open-source dibawah lisensi [MIT](https://opensource.org/licenses/M
 
 checkpoint projek:
 
-check apa semua menu tersedia dan memiliki tampilan dan fugnsi yang benar
+sekarang sudah jalan yang manajemen kursus guru.
+
+untuk sekarang per git nya jauh, kedepannya mungkin lebih dekat agar lebih banyak push dan lebih aman, jadi jika ada kegagalan tidak langsung banyak sekali
+
 
