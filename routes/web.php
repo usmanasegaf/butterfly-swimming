@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\RegistrationManagementController;
 use App\Http\Controllers\Admin\SwimmingCourseManagementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Guru\GuruCourseController;
@@ -58,10 +57,6 @@ Route::middleware('auth')->group(function () {
     // --- Rute Khusus Admin ---
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::resource('swimming-course-management', SwimmingCourseManagementController::class);
-
-        // Rute untuk Manajemen Pendaftaran
-        // Permission checks dilakukan di dalam controller
-        Route::resource('registration-management', RegistrationManagementController::class)->except(['create', 'store', 'edit']);
     });
     // --- Akhir dari Rute Admin ---
 

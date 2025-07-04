@@ -38,9 +38,10 @@
                                 </div>
                             </div>
                             <div class="form-check d-flex justify-content-start mb-4">
-                                <input class="form-check-input me-2 rounded border-primary" type="checkbox" name="remember" id="remember">
-                                <label class="form-check-label" for="remember">
-                                    Ingat Saya
+                                {{-- PERUBAHAN: id dan label untuk show password --}}
+                                <input class="form-check-input me-2 rounded border-primary" type="checkbox" id="showPasswordToggle">
+                                <label class="form-check-label" for="showPasswordToggle">
+                                    Tampilkan Kata Sandi
                                 </label>
                             </div>
                             <button class="btn btn-primary btn-lg w-100 rounded-pill" type="submit">Login</button>
@@ -80,7 +81,21 @@
                 }
             });
         });
+
+        // SKRIP BARU UNTUK TOGGLE SHOW PASSWORD
+        const passwordField = document.getElementById('password');
+        const showPasswordToggle = document.getElementById('showPasswordToggle');
+
+        if (showPasswordToggle && passwordField) {
+            showPasswordToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    passwordField.type = 'text';
+                } else {
+                    passwordField.type = 'password';
+                }
+            });
+        }
     });
-</script>
+    </script>
 </body>
 </html>

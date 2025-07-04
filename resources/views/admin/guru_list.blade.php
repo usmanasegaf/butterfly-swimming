@@ -10,7 +10,7 @@
                 <div class="mb-4">
                     <h6>
                         {{ $guru->name }} ({{ $guru->email }})
-                        - Total Mengajar: {{ $guru->jadwal_guru_count }} Jadwal </h6>
+                        - Total Jadwal: {{ $guru->jadwal_guru_count }} Jadwal </h6>
                     <ul>
                         @forelse($guru->murids as $murid)
                             <li>{{ $murid->name }} ({{ $murid->email }})</li>

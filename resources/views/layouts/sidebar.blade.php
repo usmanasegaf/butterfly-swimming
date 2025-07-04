@@ -30,12 +30,6 @@
                 <span>Manajemen Kursus Renang</span>
             </a>
         </li>
-        <li class="nav-item {{ request()->routeIs('registration-management.*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('registration-management.index') }}">
-                <i class="fas fa-fw fa-clipboard-list"></i>
-                <span>Manajemen Pendaftaran</span>
-            </a>
-        </li>
         <li class="nav-item {{ request()->routeIs('admin.guru.list') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.guru.list') }}">
                 <i class="fas fa-fw fa-users"></i>
