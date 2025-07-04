@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\RegistrationManagementController;
 use App\Http\Controllers\Admin\SwimmingCourseManagementController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Guru\GuruCourseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\RegistrationController;
@@ -113,15 +114,14 @@ Route::middleware('auth')->group(function () {
         Route::post('murid/store', [App\Http\Controllers\Guru\GuruMuridController::class, 'store'])->name('murid.store');
         Route::delete('murid/{id}', [App\Http\Controllers\Guru\GuruMuridController::class, 'destroy'])->name('murid.destroy');
 
-        Route::get('jadwal', [App\Http\Controllers\Guru\GuruScheduleController::class, 'index'])->name('jadwal.index');
-        Route::get('jadwal/create', [App\Http\Controllers\Guru\GuruScheduleController::class, 'create'])->name('jadwal.create');
-        Route::post('jadwal/store', [App\Http\Controllers\Guru\GuruScheduleController::class, 'store'])->name('jadwal.store');
-        Route::get('jadwal/{id}/edit', [App\Http\Controllers\Guru\GuruScheduleController::class, 'edit'])->name('jadwal.edit');
-        Route::put('jadwal/{id}', [App\Http\Controllers\Guru\GuruScheduleController::class, 'update'])->name('jadwal.update');
-        Route::delete('jadwal/{id}', [App\Http\Controllers\Guru\GuruScheduleController::class, 'destroy'])->name('jadwal.destroy');
+        // Rute untuk manajemen kursus dan jadwal guru
+        Route::get('/courses', [GuruCourseController::class, 'index'])->name('courses.index');
+        Route::get('/courses/{swimmingCourse}/create-schedule', [GuruCourseController::class, 'createScheduleForm'])->name('courses.create_schedule_form');
+        Route::post('/schedules', [GuruCourseController::class, 'storeSchedule'])->name('schedules.store');
 
-        Route::get('kursus', [App\Http\Controllers\Guru\GuruCourseController::class, 'index'])->name('kursus.index');
-        Route::get('kursus/{id}', [App\Http\Controllers\Guru\GuruCourseController::class, 'show'])->name('kursus.show');
+        Route::get('/schedules/{schedule}/edit', [GuruCourseController::class, 'editSchedule'])->name('schedules.edit');
+        Route::put('/schedules/{schedule}', [GuruCourseController::class, 'updateSchedule'])->name('schedules.update');
+        Route::delete('/schedules/{schedule}', [GuruCourseController::class, 'destroySchedule'])->name('schedules.destroy');
 
     });
 
