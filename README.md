@@ -60,6 +60,4 @@ checkpoint projek:
 
 sekarang sudah jalan yang manajemen kursus guru.
 
-untuk sekarang per git nya jauh, kedepannya mungkin lebih dekat agar lebih banyak push dan lebih aman, jadi jika ada kegagalan tidak langsung banyak sekali
-
 
