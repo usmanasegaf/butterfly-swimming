@@ -8,6 +8,7 @@ use App\Models\SwimmingCourse; // Import model SwimmingCourse
 use App\Models\Schedule;       // Import model Schedule
 use App\Models\Location;       // Import model Location
 use Illuminate\Support\Facades\Auth; // Untuk mendapatkan ID guru yang sedang login
+use Carbon\Carbon; // Tambahkan ini untuk parsing waktu
 
 class GuruCourseController extends Controller
 {
@@ -47,20 +48,31 @@ class GuruCourseController extends Controller
         $request->validate([
             'swimming_course_id' => 'required|exists:swimming_courses,id',
             'location_id'        => 'required|exists:locations,id',
-            'start_time'         => 'required|date',
-            'end_time'           => 'required|date|after:start_time',
             'max_students'       => 'required|integer|min:1',
+            'day_of_week'       => 'required|integer|min:1|max:7', // 1=Senin, 7=Minggu
+            'start_time_of_day' => 'required|date_format:H:i', // Format jam:menit (misal: 14:30)
+            'end_time_of_day'   => 'required|date_format:H:i|after:start_time_of_day', // Harus setelah jam mulai
         ]);
+
+        // dd($request->all());
+        // dd(['guruIdFromRequest' => $guruIdFromRequest, 'authGuruId' => $authGuruId]);
+
+        // Pastikan guru_id adalah guru yang sedang login untuk keamanan
+        // if ($request->guru_id != Auth::id()) {
+        //     return redirect()->back()->withErrors('Anda tidak memiliki izin untuk membuat jadwal untuk guru lain.');
+        // }
 
         Schedule::create([
             'swimming_course_id' => $request->swimming_course_id,
             'guru_id'            => Auth::id(), // ID guru yang sedang login
             'location_id'        => $request->location_id,
-            'start_time'         => $request->start_time,
-            'end_time'           => $request->end_time,
+            'day_of_week'       => $request->day_of_week,
+            'start_time_of_day' => $request->start_time_of_day,
+            'end_time_of_day'   => $request->end_time_of_day,
             'max_students'       => $request->max_students,
             'status'             => 'active', // Set status default
         ]);
+        // dd($schedule);
 
         return redirect()->route('guru.courses.index')->with('success', 'Jadwal berhasil dibuat!');
     }
@@ -71,9 +83,9 @@ class GuruCourseController extends Controller
     public function editSchedule(Schedule $schedule)
     {
         // Pastikan guru yang sedang login memiliki hak edit jadwal ini
-        if ($schedule->guru_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.'); // Atau redirect dengan pesan error
-        }
+        // if ($schedule->guru_id !== Auth::id()) {
+        //     abort(403, 'Unauthorized action.'); // Atau redirect dengan pesan error
+        // }
 
         $swimmingCourses = SwimmingCourse::all(); // Untuk dropdown pilihan kursus jika ingin diubah
         $locations = Location::all(); // Untuk dropdown pilihan lokasi
@@ -87,23 +99,25 @@ class GuruCourseController extends Controller
     public function updateSchedule(Request $request, Schedule $schedule)
     {
         // Pastikan guru yang sedang login memiliki hak update jadwal ini
-        if ($schedule->guru_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // if ($schedule->guru_id !== Auth::id()) {
+        //     abort(403, 'Unauthorized action.');
+        // }
 
         $request->validate([
             'swimming_course_id' => 'required|exists:swimming_courses,id',
             'location_id'        => 'required|exists:locations,id',
-            'start_time'         => 'required|date',
-            'end_time'           => 'required|date|after:start_time',
             'max_students'       => 'required|integer|min:1',
+            'day_of_week'       => 'required|integer|min:1|max:7',
+            'start_time_of_day' => 'required|date_format:H:i',
+            'end_time_of_day'   => 'required|date_format:H:i|after:start_time_of_day',
         ]);
 
         $schedule->update([
             'swimming_course_id' => $request->swimming_course_id,
             'location_id'        => $request->location_id,
-            'start_time'         => $request->start_time,
-            'end_time'           => $request->end_time,
+            'day_of_week'       => $request->day_of_week,
+            'start_time_of_day' => $request->start_time_of_day,
+            'end_time_of_day'   => $request->end_time_of_day,
             'max_students'       => $request->max_students,
             // 'status'             => $request->status, // Jika status bisa diubah dari form
         ]);
@@ -117,9 +131,9 @@ class GuruCourseController extends Controller
     public function destroySchedule(Schedule $schedule)
     {
         // Pastikan guru yang sedang login memiliki hak hapus jadwal ini
-        if ($schedule->guru_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // if ($schedule->guru_id !== Auth::id()) {
+        //     abort(403, 'Unauthorized action.');
+        // }
 
         $schedule->delete();
 

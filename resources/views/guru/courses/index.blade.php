@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title', 'Manajemen Jadwal Kursus Saya')
-
 @section('content')
     <div class="container-fluid">
         <h1 class="h3 mb-4 text-gray-800">Manajemen Jadwal Kursus Saya</h1>
@@ -66,6 +64,7 @@
                                 <tr>
                                     <th>Kursus</th>
                                     <th>Lokasi</th>
+                                    <th>Hari</th> {{-- MENAMBAHKAN TH UNTUK HARI --}}
                                     <th>Waktu Mulai</th>
                                     <th>Waktu Selesai</th>
                                     <th>Max Murid</th>
@@ -78,10 +77,28 @@
                                     <tr>
                                         <td>{{ $schedule->swimmingCourse->name ?? 'Kursus Tidak Ditemukan' }}</td>
                                         <td>{{ $schedule->location->name ?? 'Lokasi Tidak Ditemukan' }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($schedule->start_time)->format('d M Y H:i') }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($schedule->end_time)->format('d M Y H:i') }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($schedule->end_time)->format('d M Y H:i') }}</td>
+                                        {{-- MENAMBAHKAN TD UNTUK HARI DAN MENGUBAH ANGKA KE NAMA HARI --}}
+                                        <td>
+                                            @php
+                                                $days = [
+                                                    1 => 'Senin',
+                                                    2 => 'Selasa',
+                                                    3 => 'Rabu',
+                                                    4 => 'Kamis',
+                                                    5 => 'Jumat',
+                                                    6 => 'Sabtu',
+                                                    7 => 'Minggu',
+                                                ];
+                                            @endphp
+                                            {{ $days[$schedule->day_of_week] ?? 'Tidak Ditemukan' }}
+                                        </td>
+                                        {{-- PERBAIKAN: Menggunakan nama kolom yang benar dan format waktu H:i --}}
+                                        <td>{{ \Carbon\Carbon::parse($schedule->start_time_of_day)->format('H:i') }}</td>
+                                        {{-- PERBAIKAN: Menggunakan nama kolom yang benar dan format waktu H:i --}}
+                                        <td>{{ \Carbon\Carbon::parse($schedule->end_time_of_day)->format('H:i') }}</td>
+                                        {{-- PERBAIKAN: Menampilkan max_students langsung tanpa Carbon --}}
                                         <td>{{ $schedule->max_students }}</td>
+                                        {{-- Ini sudah benar untuk status --}}
                                         <td>{{ ucfirst($schedule->status) }}</td>
                                         <td>
                                             <a href="{{ route('guru.schedules.edit', $schedule->id) }}"

@@ -9,15 +9,16 @@ class Schedule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'murid_id', 'date', 'start_time', 'end_time', 'location',
+        'swimming_course_id',
+        'guru_id',
+        'location_id',
+        'day_of_week',       // Tambahkan ini
+        'start_time_of_day', // Tambahkan ini
+        'end_time_of_day',   // Tambahkan ini
+        'max_students',
+        'status',
+        // Tambahkan kolom lain jika ada yang relevan untuk diisi secara massal
     ];
-
-    protected $dates = ['date', 'start_time', 'end_time'];
-
-    public function murid()
-    {
-        return $this->belongsTo(Murid::class);
-    }
 
     public function murids()
     {

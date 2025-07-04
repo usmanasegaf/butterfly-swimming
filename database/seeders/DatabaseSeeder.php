@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             RoleAndPermissionSeeder::class, // Run this first to create roles and permissions
             UserSeeder::class,
             SwimmingCourseSeeder::class,
+            LocationSeeder::class,
         ]);
     }
 }
