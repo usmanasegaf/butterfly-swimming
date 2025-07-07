@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\SwimmingCourseManagementController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Guru\GuruAttendanceController;
 use App\Http\Controllers\Guru\GuruCourseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\User\CourseController;
@@ -117,6 +118,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/schedules/{schedule}/edit', [GuruCourseController::class, 'editSchedule'])->name('schedules.edit');
         Route::put('/schedules/{schedule}', [GuruCourseController::class, 'updateSchedule'])->name('schedules.update');
         Route::delete('/schedules/{schedule}', [GuruCourseController::class, 'destroySchedule'])->name('schedules.destroy');
+
+        // Rute untuk menampilkan form absensi
+        Route::get('schedules/{schedule}/attendance', [GuruAttendanceController::class, 'showAttendanceForm'])->name('schedules.show_attendance_form');
+        // Rute untuk menyimpan absensi
+        Route::post('schedules/{schedule}/attendance', [GuruAttendanceController::class, 'storeAttendance'])->name('schedules.store_attendance');
+
+        Route::get('attendance', [GuruAttendanceController::class, 'index'])->name('attendance.index');
 
     });
 

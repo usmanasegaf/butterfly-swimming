@@ -29,14 +29,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title">Kursus Dipegang</h5>
-                            <p class="card-text display-4">{{ $kursus_count }}</p>
-                        </div>
-                    </div>
-                </div>
             </div>
             <hr>
             <h4 class="mt-4">Jadwal Terdekat</h4>

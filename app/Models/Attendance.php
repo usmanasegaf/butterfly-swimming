@@ -10,7 +10,16 @@ class Attendance extends Model
     use HasFactory;
 
     protected $fillable = [
-        'schedule_id', 'murid_id', 'guru_id', 'location_id', 'date', 'is_present'
+        'schedule_id',
+        'student_id',
+        'attendance_date',
+        'status', // e.g., 'hadir', 'alpha'
+        'attended_at', // Timestamp when attendance was taken
+    ];
+
+    protected $casts = [
+        'attendance_date' => 'date',
+        'attended_at' => 'datetime',
     ];
 
     public function schedule()
@@ -18,18 +27,8 @@ class Attendance extends Model
         return $this->belongsTo(Schedule::class);
     }
 
-    public function murid()
+    public function student()
     {
-        return $this->belongsTo(Murid::class);
-    }
-
-    public function guru()
-    {
-        return $this->belongsTo(User::class, 'guru_id');
-    }
-
-    public function location()
-    {
-        return $this->belongsTo(Location::class);
+        return $this->belongsTo(User::class, 'student_id'); // Asumsi student adalah User
     }
 }

@@ -2,6 +2,10 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance; // Import model Attendance
+use App\Models\Schedule;   // Import model Schedule
+use App\Models\SwimmingCourse; // Import model SwimmingCourse
+use Carbon\Carbon; // Pastikan Carbon diimport
 
 class GuruDashboardController extends Controller
 {
@@ -15,15 +19,23 @@ class GuruDashboardController extends Controller
         // Jumlah jadwal kursus yang diampu
         $jadwal_count = $guru->jadwalGuru()->count() ?? 0;
 
-        // Jumlah absensi hari ini (misal, absensi yang dibuat oleh guru hari ini)
-        $absensi_hari_ini = \App\Models\Attendance::where('guru_id', $guru->id)
-            ->whereDate('date', now()->toDateString())
+        // --- PERBAIKAN UNTUK JUMLAH ABSENSI HARI INI ---
+        // 1. Dapatkan semua ID jadwal yang diampu oleh guru ini
+        $guruScheduleIds = Schedule::where('guru_id', $guru->id)->pluck('id');
+
+        // 2. Hitung absensi hari ini yang terkait dengan jadwal-jadwal tersebut
+        $absensi_hari_ini = Attendance::whereIn('schedule_id', $guruScheduleIds)
+            ->whereDate('attendance_date', now()->toDateString()) // Menggunakan 'attendance_date'
             ->count();
+        // --- AKHIR PERBAIKAN ---
 
         // Jumlah kursus yang dipegang (misal, swimming_course yang diampu guru)
-        $kursus_count = \App\Models\SwimmingCourse::where('guru_id', $guru->id)->count();
+        // Catatan: Relasi swimmingCourse ke guru_id mungkin tidak langsung di tabel courses,
+        // melainkan melalui jadwal. Jika ini menyebabkan error, perlu penyesuaian.
+        // Untuk saat ini, asumsikan ini sudah benar atau akan ditangani terpisah.
+        $kursus_count = SwimmingCourse::where('guru_id', $guru->id)->count();
 
-// Jadwal terdekat (Logic untuk jadwal berulang mingguan)
+        // Jadwal terdekat (Logic untuk jadwal berulang mingguan)
         // Dapatkan hari ini dalam format ISO (1=Senin, 7=Minggu)
         $currentDayOfWeek = now()->dayOfWeekIso;
         // Dapatkan waktu sekarang dalam format HH:MM:SS
@@ -43,7 +55,7 @@ class GuruDashboardController extends Controller
             ->orWhere(function ($query) use ($currentDayOfWeek) {
                 $query->where('day_of_week', '<', $currentDayOfWeek);
             })
-            ->orderBy('day_of_week', 'asc')       // Urutkan berdasarkan hari
+            ->orderBy('day_of_week', 'asc')      // Urutkan berdasarkan hari
             ->orderBy('start_time_of_day', 'asc') // Lalu urutkan berdasarkan jam mulai
             ->with(['swimmingCourse', 'location'])
             ->first();

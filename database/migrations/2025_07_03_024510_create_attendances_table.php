@@ -1,29 +1,34 @@
 <?php
-// database/migrations/2025_07_01_000002_create_attendances_table.php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-    public function up()
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('schedule_id');
-            $table->unsignedBigInteger('murid_id');
-            $table->unsignedBigInteger('guru_id');
-            $table->unsignedBigInteger('location_id');
-            $table->date('date');
-            $table->boolean('is_present')->default(false);
+            $table->foreignId('schedule_id')->constrained('schedules')->onDelete('cascade');
+            $table->foreignId('student_id')->constrained('users')->onDelete('cascade'); // Asumsi murid adalah entitas User
+            $table->date('attendance_date'); // Tanggal absensi diambil
+            $table->string('status', 20); // Contoh: 'hadir', 'alpha'
+            $table->timestamp('attended_at')->nullable(); // Waktu absensi dicatat
             $table->timestamps();
 
-            $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
-            $table->foreign('murid_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('guru_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
+            // Memastikan hanya ada satu record absensi per murid, per jadwal, per hari
+            $table->unique(['schedule_id', 'student_id', 'attendance_date']);
         });
     }
-    public function down()
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('attendances');
     }
