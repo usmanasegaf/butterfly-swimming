@@ -1,7 +1,5 @@
 @extends('layouts.app') {{-- Sesuaikan dengan layout utama aplikasi Anda --}}
 
-@section('title', 'Pilih Jadwal untuk Ambil Absensi')
-
 @section('content')
 <div class="container-fluid">
     <h1 class="h3 mb-4 text-gray-800">Pilih Jadwal untuk Ambil Absensi</h1>

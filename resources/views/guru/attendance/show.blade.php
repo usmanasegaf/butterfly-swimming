@@ -19,7 +19,7 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Detail Jadwal</h6>
-            </div>
+             fungicide }
             <div class="card-body">
                 <p><strong>Kursus:</strong> {{ $schedule->swimmingCourse->name }}</p>
                 <p><strong>Lokasi Kursus:</strong> {{ $schedule->location->name }} (Lat: <span
@@ -108,7 +108,7 @@
     </div>
 @endsection
 
-@push('scripts') {{-- Pastikan layout Anda memiliki section 'scripts' --}}
+@push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const submitBtn = document.getElementById('submitAttendanceBtn');
@@ -150,17 +150,21 @@
                 const distance = getDistance(locationLat, locationLon, teacherLat, teacherLon);
                 distanceSpan.innerText = `${distance.toFixed(2)} meter`;
 
+                // Update status GPS berdasarkan jarak (ini tetap informatif)
                 if (distance <= allowedRadius) {
-                    gpsStatusSpan.innerText = "Lokasi dalam radius. Siap absen.";
-                    gpsStatusSpan.classList.remove('text-warning', 'text-danger');
+                    gpsStatusSpan.innerText = "Lokasi ditemukan (dalam radius). Siap absen.";
+                    gpsStatusSpan.classList.remove('text-warning', 'text-danger', 'text-info');
                     gpsStatusSpan.classList.add('text-success');
-                    submitBtn.disabled = false; // Aktifkan tombol submit
+                    // submitBtn.disabled = false; // Baris ini dikomentari agar tombol tidak diatur di sini
                 } else {
-                    gpsStatusSpan.innerText = "Anda berada di luar radius absensi.";
-                    gpsStatusSpan.classList.remove('text-warning', 'text-success');
-                    gpsStatusSpan.classList.add('text-danger');
-                    submitBtn.disabled = true; // Nonaktifkan tombol submit
+                    gpsStatusSpan.innerText = `Lokasi ditemukan (${distance.toFixed(2)} meter dari lokasi kursus - di luar radius).`;
+                    gpsStatusSpan.classList.remove('text-warning', 'text-success', 'text-danger');
+                    gpsStatusSpan.classList.add('text-info');
+                    // submitBtn.disabled = true; // Baris ini dikomentari agar tombol tidak diatur di sini
                 }
+
+                // **PERUBAHAN BARU:** Selalu aktifkan tombol submit setelah lokasi berhasil ditemukan
+                submitBtn.disabled = false;
             }
 
             // Callback error saat gagal mendapatkan lokasi
@@ -181,15 +185,13 @@
                         break;
                 }
                 gpsStatusSpan.innerText = errorMessage;
-                gpsStatusSpan.classList.remove('text-warning', 'text-success');
+                gpsStatusSpan.classList.remove('text-warning', 'text-success', 'text-info');
                 gpsStatusSpan.classList.add('text-danger');
                 submitBtn.disabled = true; // Nonaktifkan tombol submit jika ada error
             }
 
             // Cek apakah browser mendukung Geolocation API
             if (navigator.geolocation) {
-                // Gunakan watchPosition untuk terus memantau lokasi, atau getCurrentPosition untuk sekali ambil
-                // getCurrentPosition lebih cocok untuk absensi saat ini
                 navigator.geolocation.getCurrentPosition(geoSuccess, geoError, {
                     enableHighAccuracy: true, // Mencoba untuk mendapatkan lokasi seakurat mungkin
                     timeout: 10000, // Waktu maksimal untuk mendapatkan lokasi (10 detik)
@@ -197,7 +199,7 @@
                 });
             } else {
                 gpsStatusSpan.innerText = "Geolocation tidak didukung oleh browser ini.";
-                gpsStatusSpan.classList.remove('text-warning', 'text-success');
+                gpsStatusSpan.classList.remove('text-warning', 'text-success', 'text-info');
                 gpsStatusSpan.classList.add('text-danger');
                 submitBtn.disabled = true;
             }

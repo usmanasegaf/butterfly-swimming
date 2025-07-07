@@ -5,57 +5,34 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
-
-// Added this trait
+use Spatie\Permission\Traits\HasRoles; // Asumsi Anda menggunakan Spatie Roles & Permissions
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles; // Added HasRoles trait
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role', // We'll keep this for backward compatibility
+        'role', // Pertahankan jika digunakan untuk identifikasi peran
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password'          => 'hashed',
+        'password' => 'hashed',
     ];
 
-    /**
-     * Get the registrations for the user.
-     */
     public function registrations()
     {
         return $this->hasMany(Registration::class);
     }
 
-    /**
-     * Get the swimming courses for the user through registrations.
-     */
     public function swimmingCourses()
     {
         return $this->hasManyThrough(
@@ -67,28 +44,36 @@ class User extends Authenticatable
             'swimming_course_id'
         );
     }
-// Untuk guru: dapatkan semua murid bimbingan
+
+    // Untuk guru: dapatkan semua murid bimbingan
+    // Ini adalah relasi yang akan kita gunakan di Controller
     public function murids()
     {
         return $this->belongsToMany(User::class, 'guru_murid', 'guru_id', 'murid_id');
     }
 
-// Untuk murid: dapatkan semua guru pembimbing
+    // Untuk murid: dapatkan semua guru pembimbing
+    // Ini sudah ada dan tidak duplikat dengan `bimbinganGurus`
     public function gurus()
     {
         return $this->belongsToMany(User::class, 'guru_murid', 'murid_id', 'guru_id');
     }
+
     public function attendances()
     {
+        // Pastikan ini benar, apakah 'guru_id' di tabel attendances merujuk ke user_id dari guru
         return $this->hasMany(Attendance::class, 'guru_id');
     }
+
     public function schedules()
     {
+        // Relasi jika user ini (sebagai murid) terhubung ke jadwal
         return $this->belongsToMany(Schedule::class, 'schedule_murid', 'murid_id', 'schedule_id');
     }
 
     public function jadwalGuru()
     {
+        // Relasi jika user ini (sebagai guru) mengampu jadwal
         return $this->hasMany(Schedule::class, 'guru_id');
     }
 }

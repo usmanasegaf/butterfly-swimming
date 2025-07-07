@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Guru;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Schedule;
-use App\Models\Murid; // Pastikan model Murid Anda sudah benar (misal: merujuk ke User dengan role murid atau tabel Murid terpisah)
+use App\Models\User; // Pastikan ini diimpor karena murid juga User
 use App\Models\Attendance;
 use App\Models\Location;
 use Illuminate\Support\Facades\Auth;
@@ -22,10 +22,10 @@ class GuruAttendanceController extends Controller
         $guruId = Auth::id();
         // Ambil semua jadwal yang diampu oleh guru yang sedang login
         $schedules = Schedule::where('guru_id', $guruId)
-                               ->with(['swimmingCourse', 'location']) // Eager load relasi untuk efisiensi
-                               ->orderBy('day_of_week')
-                               ->orderBy('start_time_of_day')
-                               ->get();
+                             ->with(['swimmingCourse', 'location']) // Eager load relasi untuk efisiensi
+                             ->orderBy('day_of_week')
+                             ->orderBy('start_time_of_day')
+                             ->get();
 
         // Mengirim data jadwal ke view untuk ditampilkan
         return view('guru.attendance.index', compact('schedules'));
@@ -37,20 +37,16 @@ class GuruAttendanceController extends Controller
      */
     public function showAttendanceForm(Schedule $schedule)
     {
-        // Pastikan guru hanya bisa mengakses jadwal miliknya sendiri
-        if ($schedule->guru_id !== Auth::id()) {
-            abort(403, 'Anda tidak memiliki akses ke jadwal ini.');
-        }
+        // Ambil user yang sedang login (ini adalah guru).
+        $guruUser = Auth::user();
 
-        // MENGAMBIL DAFTAR MURID UNTUK JADWAL INI
-        // Penting: Ini mengandalkan relasi 'murids()' di model Schedule Anda
-        // dan tabel pivot 'schedule_murid' yang harus terisi data.
-        // Jika murid belum terdaftar ke jadwal melalui tabel 'schedule_murid',
-        // daftar murid di sini akan kosong.
-        $murids = $schedule->murids;
+        // **PERBAIKAN DI SINI:**
+        // Panggil relasi `murids()` dan tambahkan `.get()` untuk mendapatkan koleksi murid.
+        // Relasi `murids()` ada di model User dan mengambil murid bimbingan.
+        $murids = $guruUser->murids()->get(); // Mengambil koleksi murid dari relasi `murids()`
 
-        // Dapatkan detail lokasi yang terkait dengan jadwal
-        $location = $schedule->location;
+        // Dapatkan detail lokasi kursus (tetap diperlukan untuk perhitungan jarak di frontend)
+        $location = $schedule->location; // Asumsi Schedule model masih memiliki relasi ke Location
 
         return view('guru.attendance.show', compact('schedule', 'murids', 'location'));
     }
@@ -85,10 +81,10 @@ class GuruAttendanceController extends Controller
 
         $allowedRadius = 400; // Radius yang diizinkan dalam meter
 
-        // Periksa apakah guru berada dalam radius yang diizinkan
-        if ($distance > $allowedRadius) {
-            return redirect()->back()->withErrors(['location_error' => 'Anda terlalu jauh dari lokasi kursus (' . round($distance) . ' meter). Absensi hanya bisa diambil dalam radius ' . $allowedRadius . ' meter.']);
-        }
+        // Periksa apakah guru berada dalam radius yang diizinkan (bagian ini sudah dikomentari sesuai permintaan)
+        // if ($distance > $allowedRadius) {
+        //     return redirect()->back()->withErrors(['location_error' => 'Anda terlalu jauh dari lokasi kursus (' . round($distance) . ' meter). Absensi hanya bisa diambil dalam radius ' . $allowedRadius . ' meter.']);
+        // }
 
         // Proses absensi setiap murid
         foreach ($request->input('attendance_status') as $muridId => $status) {
@@ -101,6 +97,10 @@ class GuruAttendanceController extends Controller
                 [
                     'status' => $status,
                     'attended_at' => Carbon::now(), // Waktu absensi dicatat
+                    // Simpan koordinat guru saat absensi dicatat
+                    'teacher_latitude' => $teacherLat,
+                    'teacher_longitude' => $teacherLon,
+                    'distance_from_course' => round($distance), // Simpan jarak juga sebagai informasi
                 ]
             );
         }
