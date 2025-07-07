@@ -58,6 +58,8 @@ Aplikasi ini open-source dibawah lisensi [MIT](https://opensource.org/licenses/M
 
 checkpoint projek:
 
-sekarang sudah jalan yang manajemen kursus guru.
+sekarang sudah jalan yang manajemen kursus guru
+
+bagian absen murid oleh guru dengan deteksi lokasi dan radius sudah jalan juga.
 
 
