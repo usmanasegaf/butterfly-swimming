@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Guru;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Schedule;
-use App\Models\Murid; // Menggunakan model Murid sesuai struktur Anda
+use App\Models\Murid; // Pastikan model Murid Anda sudah benar (misal: merujuk ke User dengan role murid atau tabel Murid terpisah)
 use App\Models\Attendance;
 use App\Models\Location;
 use Illuminate\Support\Facades\Auth;
@@ -14,29 +14,26 @@ use Carbon\Carbon;
 class GuruAttendanceController extends Controller
 {
     /**
-     * Menampilkan daftar riwayat absensi murid untuk jadwal yang diampu guru ini.
+     * Menampilkan daftar jadwal milik guru untuk dipilih absensinya.
+     * Ini adalah halaman pertama yang akan diakses dari sidebar "Absensi".
      */
     public function index()
     {
         $guruId = Auth::id();
+        // Ambil semua jadwal yang diampu oleh guru yang sedang login
+        $schedules = Schedule::where('guru_id', $guruId)
+                               ->with(['swimmingCourse', 'location']) // Eager load relasi untuk efisiensi
+                               ->orderBy('day_of_week')
+                               ->orderBy('start_time_of_day')
+                               ->get();
 
-        // Dapatkan semua ID jadwal yang diampu oleh guru ini
-        $scheduleIds = Schedule::where('guru_id', $guruId)->pluck('id');
-
-        // Ambil semua record absensi yang terkait dengan jadwal-jadwal tersebut
-        // Eager load relasi yang dibutuhkan: student (murid), schedule, dan schedule.location
-        $attendances = Attendance::whereIn('schedule_id', $scheduleIds)
-                                 ->with(['student', 'schedule.swimmingCourse', 'schedule.location'])
-                                 ->orderBy('attendance_date', 'desc') // Urutkan berdasarkan tanggal terbaru
-                                 ->orderBy('attended_at', 'desc') // Lalu berdasarkan waktu absensi
-                                 ->get();
-
-        // Mengembalikan view yang sudah ada dengan data absensi
-        return view('guru.attendance.index', compact('attendances'));
+        // Mengirim data jadwal ke view untuk ditampilkan
+        return view('guru.attendance.index', compact('schedules'));
     }
 
     /**
      * Menampilkan form absensi untuk jadwal tertentu.
+     * Ini adalah halaman yang muncul setelah guru memilih jadwal dari daftar.
      */
     public function showAttendanceForm(Schedule $schedule)
     {
@@ -45,8 +42,11 @@ class GuruAttendanceController extends Controller
             abort(403, 'Anda tidak memiliki akses ke jadwal ini.');
         }
 
-        // Memuat murid yang terdaftar untuk jadwal ini melalui relasi murids()
-        // Pastikan relasi murids() di model Schedule mengembalikan User/Murid yang benar
+        // MENGAMBIL DAFTAR MURID UNTUK JADWAL INI
+        // Penting: Ini mengandalkan relasi 'murids()' di model Schedule Anda
+        // dan tabel pivot 'schedule_murid' yang harus terisi data.
+        // Jika murid belum terdaftar ke jadwal melalui tabel 'schedule_murid',
+        // daftar murid di sini akan kosong.
         $murids = $schedule->murids;
 
         // Dapatkan detail lokasi yang terkait dengan jadwal
@@ -56,7 +56,7 @@ class GuruAttendanceController extends Controller
     }
 
     /**
-     * Menyimpan data absensi yang disubmit.
+     * Menyimpan data absensi yang disubmit dari form.
      */
     public function storeAttendance(Request $request, Schedule $schedule)
     {
@@ -83,7 +83,7 @@ class GuruAttendanceController extends Controller
         // Hitung jarak antara lokasi guru dan lokasi kursus
         $distance = $this->calculateDistance($locationLat, $locationLon, $teacherLat, $teacherLon);
 
-        $allowedRadius = 400; // Radius yang diizinkan dalam meter (sesuai permintaan Anda)
+        $allowedRadius = 400; // Radius yang diizinkan dalam meter
 
         // Periksa apakah guru berada dalam radius yang diizinkan
         if ($distance > $allowedRadius) {
@@ -92,13 +92,10 @@ class GuruAttendanceController extends Controller
 
         // Proses absensi setiap murid
         foreach ($request->input('attendance_status') as $muridId => $status) {
-            // Pastikan murid ini memang terdaftar di jadwal ini jika perlu validasi lebih lanjut
-            // $schedule->murids->contains('id', $muridId);
-
             Attendance::updateOrCreate(
                 [
                     'schedule_id' => $schedule->id,
-                    'student_id' => $muridId, // Menggunakan muridId karena foreignId di Attendance adalah student_id yang mengarah ke tabel users/murids
+                    'student_id' => $muridId, // Pastikan student_id di tabel attendances merujuk ke ID murid yang benar
                     'attendance_date' => Carbon::today(), // Absensi untuk hari ini
                 ],
                 [
@@ -113,12 +110,7 @@ class GuruAttendanceController extends Controller
 
     /**
      * Fungsi helper untuk menghitung jarak antara dua titik lat/lon menggunakan Haversine formula.
-     *
-     * @param float $lat1 Latitude titik 1
-     * @param float $lon1 Longitude titik 1
-     * @param float $lat2 Latitude titik 2
-     * @param float $lon2 Longitude titik 2
-     * @return float Jarak dalam meter
+     * Digunakan untuk validasi lokasi guru.
      */
     private function calculateDistance($lat1, $lon1, $lat2, $lon2)
     {

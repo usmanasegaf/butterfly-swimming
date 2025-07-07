@@ -53,4 +53,9 @@ class Schedule extends Model
     {
         return $this->hasMany(Attendance::class);
     }
+
+        public function murids()
+    {
+        return $this->belongsToMany(User::class, 'schedule_murid', 'schedule_id', 'murid_id');
+    }
 }

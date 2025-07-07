@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             SwimmingCourseSeeder::class,
             LocationSeeder::class,
+            ScheduleSeeder::class,
+            ScheduleMuridSeeder::class,
         ]);
     }
 }
