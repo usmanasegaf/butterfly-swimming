@@ -24,7 +24,7 @@
                 <div class="col-md-3">
                     <div class="card text-center">
                         <div class="card-body">
-                            <h5 class="card-title">Absensi Hari Ini</h5>
+                            <h5 class="card-title">Total Absensi Hari Ini</h5>
                             <p class="card-text display-4">{{ $absensi_hari_ini }}</p>
                         </div>
                     </div>

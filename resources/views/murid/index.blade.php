@@ -4,8 +4,7 @@
 @section('title', 'Dashboard Murid')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold mb-4">Dashboard Murid</h1>
+<div class="container mx-auto px-4 py-8">   
 
     <div class="mb-6">
         <h2 class="text-lg font-semibold">Sisa Waktu Les</h2>

@@ -18,6 +18,12 @@ return new class extends Migration
             $table->date('attendance_date'); // Tanggal absensi diambil
             $table->string('status', 20); // Contoh: 'hadir', 'alpha'
             $table->timestamp('attended_at')->nullable(); // Waktu absensi dicatat
+
+            // --- KOLOM BARU UNTUK LOKASI GURU ---
+            $table->double('teacher_latitude')->nullable();  // Latitude lokasi guru saat absen
+            $table->double('teacher_longitude')->nullable(); // Longitude lokasi guru saat absen
+            $table->double('distance_from_course')->nullable(); // Jarak guru dari lokasi kursus (dalam meter)
+
             $table->timestamps();
 
             // Memastikan hanya ada satu record absensi per murid, per jadwal, per hari
