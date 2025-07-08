@@ -42,9 +42,9 @@
                                     <td>{{ $course->duration }} minggu</td>
                                     <td>
                                         @if($course->is_active)
-                                            <span class="badge bg-success">Aktif</span>
+                                            <span class="badge bg-success text-white">Aktif</span>
                                         @else
-                                            <span class="badge bg-secondary">Non-aktif</span>
+                                            <span class="badge bg-secondary text-white">Non-aktif</span>
                                         @endif
                                     </td>
                                     <td>
