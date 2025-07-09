@@ -29,12 +29,6 @@ class GuruDashboardController extends Controller
             ->count();
         // --- AKHIR PERBAIKAN ---
 
-        // Jumlah kursus yang dipegang (misal, swimming_course yang diampu guru)
-        // Catatan: Relasi swimmingCourse ke guru_id mungkin tidak langsung di tabel courses,
-        // melainkan melalui jadwal. Jika ini menyebabkan error, perlu penyesuaian.
-        // Untuk saat ini, asumsikan ini sudah benar atau akan ditangani terpisah.
-        $kursus_count = SwimmingCourse::where('guru_id', $guru->id)->count();
-
         // Jadwal terdekat (Logic untuk jadwal berulang mingguan)
         // Dapatkan hari ini dalam format ISO (1=Senin, 7=Minggu)
         $currentDayOfWeek = now()->dayOfWeekIso;
@@ -64,8 +58,7 @@ class GuruDashboardController extends Controller
             'murid_count',
             'jadwal_count',
             'absensi_hari_ini',
-            'kursus_count',
-            'jadwal_terdekat'
+            'jadwal_terdekat',
         ));
     }
 }

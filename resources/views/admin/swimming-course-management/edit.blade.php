@@ -54,40 +54,6 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label for="sessions_per_week" class="form-label">Sesi per Minggu</label>
-                                <input type="number" class="form-control @error('sessions_per_week') is-invalid @enderror" id="sessions_per_week" name="sessions_per_week" value="{{ old('sessions_per_week', $course->sessions_per_week) }}" required>
-                                @error('sessions_per_week')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="max_participants" class="form-label">Maksimum Peserta</label>
-                                <input type="number" class="form-control @error('max_participants') is-invalid @enderror" id="max_participants" name="max_participants" value="{{ old('max_participants', $course->max_participants) }}">
-                                @error('max_participants')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label for="instructor" class="form-label">Instruktur</label>
-                                <input type="text" class="form-control @error('instructor') is-invalid @enderror" id="instructor" name="instructor" value="{{ old('instructor', $course->instructor) }}">
-                                @error('instructor')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="image" class="form-label">Gambar URL</label>
-                            <input type="text" class="form-control @error('image') is-invalid @enderror" id="image" name="image" value="{{ old('image', $course->image) }}">
-                            @error('image')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="mb-3 form-check">

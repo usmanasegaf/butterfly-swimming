@@ -15,10 +15,6 @@ class SwimmingCourse extends Model
         'description',
         'price',
         'duration',
-        'sessions_per_week',
-        'max_participants',
-        'instructor',
-        'image',
         'is_active'
     ];
 

@@ -47,10 +47,6 @@ class SwimmingCourseManagementController extends Controller
             'description' => 'required|string',
             'price' => 'required|integer|min:0',
             'duration' => 'required|integer|min:1',
-            'sessions_per_week' => 'required|integer|min:1',
-            'max_participants' => 'nullable|integer|min:1',
-            'instructor' => 'nullable|string|max:255',
-            'image' => 'nullable|string|max:255',
             'is_active' => 'boolean',
         ]);
         
@@ -91,10 +87,6 @@ class SwimmingCourseManagementController extends Controller
             'description' => 'required|string',
             'price' => 'required|integer|min:0',
             'duration' => 'required|integer|min:1',
-            'sessions_per_week' => 'required|integer|min:1',
-            'max_participants' => 'nullable|integer|min:1',
-            'instructor' => 'nullable|string|max:255',
-            'image' => 'nullable|string|max:255',
             'is_active' => 'boolean',
         ]);
         

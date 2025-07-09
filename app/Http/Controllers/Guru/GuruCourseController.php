@@ -54,17 +54,8 @@ class GuruCourseController extends Controller
             'end_time_of_day'   => 'required|date_format:H:i|after:start_time_of_day', // Harus setelah jam mulai
         ]);
 
-        // dd($request->all());
-        // dd(['guruIdFromRequest' => $guruIdFromRequest, 'authGuruId' => $authGuruId]);
-
-        // Pastikan guru_id adalah guru yang sedang login untuk keamanan
-        // if ($request->guru_id != Auth::id()) {
-        //     return redirect()->back()->withErrors('Anda tidak memiliki izin untuk membuat jadwal untuk guru lain.');
-        // }
-
         Schedule::create([
             'swimming_course_id' => $request->swimming_course_id,
-            'guru_id'            => Auth::id(), // ID guru yang sedang login
             'location_id'        => $request->location_id,
             'day_of_week'       => $request->day_of_week,
             'start_time_of_day' => $request->start_time_of_day,
@@ -82,10 +73,6 @@ class GuruCourseController extends Controller
      */
     public function editSchedule(Schedule $schedule)
     {
-        // Pastikan guru yang sedang login memiliki hak edit jadwal ini
-        // if ($schedule->guru_id !== Auth::id()) {
-        //     abort(403, 'Unauthorized action.'); // Atau redirect dengan pesan error
-        // }
 
         $swimmingCourses = SwimmingCourse::all(); // Untuk dropdown pilihan kursus jika ingin diubah
         $locations = Location::all(); // Untuk dropdown pilihan lokasi
@@ -98,10 +85,6 @@ class GuruCourseController extends Controller
      */
     public function updateSchedule(Request $request, Schedule $schedule)
     {
-        // Pastikan guru yang sedang login memiliki hak update jadwal ini
-        // if ($schedule->guru_id !== Auth::id()) {
-        //     abort(403, 'Unauthorized action.');
-        // }
 
         $request->validate([
             'swimming_course_id' => 'required|exists:swimming_courses,id',
@@ -130,10 +113,6 @@ class GuruCourseController extends Controller
      */
     public function destroySchedule(Schedule $schedule)
     {
-        // Pastikan guru yang sedang login memiliki hak hapus jadwal ini
-        // if ($schedule->guru_id !== Auth::id()) {
-        //     abort(403, 'Unauthorized action.');
-        // }
 
         $schedule->delete();
 

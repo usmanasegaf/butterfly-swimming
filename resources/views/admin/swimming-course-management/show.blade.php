@@ -17,13 +17,6 @@
 
                 <div class="card-body">
                     <div class="row mb-4">
-                        <div class="col-md-4">
-                            @if($course->image)
-                                <img src="{{ asset('images/' . $course->image) }}" class="img-fluid rounded" alt="{{ $course->name }}">
-                            @else
-                                <div class="bg-light text-center p-5 rounded">No Image</div>
-                            @endif
-                        </div>
                         <div class="col-md-8">
                             <h3>{{ $course->name }}</h3>
                             <span class="badge bg-info">{{ $course->level }}</span>
@@ -47,17 +40,6 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <strong>Durasi:</strong> {{ $course->duration }} minggu
-                            </div>
-                            <div class="mb-3">
-                                <strong>Sesi per Minggu:</strong> {{ $course->sessions_per_week }}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <strong>Kapasitas:</strong> {{ $course->max_participants ?? 'Tidak terbatas' }}
-                            </div>
-                            <div class="mb-3">
-                                <strong>Instruktur:</strong> {{ $course->instructor ?? 'Belum ditentukan' }}
                             </div>
                         </div>
                     </div>

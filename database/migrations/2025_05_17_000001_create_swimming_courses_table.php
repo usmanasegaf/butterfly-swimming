@@ -18,14 +18,8 @@ return new class extends Migration
             $table->text('description');
             $table->integer('price');
             $table->integer('duration');
-            $table->integer('sessions_per_week');
-            $table->integer('max_participants')->nullable();
-            $table->string('instructor')->nullable();
-            $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            $table->unsignedBigInteger('guru_id')->nullable();
-            $table->foreign('guru_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
