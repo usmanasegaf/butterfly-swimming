@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User; // Pastikan ini diimpor
-use App\Models\Schedule; // Pastikan ini diimpor
+use App\Models\Schedule; // Pastikan ini diimpor (jika digunakan secara langsung)
 use Carbon\Carbon; // Pastikan ini diimpor
 
 class MuridDashboardController extends Controller
@@ -19,18 +19,11 @@ class MuridDashboardController extends Controller
         $nextSchedule = null;
         $location = null;
 
+        // Logic untuk mencari jadwal les selanjutnya
+        // Tetap di sini karena bergantung pada assignedCourse
         if ($assignedCourse) {
-            // Ambil lokasi dari kursus yang ditetapkan (asumsi ada di SwimmingCourse atau Schedule)
-            // Dari output.txt, Location ada, dan Schedule punya location_id,
-            // jadi kita bisa ambil lokasi dari jadwal selanjutnya.
-            // Atau jika lokasi kursus spesifik: $location = $assignedCourse->location_name; (jika ada kolomnya)
-            // Untuk sekarang, kita akan ambil dari jadwal les selanjutnya.
-
-            // Mencari jadwal les selanjutnya
-            // Pertama, ambil semua jadwal yang terkait dengan kursus yang ditetapkan DAN murid ini
-            // (Melalui pivot schedule_murid, karena murid hanya menghadiri jadwal tertentu)
-            // Atau, jika jadwal ditentukan per kursus dan semua murid di kursus itu ikut jadwal sama:
-            $courseSchedules = $assignedCourse->schedules; // Asumsi ada relasi schedules() di SwimmingCourse
+            // Asumsi ada relasi schedules() di SwimmingCourse
+            $courseSchedules = $assignedCourse->schedules; 
 
             $now = Carbon::now();
             $todayDayOfWeek = $now->dayOfWeekIso; // 1 (Senin) - 7 (Minggu)
@@ -75,6 +68,8 @@ class MuridDashboardController extends Controller
             }
         }
 
-        return view('murid.dashboard', compact('user', 'assignedCourse', 'nextSchedule', 'location'));
+        // Hanya kirimkan data yang dibutuhkan dashboard (yaitu $user, $nextSchedule, $location)
+        // assignedCourse TIDAK DIKIRIMKAN KE SINI karena akan ditampilkan di halaman 'Kursus Saya'
+        return view('murid.dashboard', compact('user', 'nextSchedule', 'location'));
     }
 }

@@ -1,3 +1,4 @@
+{{-- filepath: resources/views/murid/show.blade.php --}}
 @extends('layouts.app')
 @section('title', 'Profil Saya')
 @section('content')
