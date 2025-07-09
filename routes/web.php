@@ -92,6 +92,10 @@ Route::middleware('auth')->group(function () {
         Route::post('schedules/{schedule}/attendance', [GuruAttendanceController::class, 'storeAttendance'])->name('schedules.store_attendance');
 
         Route::get('attendance', [GuruAttendanceController::class, 'index'])->name('attendance.index');
+
+        Route::get('murid/{murid}/assign-course', [App\Http\Controllers\Guru\GuruMuridController::class, 'assignCourseForm'])->name('murid.assign_course_form');
+        Route::post('murid/{murid}/assign-course', [App\Http\Controllers\Guru\GuruMuridController::class, 'assignCourse'])->name('murid.assign_course');
+
     });
     // ==================== AKHIR RUTE GURU ====================
 
@@ -100,12 +104,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/murid', [App\Http\Controllers\Murid\MuridController::class, 'index'])->name('murid.index')->middleware(['auth', 'role:murid']);
     // ==================== AKHIR RUTE MURID ====================
 
+    // ==================== RUTE ADMIN DAN GURU ====================
     Route::prefix('adminNGuru')->middleware('role:admin|guru')->group(function () {
         Route::get('/guru/murid-pending', [App\Http\Controllers\Guru\MuridVerificationController::class, 'index'])->name('guru.murid.pending');
         Route::post('/guru/murid-verifikasi/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'verify'])->name('guru.murid.verify');
         Route::post('/guru/murid-tolak/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'reject'])->name('guru.murid.reject');
     });
-
+    // ==================== AKHIR RUTE ADMIN DAN GURU====================
+    
     // Rute akun belum terverifikasi
     Route::get('/belum-verifikasi', function () {
         return view('auth.belum_verifikasi');
