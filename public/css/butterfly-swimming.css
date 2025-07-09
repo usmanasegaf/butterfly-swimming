@@ -131,3 +131,86 @@
     margin-bottom: 5px;
   }
 }
+
+/* public/css/butterfly-swimming.css */
+
+/* --- Aturan untuk Mengubah Teks Abu-abu Menjadi var(--dark-color) --- */
+
+/* Menargetkan semua variasi kelas 'text-gray-XXX', 'text-muted', dan 'text-secondary' */
+.text-gray-800,
+.text-gray-700,
+.text-gray-600,
+.text-gray-500,
+.text-muted,
+.text-secondary {
+    color: var(--dark-color) !important; /* Mengubah warna menjadi abu-abu gelap (#333333) */
+}
+
+/* Menargetkan semua elemen teks di dalam area konten utama dashboard (#content) */
+/* Ini akan mengubah warna teks di dalam dashboard Anda menjadi abu-abu gelap, */
+/* namun TIDAK akan mempengaruhi sidebar yang berada di luar #content. */
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content h5,
+#content h6,
+#content p,
+#content span,
+#content a, /* Teks link */
+#content li, /* Item list */
+#content strong, #content b, /* Teks tebal */
+#content label, /* Label form */
+#content small, /* Teks kecil */
+#content dd, #content dt, /* Item daftar deskripsi */
+/* Menargetkan header dan sel tabel */
+#content th, /* <--- Ditambahkan untuk header tabel */
+#content td, /* <--- Ditambahkan untuk sel tabel (data) */
+/* Menargetkan div umum di dalam konten, tetapi hindari div dengan background spesifik atau bagian sidebar/nav */
+#content div:not(.bg-gradient-primary):not(.bg-primary):not(.text-white):not([class*="sidebar"]):not([class*="nav-"]) {
+    color: var(--dark-color); /* Mengatur warna teks ke abu-abu gelap. Tanpa !important */
+}
+
+/* Aturan yang lebih spesifik untuk memastikan teks di dalam kartu juga abu-abu gelap. */
+.card-body,
+.card-body p,
+.card-body span,
+.card-body div {
+    color: var(--dark-color) !important; /* Gunakan !important jika diperlukan */
+}
+
+/* Menimpa warna teks untuk elemen timeline yang Anda buat abu-abu di CSS Anda. */
+.timeline-item-date,
+.timeline-item-subtitle {
+    color: var(--dark-color) !important;
+}
+
+/* --- Aturan untuk Warna Teks Tombol (disesuaikan agar terlihat) --- */
+
+/* Tombol dengan background penuh (seperti primary, success, info, warning, danger, dark)
+   umumnya memiliki teks berwarna putih untuk kontras.
+*/
+.btn-primary,
+.btn-success, /* <--- Ditambahkan untuk tombol hijau Anda */
+.btn-info,
+.btn-warning,
+.btn-danger,
+.btn-dark {
+    color: #ffffff !important; /* Pastikan teksnya putih */
+}
+
+/* Tombol outline (bergaris, seperti "Kembali ke Beranda") harus memiliki teks sesuai warna temanya. */
+.btn-outline-primary {
+    color: var(--primary-color) !important; /* Menggunakan warna primer Anda (biru) */
+}
+/* Tambahkan jenis outline lain jika ada dan perlu disesuaikan, contoh: */
+.btn-outline-success {
+    color: #28a745 !important; /* Contoh untuk warna hijau standar Bootstrap */
+}
+
+/* Pastikan ikon (tag <i>) di dalam tombol juga mengikuti warna teks tombol induknya. */
+.btn i {
+    color: inherit !important; /* Ini penting agar ikon tidak ikut abu-abu gelap */
+}
+
+/* --- Akhir Perubahan Warna --- */
