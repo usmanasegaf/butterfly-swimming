@@ -56,6 +56,7 @@ class GuruCourseController extends Controller
 
         Schedule::create([
             'swimming_course_id' => $request->swimming_course_id,
+            'guru_id'            => Auth::id(),
             'location_id'        => $request->location_id,
             'day_of_week'       => $request->day_of_week,
             'start_time_of_day' => $request->start_time_of_day,
