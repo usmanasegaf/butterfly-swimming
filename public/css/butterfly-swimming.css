@@ -191,12 +191,12 @@
    umumnya memiliki teks berwarna putih untuk kontras.
 */
 .btn-primary,
-.btn-success, /* <--- Ditambahkan untuk tombol hijau Anda */
+.btn-success,
 .btn-info,
 .btn-warning,
 .btn-danger,
 .btn-dark {
-    color: #ffffff !important; /* Pastikan teksnya putih */
+    color: #f1f1f1 !important; /* Pastikan teksnya putih */
 }
 
 /* Tombol outline (bergaris, seperti "Kembali ke Beranda") harus memiliki teks sesuai warna temanya. */
