@@ -75,6 +75,44 @@ $(document).ready(() => {
 
   // Initialize Popovers
   $('[data-toggle="popover"]').popover()
+
+      // --- START Fix for Native Time Input (Tambahkan kode ini) ---
+    // Kode ini dijalankan setelah DOM siap dan setelah inisialisasi SB Admin 2.
+    $('input[type="time"]').each(function() {
+        var $this = $(this); // Cache objek jQuery
+
+        // Hapus semua event listener 'click' dan 'focus' yang mungkin ditambahkan
+        // oleh sb-admin-2.min.js atau script lain pada elemen ini.
+        // Ini adalah langkah kunci untuk mengatasi intervensi.
+        $this.off('click');
+        $this.off('focus');
+
+        // Tambahkan event listener 'click' kustom kita
+        $this.on('click', function(e) {
+            // Mencegah perilaku default browser dan menghentikan propagasi event
+            // untuk memastikan hanya handler kita yang berjalan.
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Coba untuk menampilkan picker waktu native menggunakan API modern
+            if (typeof this.showPicker === 'function') {
+                this.showPicker();
+            } else {
+                // Fallback untuk browser lama atau jika showPicker tidak didukung:
+                // mencoba memfokuskan input, yang kadang bisa memicu picker native.
+                $(this).focus();
+            }
+        });
+
+        // Tambahkan event listener 'focus' kustom untuk konsistensi
+        // (misalnya, jika pengguna menekan tombol Tab untuk berpindah ke input ini)
+        $this.on('focus', function() {
+            if (typeof this.showPicker === 'function') {
+                this.showPicker();
+            }
+        });
+    });
+    // --- END Fix for Native Time Input ---
 })
 
 // Notification System
