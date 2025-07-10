@@ -30,8 +30,8 @@
                             <div class="mb-4 ps-2">
                                 <label for="role" class="block mb-1">Daftar Sebagai</label>
                                 <select name="role" id="role" class="w-full border px-3 py-2 rounded" required>
-                                    <option value="guru">Guru</option>
                                     <option value="murid">Murid</option>
+                                    <option value="guru">Guru</option>
                                 </select>
                             </div>
                             <div class="mb-4">
