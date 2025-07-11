@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Murid;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User; // Pastikan ini diimpor
-use App\Models\Schedule; // Pastikan ini diimpor (jika digunakan secara langsung)
-use Carbon\Carbon; // Pastikan ini diimpor
+use App\Models\User;
+use App\Models\Schedule;
+use Carbon\Carbon;
 
 class MuridDashboardController extends Controller
 {
@@ -19,57 +19,73 @@ class MuridDashboardController extends Controller
         $nextSchedule = null;
         $location = null;
 
-        // Logic untuk mencari jadwal les selanjutnya
-        // Tetap di sini karena bergantung pada assignedCourse
         if ($assignedCourse) {
-            // Asumsi ada relasi schedules() di SwimmingCourse
-            $courseSchedules = $assignedCourse->schedules; 
+            // Ambil ID dari semua guru yang terasosiasi dengan murid ini melalui tabel pivot guru_murid
+            // Memastikan kolom 'id' tidak ambigu dengan menyebutkan 'users.id'
+            $associatedGuruIds = $user->gurus()->pluck('users.id')->toArray();
 
-            $now = Carbon::now();
-            $todayDayOfWeek = $now->dayOfWeekIso; // 1 (Senin) - 7 (Minggu)
+            // Hanya lanjutkan jika murid memiliki guru yang terasosiasi
+            if (!empty($associatedGuruIds)) {
+                // Query langsung ke tabel schedules
+                // Filter berdasarkan swimming_course_id yang ditugaskan kepada murid
+                // DAN filter berdasarkan guru_id yang mengajar jadwal tersebut, harus termasuk dalam guru yang terasosiasi dengan murid
+                $potentialSchedules = Schedule::where('swimming_course_id', $assignedCourse->id)
+                                            ->whereIn('guru_id', $associatedGuruIds)
+                                            ->with(['swimmingCourse', 'location', 'guru']) // Muat relasi yang dibutuhkan
+                                            ->get(); // Ambil semua jadwal yang cocok
 
-            foreach ($courseSchedules as $schedule) {
-                $scheduleDayOfWeek = $schedule->day_of_week; // Asumsi ini juga 1-7
-                $scheduleTime = Carbon::createFromFormat('H:i:s', $schedule->start_time_of_day);
+                $now = Carbon::now();
+                $todayDayOfWeek = $now->dayOfWeekIso; // 1 (Senin) - 7 (Minggu)
 
-                $nextOccurrence = null;
+                foreach ($potentialSchedules as $schedule) {
+                    $scheduleDayOfWeek = $schedule->day_of_week;
+                    $scheduleTime = Carbon::createFromFormat('H:i:s', $schedule->start_time_of_day);
 
-                // Jika hari jadwal adalah hari ini
-                if ($scheduleDayOfWeek == $todayDayOfWeek) {
-                    // Jika waktu jadwal sudah lewat, cek untuk minggu depan
-                    if ($scheduleTime->isPast()) {
-                        $nextOccurrence = $now->copy()->addWeek()->startOfWeek()->addDays($scheduleDayOfWeek - 1)->setTime($scheduleTime->hour, $scheduleTime->minute, $scheduleTime->second);
-                    } else {
-                        // Jika waktu jadwal belum lewat hari ini
-                        $nextOccurrence = $now->copy()->setTime($scheduleTime->hour, $scheduleTime->minute, $scheduleTime->second);
+                    $nextOccurrence = null;
+
+                    // Logika untuk menemukan kejadian selanjutnya dari jadwal spesifik ini
+                    // Ini akan mencari waktu terdekat dari masa sekarang
+                    if ($scheduleDayOfWeek == $todayDayOfWeek) {
+                        // Jika hari ini adalah hari jadwal, periksa apakah waktunya di masa depan
+                        if ($scheduleTime->isPast()) {
+                            // Jika waktu sudah lewat hari ini, kejadian selanjutnya adalah minggu depan
+                            $nextOccurrence = $now->copy()->addWeek()->startOfWeek(Carbon::MONDAY)->addDays($scheduleDayOfWeek - 1)->setTime($scheduleTime->hour, $scheduleTime->minute, $scheduleTime->second);
+                        } else {
+                            // Jika waktu di masa depan hari ini, itu adalah hari ini
+                            $nextOccurrence = $now->copy()->setTime($scheduleTime->hour, $scheduleTime->minute, $scheduleTime->second);
+                        }
+                    }
+                    else if ($scheduleDayOfWeek > $todayDayOfWeek) {
+                        // Jika hari jadwal lebih lambat di minggu ini (misal: hari ini Senin, jadwal hari Rabu)
+                        $nextOccurrence = $now->copy()->startOfWeek(Carbon::MONDAY)->addDays($scheduleDayOfWeek - 1)->setTime($scheduleTime->hour, $scheduleTime->minute, $scheduleTime->second);
+                    }
+                    else {
+                        // Jika hari jadwal lebih awal di minggu ini (sudah lewat, misal: hari ini Rabu, jadwal hari Senin), kejadian selanjutnya adalah minggu depan
+                        $nextOccurrence = $now->copy()->addWeek()->startOfWeek(Carbon::MONDAY)->addDays($scheduleDayOfWeek - 1)->setTime($scheduleTime->hour, $scheduleTime->minute, $scheduleTime->second);
+                    }
+
+                    // Bandingkan dengan jadwal terdekat yang sudah ditemukan
+                    if ($nextOccurrence && ($nextSchedule === null || $nextOccurrence->lessThan($nextSchedule->occurrence))) {
+                        $nextSchedule = (object)[
+                            'schedule' => $schedule,
+                            'occurrence' => $nextOccurrence
+                        ];
                     }
                 }
-                // Jika hari jadwal di masa depan dalam minggu ini
-                else if ($scheduleDayOfWeek > $todayDayOfWeek) {
-                    $nextOccurrence = $now->copy()->startOfWeek()->addDays($scheduleDayOfWeek - 1)->setTime($scheduleTime->hour, $scheduleTime->minute, $scheduleTime->second);
-                }
-                // Jika hari jadwal di masa lalu dalam minggu ini, cek untuk minggu depan
-                else {
-                    $nextOccurrence = $now->copy()->addWeek()->startOfWeek()->addDays($scheduleDayOfWeek - 1)->setTime($scheduleTime->hour, $scheduleTime->minute, $scheduleTime->second);
-                }
-
-                // Inisialisasi nextSchedule jika ini adalah yang pertama atau lebih dekat
-                if ($nextOccurrence && ($nextSchedule === null || $nextOccurrence->lessThan($nextSchedule->occurrence))) {
-                    $nextSchedule = (object)[
-                        'schedule' => $schedule,
-                        'occurrence' => $nextOccurrence
-                    ];
-                }
+            } else {
+                // Jika tidak ada guru yang terasosiasi, tidak ada jadwal yang bisa ditampilkan
+                // $nextSchedule akan tetap null
             }
-
-            // Jika ditemukan jadwal selanjutnya, ambil lokasinya
-            if ($nextSchedule && $nextSchedule->schedule->location) {
-                $location = $nextSchedule->schedule->location->name; // Asumsi relasi location() ada di model Schedule
-            }
+        } else {
+            // Jika murid belum ditugaskan ke kursus manapun, tidak ada jadwal yang bisa ditampilkan
+            // $nextSchedule akan tetap null
         }
 
-        // Hanya kirimkan data yang dibutuhkan dashboard (yaitu $user, $nextSchedule, $location)
-        // assignedCourse TIDAK DIKIRIMKAN KE SINI karena akan ditampilkan di halaman 'Kursus Saya'
+        // Jika ditemukan jadwal selanjutnya, ambil lokasinya
+        if ($nextSchedule && $nextSchedule->schedule->location) {
+            $location = $nextSchedule->schedule->location->name;
+        }
+
         return view('murid.dashboard', compact('user', 'nextSchedule', 'location'));
     }
 }
