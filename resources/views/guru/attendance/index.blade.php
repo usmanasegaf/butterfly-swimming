@@ -49,5 +49,105 @@
             </div>
         </div>
     @endif
+
+    {{-- Kartu baru untuk Generate Laporan Absensi --}}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Buat Laporan Absensi</h6>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('guru.attendances.report.generate') }}" method="GET">
+                <div class="form-group">
+                    <label>Tipe Laporan:</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="report_type" id="reportTypeWeekly" value="weekly" checked>
+                        <label class="form-check-label" for="reportTypeWeekly">Mingguan</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="report_type" id="reportTypeMonthly" value="monthly">
+                        <label class="form-check-label" for="reportTypeMonthly">Bulanan</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="report_type" id="reportTypeYearly" value="yearly">
+                        <label class="form-check-label" for="reportTypeYearly">Tahunan</label>
+                    </div>
+                </div>
+
+                <div id="weeklyPeriod" class="form-group">
+                    <label for="weekly_date">Pilih Tanggal (untuk menentukan minggu):</label>
+                    <input type="date" class="form-control" id="weekly_date" name="weekly_date" value="{{ date('Y-m-d') }}">
+                </div>
+
+                <div id="monthlyPeriod" class="form-group" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="monthly_month">Bulan:</label>
+                            <select class="form-control" id="monthly_month" name="monthly_month">
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <option value="{{ $i }}" {{ date('n') == $i ? 'selected' : '' }}>{{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="monthly_year">Tahun:</label>
+                            <select class="form-control" id="monthly_year" name="monthly_year">
+                                @for ($i = date('Y'); $i >= date('Y') - 5; $i--) {{-- Menampilkan 5 tahun terakhir --}}
+                                    <option value="{{ $i }}" {{ date('Y') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="yearlyPeriod" class="form-group" style="display: none;">
+                    <label for="yearly_year">Tahun:</label>
+                    <select class="form-control" id="yearly_year" name="yearly_year">
+                        @for ($i = date('Y'); $i >= date('Y') - 5; $i--) {{-- Menampilkan 5 tahun terakhir --}}
+                            <option value="{{ $i }}" {{ date('Y') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                        @endfor
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success mt-3">
+                    <i class="fas fa-file-pdf"></i> Generate Laporan PDF
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const reportTypeRadios = document.querySelectorAll('input[name="report_type"]');
+        const weeklyPeriod = document.getElementById('weeklyPeriod');
+        const monthlyPeriod = document.getElementById('monthlyPeriod');
+        const yearlyPeriod = document.getElementById('yearlyPeriod');
+
+        function togglePeriodInputs() {
+            const selectedType = document.querySelector('input[name="report_type"]:checked').value;
+
+            weeklyPeriod.style.display = 'none';
+            monthlyPeriod.style.display = 'none';
+            yearlyPeriod.style.display = 'none';
+
+            if (selectedType === 'weekly') {
+                weeklyPeriod.style.display = 'block';
+            } else if (selectedType === 'monthly') {
+                monthlyPeriod.style.display = 'block';
+            } else if (selectedType === 'yearly') {
+                yearlyPeriod.style.display = 'block';
+            }
+        }
+
+        // Tambahkan event listener untuk setiap radio button
+        reportTypeRadios.forEach(radio => {
+            radio.addEventListener('change', togglePeriodInputs);
+        });
+
+        // Panggil fungsi ini sekali saat halaman dimuat untuk mengatur visibilitas awal
+        togglePeriodInputs();
+    });
+</script>
+@endpush

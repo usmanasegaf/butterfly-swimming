@@ -9,10 +9,8 @@ use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
-// Route untuk halaman utama
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Route untuk autentikasi
 Route::controller(AuthController::class)->group(function () {
     Route::get('register', 'register')->name('register');
     Route::post('register', 'registerSave')->name('register.save');
@@ -23,7 +21,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('logout', 'logout')->name('logout');
 });
 
-// Route yang memerlukan autentikasi
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', function () {
         return view('dashboard');
@@ -34,7 +31,6 @@ Route::middleware('auth')->group(function () {
         Route::post('profile', 'profileUpdate')->name('profile.update');
     });
 
-    // Route untuk pendaftaran kursus (semua user)
     Route::middleware('permission:view own registrations')->group(function () {
         Route::get('my-registrations', [RegistrationController::class, 'index'])->name('my-registrations');
     });
@@ -44,15 +40,12 @@ Route::middleware('auth')->group(function () {
         Route::post('register-course', [RegistrationController::class, 'store'])->name('register-course.store');
     });
 
-    // --- Rute User ---
     Route::name('user.')->prefix('user')->group(function () {
         Route::resource('courses', CourseController::class)->only(['index', 'show']);
         Route::resource('registrations', RegistrationController::class)->only(['index', 'create', 'store', 'show']);
         Route::patch('registrations/{registration}/cancel', [RegistrationController::class, 'cancel'])->name('registrations.cancel');
     });
-    // --- Akhir Rute User ---
 
-    // ==================== RUTE ADMIN ====================
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::resource('swimming-course-management', SwimmingCourseManagementController::class);
     });
@@ -65,9 +58,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/admin/dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('admin.dashboard')->middleware(['auth', 'role:admin']);
-    // ==================== AKHIR RUTE ADMIN ====================
 
-    // ==================== RUTE GURU ====================
 
     Route::get('/guru/dashboard', [App\Http\Controllers\Guru\GuruDashboardController::class, 'index'])->name('guru.dashboard')->middleware(['auth', 'role:guru']);
 
@@ -75,6 +66,10 @@ Route::middleware('auth')->group(function () {
         Route::get('attendance', [App\Http\Controllers\Guru\GuruAttendanceController::class, 'index'])->name('attendance.index');
         Route::get('attendance/create/{schedule_id}', [App\Http\Controllers\Guru\GuruAttendanceController::class, 'create'])->name('attendance.create');
         Route::post('attendance/store', [App\Http\Controllers\Guru\GuruAttendanceController::class, 'store'])->name('attendance.store');
+
+        // --- START: Rute Baru untuk Laporan Absensi ---
+        Route::get('attendances/report', [GuruAttendanceController::class, 'generateReport'])->name('attendances.report.generate');
+        // --- END: Rute Baru untuk Laporan Absensi ---
 
         Route::get('murid', [App\Http\Controllers\Guru\GuruMuridController::class, 'index'])->name('murid.index');
         Route::get('murid/create', [App\Http\Controllers\Guru\GuruMuridController::class, 'create'])->name('murid.create');
@@ -97,22 +92,16 @@ Route::middleware('auth')->group(function () {
         Route::post('murid/{murid}/assign-course', [App\Http\Controllers\Guru\GuruMuridController::class, 'assignCourse'])->name('murid.assign_course');
 
     });
-    // ==================== AKHIR RUTE GURU ====================
 
-    // ==================== RUTE MURID ====================
     Route::get('/murid/dashboard', [App\Http\Controllers\Murid\MuridDashboardController::class, 'index'])->name('murid.dashboard')->middleware(['auth', 'role:murid']);
     Route::get('/murid', [App\Http\Controllers\Murid\MuridController::class, 'index'])->name('murid.index')->middleware(['auth', 'role:murid']);
-    // ==================== AKHIR RUTE MURID ====================
 
-    // ==================== RUTE ADMIN DAN GURU ====================
     Route::prefix('adminNGuru')->middleware('role:admin|guru')->group(function () {
         Route::get('/guru/murid-pending', [App\Http\Controllers\Guru\MuridVerificationController::class, 'index'])->name('guru.murid.pending');
         Route::post('/guru/murid-verifikasi/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'verify'])->name('guru.murid.verify');
         Route::post('/guru/murid-tolak/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'reject'])->name('guru.murid.reject');
     });
-    // ==================== AKHIR RUTE ADMIN DAN GURU====================
     
-    // Rute akun belum terverifikasi
     Route::get('/belum-verifikasi', function () {
         return view('auth.belum_verifikasi');
     })->name('belum.verifikasi');
