@@ -58,12 +58,6 @@ Aplikasi ini open-source dibawah lisensi [MIT](https://opensource.org/licenses/M
 
 checkpoint projek:
 
-sekarang sudah jalan yang manajemen kursus guru
-
-bagian guru menyimpan absen, dengan lokasi guru terdetek on progres
-
-sekarang sudah ada untuk assign course ke murid yang dilakukan oleh guru
-
-pembersihan database
+Menambahkan fitur reporting yang wajib untuk tugas dan tambahan yang baik juga untuk projek ini sendiri
 
 sedang cari hostingan (untuk versi pekerjaan)
