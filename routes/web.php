@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\SwimmingCourseManagementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Guru\GuruAttendanceController;
 use App\Http\Controllers\Guru\GuruCourseController;
+use App\Http\Controllers\Murid\MuridAttendanceController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\RegistrationController;
@@ -59,7 +60,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin/dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('admin.dashboard')->middleware(['auth', 'role:admin']);
 
-
     Route::get('/guru/dashboard', [App\Http\Controllers\Guru\GuruDashboardController::class, 'index'])->name('guru.dashboard')->middleware(['auth', 'role:guru']);
 
     Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {
@@ -96,12 +96,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/murid/dashboard', [App\Http\Controllers\Murid\MuridDashboardController::class, 'index'])->name('murid.dashboard')->middleware(['auth', 'role:murid']);
     Route::get('/murid', [App\Http\Controllers\Murid\MuridController::class, 'index'])->name('murid.index')->middleware(['auth', 'role:murid']);
 
+    // --- START: Rute Baru untuk Murid Attendance ---
+    Route::middleware(['auth', 'role:murid'])->prefix('murid')->name('murid.')->group(function () {
+        Route::get('attendance-history', [MuridAttendanceController::class, 'index'])->name('attendance.index');
+        Route::get('attendances/report', [MuridAttendanceController::class, 'generateReport'])->name('attendances.report.generate');
+    });
+    // --- END: Rute Baru untuk Murid Attendance ---
+
     Route::prefix('adminNGuru')->middleware('role:admin|guru')->group(function () {
         Route::get('/guru/murid-pending', [App\Http\Controllers\Guru\MuridVerificationController::class, 'index'])->name('guru.murid.pending');
         Route::post('/guru/murid-verifikasi/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'verify'])->name('guru.murid.verify');
         Route::post('/guru/murid-tolak/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'reject'])->name('guru.murid.reject');
     });
-    
+
     Route::get('/belum-verifikasi', function () {
         return view('auth.belum_verifikasi');
     })->name('belum.verifikasi');

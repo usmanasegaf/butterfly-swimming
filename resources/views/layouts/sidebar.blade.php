@@ -107,6 +107,12 @@
                 <span>Kursus Saya</span>
             </a>
         </li>
+        <li class="nav-item {{ request()->routeIs('murid.attendance.index') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('murid.attendance.index') }}">
+                <i class="fas fa-fw fa-calendar-check"></i>
+                <span>Riwayat Absensi</span>
+            </a>
+        </li>
     @endif
 
     <hr class="sidebar-divider d-none d-md-block">
