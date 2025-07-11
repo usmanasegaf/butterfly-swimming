@@ -1,5 +1,13 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
+Untuk kemudahan Non-it, ada note proyek disini, jadi non it tinggal scroll saja kesini
+
+checkpoint projek:
+
+Menambahkan fitur reporting yang wajib untuk tugas dan tambahan yang baik juga untuk projek ini sendiri
+
+penyedia hosting yang rencananya akan dipakai untuk v kerja adalah namecheap dengan domain .com, untuk sekarang mencari judul domain ---.com yang SEO nya bagus
+
 
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
@@ -56,9 +64,5 @@ Panduan kontribusi tersedia di [dokumentasi Laravel](https://laravel.com/docs/co
 
 Aplikasi ini open-source dibawah lisensi [MIT](https://opensource.org/licenses/MIT).
 
-checkpoint projek:
 
-Menambahkan fitur reporting yang wajib untuk tugas dan tambahan yang baik juga untuk projek ini sendiri
-
-penyedia hosting yang rencananya akan dipakai untuk v kerja adalah namecheap dengan domain .com, untuk sekarang mencari judul domain ---.com yang SEO nya bagus
 
