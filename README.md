@@ -8,6 +8,8 @@ penyedia hosting yang rencananya akan dipakai untuk v kerja adalah namecheap den
 
 penambahan notifikasi dimurid dan guru
 
+memperlengkap fitur fitur admin dengan fitur guru yg seharusnya admin juga punya namun disesuaikan
+
 
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
