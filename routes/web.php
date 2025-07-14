@@ -1,17 +1,18 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAttendanceController;
+use App\Http\Controllers\Admin\AdminMuridController;
 use App\Http\Controllers\Admin\AdminScheduleController;
 use App\Http\Controllers\Admin\SwimmingCourseManagementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Guru\GuruAttendanceController;
 use App\Http\Controllers\Guru\GuruCourseController;
+use App\Http\Controllers\Guru\MuridVerificationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Murid\MuridAttendanceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\RegistrationController;
-use App\Http\Controllers\Guru\MuridVerificationController;
-use App\Http\Controllers\Admin\AdminAttendanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -57,10 +58,15 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::resource('swimming-course-management', SwimmingCourseManagementController::class);
         Route::resource('schedules', AdminScheduleController::class);
-        // <<< TAMBAHKAN INI UNTUK MANAJEMEN ABSENSI ADMIN
+
         Route::get('attendances', [AdminAttendanceController::class, 'index'])->name('admin.attendances.index');
         Route::get('attendances/report', [AdminAttendanceController::class, 'generateReport'])->name('admin.attendances.report.generate');
-        // AKHIR TAMBAHAN
+
+        Route::get('murids', [AdminMuridController::class, 'index'])->name('admin.murids.index');
+        Route::get('murids/{murid}/edit', [AdminMuridController::class, 'edit'])->name('admin.murids.edit');
+        Route::put('murids/{murid}', [AdminMuridController::class, 'update'])->name('admin.murids.update');
+        Route::delete('murids/{murid}', [AdminMuridController::class, 'destroy'])->name('admin.murids.destroy');
+
     });
 
     Route::middleware(['auth', 'role:admin'])->group(function () {

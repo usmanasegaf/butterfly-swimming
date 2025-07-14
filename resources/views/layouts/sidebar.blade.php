@@ -24,7 +24,6 @@
         <div class="sidebar-heading">
             Manajemen Data
         </div>
-        {{-- Rute ini sudah benar: swimming-course-management.index --}}
         <li class="nav-item {{ request()->routeIs('swimming-course-management.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('swimming-course-management.index') }}">
                 <i class="fas fa-fw fa-graduation-cap"></i>
@@ -48,6 +47,12 @@
             <a class="nav-link" href="{{ route('admin.attendances.index') }}">
                 <i class="fas fa-fw fa-clipboard-list"></i> {{-- Menggunakan ikon clipboard list --}}
                 <span>Manajemen Absensi Global</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('admin.murids.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.murids.index') }}">
+                <i class="fas fa-fw fa-user-graduate"></i> {{-- Menggunakan ikon user-graduate --}}
+                <span>Manajemen Murid</span>
             </a>
         </li>
 
