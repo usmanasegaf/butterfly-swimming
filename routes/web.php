@@ -10,7 +10,7 @@ use App\Http\Controllers\Murid\MuridAttendanceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\RegistrationController;
-use App\Http\Controllers\Admin\MuridVerificationController;
+use App\Http\Controllers\Guru\MuridVerificationController;
 use App\Http\Controllers\Admin\AdminAttendanceController; // <<< TAMBAHKAN INI
 use Illuminate\Support\Facades\Route;
 
