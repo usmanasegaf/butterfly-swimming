@@ -44,6 +44,12 @@
                 <span>Daftar Guru & Murid per Guru</span>
             </a>
         </li>
+        <li class="nav-item {{ request()->routeIs('admin.attendances.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.attendances.index') }}">
+                <i class="fas fa-fw fa-clipboard-list"></i> {{-- Menggunakan ikon clipboard list --}}
+                <span>Manajemen Absensi Global</span>
+            </a>
+        </li>
 
         <hr class="sidebar-divider">
 
@@ -62,10 +68,8 @@
                 <span>Verifikasi Murid</span>
             </a>
         </li>
-
-
     @else
-    {{-- Bagian sidebar untuk Guru dan Murid (tidak berubah dari sebelumnya) --}}
+        {{-- Bagian sidebar untuk Guru dan Murid (tidak berubah dari sebelumnya) --}}
         @if (auth()->user()->role == 'guru')
             <div class="sidebar-heading">
                 Dashboard
@@ -81,7 +85,8 @@
             <div class="sidebar-heading">
                 Manajemen Guru
             </div>
-            <li class="nav-item {{ request()->routeIs('guru.courses.*') || request()->routeIs('guru.schedules.*') ? 'active' : '' }}">
+            <li
+                class="nav-item {{ request()->routeIs('guru.courses.*') || request()->routeIs('guru.schedules.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('guru.courses.index') }}">
                     <i class="fas fa-fw fa-calendar-alt"></i>
                     <span>Jadwal & Kursus Saya</span>
@@ -106,7 +111,7 @@
                 </a>
             </li>
             <hr class="sidebar-divider">
-        elseif (auth()->user()->role == 'murid')
+            elseif (auth()->user()->role == 'murid')
             <div class="sidebar-heading">
                 Dashboard
             </div>
@@ -133,7 +138,8 @@
                     <span>Riwayat Absensi</span>
                 </a>
             </li>
-            <li class="nav-item {{ request()->routeIs('user.courses.index') || request()->routeIs('user.registrations.index') ? 'active' : '' }}">
+            <li
+                class="nav-item {{ request()->routeIs('user.courses.index') || request()->routeIs('user.registrations.index') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('user.courses.index') }}">
                     <i class="fas fa-fw fa-plus-circle"></i>
                     <span>Daftar Kursus Baru</span>

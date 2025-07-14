@@ -37,6 +37,9 @@ class RoleAndPermissionSeeder extends Seeder
             'create schedule',
             'edit schedule',
             'delete schedule',
+
+            'view all attendances',
+            'generate all attendance reports',
         ];
 
         foreach ($permissions as $permission) {

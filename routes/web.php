@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminScheduleController; // <<< PASTIKAN INI ADA
+use App\Http\Controllers\Admin\AdminScheduleController;
 use App\Http\Controllers\Admin\SwimmingCourseManagementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Guru\GuruAttendanceController;
@@ -10,6 +10,8 @@ use App\Http\Controllers\Murid\MuridAttendanceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\RegistrationController;
+use App\Http\Controllers\Admin\MuridVerificationController;
+use App\Http\Controllers\Admin\AdminAttendanceController; // <<< TAMBAHKAN INI
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -34,10 +36,8 @@ Route::middleware('auth')->group(function () {
         Route::post('profile', 'profileUpdate')->name('profile.update');
     });
 
-    // --- START: Rute Notifikasi ---
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
-    // --- END: Rute Notifikasi ---
 
     Route::middleware('permission:view own registrations')->group(function () {
         Route::get('my-registrations', [RegistrationController::class, 'index'])->name('my-registrations');
@@ -54,13 +54,15 @@ Route::middleware('auth')->group(function () {
         Route::patch('registrations/{registration}/cancel', [RegistrationController::class, 'cancel'])->name('registrations.cancel');
     });
 
-    // Grup Admin yang sudah ada (tanpa .name('admin.'))
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::resource('swimming-course-management', SwimmingCourseManagementController::class);
         Route::resource('schedules', AdminScheduleController::class);
+        // <<< TAMBAHKAN INI UNTUK MANAJEMEN ABSENSI ADMIN
+        Route::get('attendances', [AdminAttendanceController::class, 'index'])->name('admin.attendances.index');
+        Route::get('attendances/report', [AdminAttendanceController::class, 'generateReport'])->name('admin.attendances.report.generate');
+        // AKHIR TAMBAHAN
     });
 
-    // Rute Admin lainnya yang sudah ada (dengan nama eksplisit admin.guru.pending, dll.)
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/admin/guru-pending', [App\Http\Controllers\Admin\GuruVerificationController::class, 'index'])->name('admin.guru.pending');
         Route::post('/admin/guru-verifikasi/{user}', [App\Http\Controllers\Admin\GuruVerificationController::class, 'verify'])->name('admin.guru.verify');
@@ -77,9 +79,7 @@ Route::middleware('auth')->group(function () {
         Route::get('attendance/create/{schedule_id}', [App\Http\Controllers\Guru\GuruAttendanceController::class, 'create'])->name('attendance.create');
         Route::post('attendance/store', [App\Http\Controllers\Guru\GuruAttendanceController::class, 'store'])->name('attendance.store');
 
-        // --- START: Rute Baru untuk Laporan Absensi ---
         Route::get('attendances/report', [GuruAttendanceController::class, 'generateReport'])->name('attendances.report.generate');
-        // --- END: Rute Baru untuk Laporan Absensi ---
 
         Route::get('murid', [App\Http\Controllers\Guru\GuruMuridController::class, 'index'])->name('murid.index');
         Route::get('murid/create', [App\Http\Controllers\Guru\GuruMuridController::class, 'create'])->name('murid.create');
@@ -106,17 +106,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/murid/dashboard', [App\Http\Controllers\Murid\MuridDashboardController::class, 'index'])->name('murid.dashboard')->middleware(['auth', 'role:murid']);
     Route::get('/murid', [App\Http\Controllers\Murid\MuridController::class, 'index'])->name('murid.index')->middleware(['auth', 'role:murid']);
 
-    // --- START: Rute Baru untuk Murid Attendance ---
     Route::middleware(['auth', 'role:murid'])->prefix('murid')->name('murid.')->group(function () {
         Route::get('attendance-history', [MuridAttendanceController::class, 'index'])->name('attendance.index');
         Route::get('attendances/report', [MuridAttendanceController::class, 'generateReport'])->name('attendances.report.generate');
     });
-    // --- END: Rute Baru untuk Murid Attendance ---
 
     Route::prefix('adminNGuru')->middleware('role:admin|guru')->group(function () {
-        Route::get('/guru/murid-pending', [App\Http\Controllers\Guru\MuridVerificationController::class, 'index'])->name('guru.murid.pending');
-        Route::post('/guru/murid-verifikasi/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'verify'])->name('guru.murid.verify');
-        Route::post('/guru/murid-tolak/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'reject'])->name('guru.murid.reject');
+        Route::get('/guru/murid-pending', [MuridVerificationController::class, 'index'])->name('guru.murid.pending');
+        Route::post('/guru/murid-verifikasi/{user}', [MuridVerificationController::class, 'verify'])->name('guru.murid.verify');
+        Route::post('/guru/murid-tolak/{user}', [MuridVerificationController::class, 'reject'])->name('guru.murid.reject');
     });
 
     Route::get('/belum-verifikasi', function () {
