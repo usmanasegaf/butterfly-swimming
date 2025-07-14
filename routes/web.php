@@ -11,7 +11,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\RegistrationController;
 use App\Http\Controllers\Guru\MuridVerificationController;
-use App\Http\Controllers\Admin\AdminAttendanceController; // <<< TAMBAHKAN INI
+use App\Http\Controllers\Admin\AdminAttendanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
