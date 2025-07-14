@@ -4,8 +4,9 @@ use App\Http\Controllers\Admin\SwimmingCourseManagementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Guru\GuruAttendanceController;
 use App\Http\Controllers\Guru\GuruCourseController;
-use App\Http\Controllers\Murid\MuridAttendanceController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Murid\MuridAttendanceController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\RegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,11 @@ Route::middleware('auth')->group(function () {
         Route::get('profile', 'profile')->name('profile');
         Route::post('profile', 'profileUpdate')->name('profile.update');
     });
+
+    // --- START: Rute Notifikasi ---
+    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+    // --- END: Rute Notifikasi ---
 
     Route::middleware('permission:view own registrations')->group(function () {
         Route::get('my-registrations', [RegistrationController::class, 'index'])->name('my-registrations');

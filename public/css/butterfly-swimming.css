@@ -214,3 +214,7 @@
 }
 
 /* --- Akhir Perubahan Warna --- */
+
+.fa-1-4x { /* Nama kelas kustom */
+    font-size: 1.4em; /* Mengatur ukuran font 1.5 kali dari ukuran normal */
+}
