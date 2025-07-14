@@ -4,9 +4,9 @@ Untuk kemudahan Non-it, ada note proyek disini, jadi non it tinggal scroll saja 
 
 checkpoint projek:
 
-Menambahkan fitur reporting yang wajib untuk tugas dan tambahan yang baik juga untuk projek ini sendiri
-
 penyedia hosting yang rencananya akan dipakai untuk v kerja adalah namecheap dengan domain .com, untuk sekarang mencari judul domain ---.com yang SEO nya bagus
+
+penambahan notifikasi dimurid dan guru
 
 
 <p align="center">
