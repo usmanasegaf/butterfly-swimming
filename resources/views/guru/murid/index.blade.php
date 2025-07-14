@@ -1,7 +1,8 @@
 {{-- filepath: resources/views/guru/murid/index.blade.php --}}
 @extends('layouts.app')
+@section('title', 'Murid Bimbingan  ')
 @section('content')
-    <h3>Daftar Murid Bimbingan</h3>
+    <h4>Daftar Murid Bimbingan</h4>
 
     @if (session('success'))
         <div style="color: green;">

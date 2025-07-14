@@ -1,9 +1,10 @@
 {{-- filepath: resources/views/murid/dashboard.blade.php --}}
 @extends('layouts.app')
 
+@section('title', 'Dashboard Murid')
+
 @section('content')
 <div class="container">
-    <h2>Dashboard Murid</h2>
 
     <p>Selamat datang, {{ $user->name }}!</p>
 

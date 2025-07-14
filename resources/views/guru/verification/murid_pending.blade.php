@@ -1,9 +1,9 @@
 {{-- filepath: resources/views/guru/verification/murid_pending.blade.php --}}
 @extends('layouts.app')
-
+@section('title', 'Verifikasi Murid')
 @section('content')
 <div class="container">
-    <h2>Daftar Murid Pending</h2>
+    <h4>Daftar Murid Pending</h4>
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
