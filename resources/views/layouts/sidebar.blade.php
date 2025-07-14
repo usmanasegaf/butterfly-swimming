@@ -73,85 +73,79 @@
                 <span>Verifikasi Murid</span>
             </a>
         </li>
-    @else
-        {{-- Bagian sidebar untuk Guru dan Murid (tidak berubah dari sebelumnya) --}}
-        @if (auth()->user()->role == 'guru')
-            <div class="sidebar-heading">
-                Dashboard
-            </div>
-            <li class="nav-item {{ request()->routeIs('guru.dashboard') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('guru.dashboard') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard Guru</span>
-                </a>
-            </li>
-            <hr class="sidebar-divider">
+    @endif
 
-            <div class="sidebar-heading">
-                Manajemen Guru
-            </div>
-            <li
-                class="nav-item {{ request()->routeIs('guru.courses.*') || request()->routeIs('guru.schedules.*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('guru.courses.index') }}">
-                    <i class="fas fa-fw fa-calendar-alt"></i>
-                    <span>Jadwal & Kursus Saya</span>
-                </a>
-            </li>
-            <li class="nav-item {{ request()->routeIs('guru.attendance.*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('guru.attendance.index') }}">
-                    <i class="fas fa-fw fa-clipboard-check"></i>
-                    <span>Absensi</span>
-                </a>
-            </li>
-            <li class="nav-item {{ request()->routeIs('guru.murid.*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('guru.murid.index') }}">
-                    <i class="fas fa-fw fa-users"></i>
-                    <span>Murid Bimbingan</span>
-                </a>
-            </li>
-            <li class="nav-item {{ request()->routeIs('guru.murid.pending') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('guru.murid.pending') }}">
-                    <i class="fas fa-fw fa-user-check"></i>
-                    <span>Verifikasi Murid</span>
-                </a>
-            </li>
-            <hr class="sidebar-divider">
-            elseif (auth()->user()->role == 'murid')
-            <div class="sidebar-heading">
-                Dashboard
-            </div>
-            <li class="nav-item {{ request()->routeIs('murid.dashboard') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('murid.dashboard') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard Murid</span>
-                </a>
-            </li>
-            <hr class="sidebar-divider">
+    @if (auth()->user()->role == 'guru')
+        <div class="sidebar-heading">
+            Dashboard
+        </div>
+        <li class="nav-item {{ request()->routeIs('guru.dashboard') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('guru.dashboard') }}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard Guru</span>
+            </a>
+        </li>
+        <hr class="sidebar-divider">
 
-            <div class="sidebar-heading">
-                Kursus & Absensi
-            </div>
-            <li class="nav-item {{ request()->routeIs('murid.index') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('murid.index') }}">
-                    <i class="fas fa-fw fa-book-open"></i>
-                    <span>Kursus Saya</span>
-                </a>
-            </li>
-            <li class="nav-item {{ request()->routeIs('murid.attendance.index') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('murid.attendance.index') }}">
-                    <i class="fas fa-fw fa-clipboard-list"></i>
-                    <span>Riwayat Absensi</span>
-                </a>
-            </li>
-            <li
-                class="nav-item {{ request()->routeIs('user.courses.index') || request()->routeIs('user.registrations.index') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('user.courses.index') }}">
-                    <i class="fas fa-fw fa-plus-circle"></i>
-                    <span>Daftar Kursus Baru</span>
-                </a>
-            </li>
-            <hr class="sidebar-divider">
-        @endif
+        <div class="sidebar-heading">
+            Manajemen Guru
+        </div>
+        <li
+            class="nav-item {{ request()->routeIs('guru.courses.*') || request()->routeIs('guru.schedules.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('guru.courses.index') }}">
+                <i class="fas fa-fw fa-calendar-alt"></i>
+                <span>Jadwal & Kursus Saya</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('guru.attendance.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('guru.attendance.index') }}">
+                <i class="fas fa-fw fa-clipboard-check"></i>
+                <span>Absensi</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('guru.murid.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('guru.murid.index') }}">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Murid Bimbingan</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('guru.murid.pending') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('guru.murid.pending') }}">
+                <i class="fas fa-fw fa-user-check"></i>
+                <span>Verifikasi Murid</span>
+            </a>
+        </li>
+        <hr class="sidebar-divider">
+    @endif
+
+    @if (auth()->user()->role == 'murid')
+        <div class="sidebar-heading">
+            Dashboard
+        </div>
+        <li class="nav-item {{ request()->routeIs('murid.dashboard') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('murid.dashboard') }}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard Murid</span>
+            </a>
+        </li>
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading">
+            Kursus & Absensi
+        </div>
+        <li class="nav-item {{ request()->routeIs('murid.index') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('murid.index') }}">
+                <i class="fas fa-fw fa-book-open"></i>
+                <span>Kursus Saya</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('murid.attendance.index') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('murid.attendance.index') }}">
+                <i class="fas fa-fw fa-clipboard-list"></i>
+                <span>Riwayat Absensi</span>
+            </a>
+        </li>
+        <hr class="sidebar-divider">
     @endif
 
     <div class="text-center d-none d-md-inline">
