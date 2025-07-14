@@ -32,6 +32,11 @@ class RoleAndPermissionSeeder extends Seeder
             // User registrations permissions
             'register to course',
             'view own registrations',
+
+            'view schedules',
+            'create schedule',
+            'edit schedule',
+            'delete schedule',
         ];
 
         foreach ($permissions as $permission) {

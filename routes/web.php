@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminScheduleController; // <<< PASTIKAN INI ADA
 use App\Http\Controllers\Admin\SwimmingCourseManagementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Guru\GuruAttendanceController;
@@ -53,10 +54,13 @@ Route::middleware('auth')->group(function () {
         Route::patch('registrations/{registration}/cancel', [RegistrationController::class, 'cancel'])->name('registrations.cancel');
     });
 
+    // Grup Admin yang sudah ada (tanpa .name('admin.'))
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::resource('swimming-course-management', SwimmingCourseManagementController::class);
+        Route::resource('schedules', AdminScheduleController::class);
     });
 
+    // Rute Admin lainnya yang sudah ada (dengan nama eksplisit admin.guru.pending, dll.)
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/admin/guru-pending', [App\Http\Controllers\Admin\GuruVerificationController::class, 'index'])->name('admin.guru.pending');
         Route::post('/admin/guru-verifikasi/{user}', [App\Http\Controllers\Admin\GuruVerificationController::class, 'verify'])->name('admin.guru.verify');
@@ -79,8 +83,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('murid', [App\Http\Controllers\Guru\GuruMuridController::class, 'index'])->name('murid.index');
         Route::get('murid/create', [App\Http\Controllers\Guru\GuruMuridController::class, 'create'])->name('murid.create');
-        Route::post('murid/store', [App\Http\Controllers\Guru\GuruMuridController::class, 'store'])->name('murid.store');
-        Route::delete('murid/{id}', [App\Http\Controllers\Guru\GuruMuridController::class, 'destroy'])->name('murid.destroy');
+        Route::post('murid/store', [GuruMuridController::class, 'store'])->name('murid.store');
+        Route::delete('murid/{id}', [GuruMuridController::class, 'destroy'])->name('murid.destroy');
 
         Route::get('/courses', [GuruCourseController::class, 'index'])->name('courses.index');
         Route::get('/courses/{swimmingCourse}/create-schedule', [GuruCourseController::class, 'createScheduleForm'])->name('courses.create_schedule_form');
