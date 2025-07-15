@@ -7,29 +7,23 @@ use Spatie\Permission\Models\Role;
 
 class RoleAndPermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create permissions
+        // Define all permissions
         $permissions = [
-            // Swimming course permissions
             'view swimming courses',
             'create swimming course',
             'edit swimming course',
             'delete swimming course',
 
-            // Registration permissions
             'view registrations',
             'approve registration',
             'reject registration',
             'delete registration',
 
-            // User registrations permissions
             'register to course',
             'view own registrations',
 
@@ -40,27 +34,36 @@ class RoleAndPermissionSeeder extends Seeder
 
             'view all attendances',
             'generate all attendance reports',
+
+            'view active students',
+            'manage active students',
         ];
 
+        // Create permissions if they don't exist
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            // Ganti Permission::create() dengan Permission::firstOrCreate()
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        // Create roles and assign permissions
-        $adminRole = Role::create(['name' => 'admin']);
-        $adminRole->givePermissionTo(Permission::all());
+        // Assign all permissions to the 'admin' role
+        // Ganti Role::create() dengan Role::firstOrCreate()
+        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $adminRole->givePermissionTo(Permission::all()); // Admin gets all permissions
 
-        $guruRole = Role::create(['name' => 'guru']);
+        // Assign specific permissions to the 'guru' role
+        // Ganti Role::create() dengan Role::firstOrCreate()
+        $guruRole = Role::firstOrCreate(['name' => 'guru', 'guard_name' => 'web']);
         $guruRole->givePermissionTo([
             'view swimming courses',
             'register to course',
             'view own registrations',
         ]);
 
-        $muridRole = Role::create(['name' => 'murid']);
+        // Assign specific permissions to the 'murid' role
+        // Ganti Role::create() dengan Role::firstOrCreate()
+        $muridRole = Role::firstOrCreate(['name' => 'murid', 'guard_name' => 'web']);
         $muridRole->givePermissionTo([
             'view swimming courses',
-            // tambahkan permission lain jika perlu
         ]);
     }
 }
