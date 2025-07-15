@@ -16,19 +16,28 @@ class AuthController extends Controller
 
     public function registerSave(Request $request)
     {
-        Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'name'     => 'required',
-            'email'    => 'required|email|unique:users',
+            'email'    => 'required|email|unique:users', // Unique only for active/pending users
             'password' => 'required|confirmed',
             'role'     => 'required|in:guru,murid',
-        ])->validate();
+        ]);
+
+        // Cek apakah email sudah ada dengan status 'rejected' (diblokir)
+        // Ini akan mencegah pendaftaran ulang jika email pernah ditolak
+        $existingRejectedUser = User::where('email', $request->email)->where('status', 'rejected')->first();
+        if ($existingRejectedUser) {
+            return redirect()->back()->withInput()->withErrors(['email' => 'Email ini telah diblokir dan tidak dapat digunakan untuk pendaftaran.']);
+        }
+
+        $validator->validate(); // Lanjutkan validasi setelah cek blokir
 
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'role'     => $request->role,
-            'status'   => 'pending', // status default, akan dipakai di tahap berikutnya
+            'status'   => 'pending', // status default untuk pendaftaran baru
         ]);
 
         $user->assignRole($request->role);
@@ -47,6 +56,13 @@ class AuthController extends Controller
             'email'    => 'required|email',
             'password' => 'required',
         ])->validate();
+
+        $user = User::where('email', $request->email)->first();
+
+        // Cek jika user ada dan statusnya 'rejected' (diblokir)
+        if ($user && $user->status === 'rejected') {
+            return redirect()->back()->withErrors(['email' => 'Akun Anda telah diblokir. Silakan hubungi administrator.']);
+        }
 
         if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             return redirect()->back()->withErrors(['email' => 'Email atau password salah']);

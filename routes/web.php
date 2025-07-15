@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAttendanceController;
+use App\Http\Controllers\Admin\AdminMuridController;
 use App\Http\Controllers\Admin\AdminScheduleController;
 use App\Http\Controllers\Admin\SwimmingCourseManagementController;
 use App\Http\Controllers\AuthController;
@@ -10,9 +12,6 @@ use App\Http\Controllers\Murid\MuridAttendanceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\User\CourseController;
 use App\Http\Controllers\User\RegistrationController;
-use App\Http\Controllers\Admin\MuridVerificationController;
-use App\Http\Controllers\Admin\AdminAttendanceController;
-use App\Http\Controllers\Admin\AdminMuridController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -62,12 +61,12 @@ Route::middleware('auth')->group(function () {
 
         // Rute jadwal, absensi, dan murid akan diberi nama dengan awalan 'admin.' secara eksplisit
         Route::resource('schedules', AdminScheduleController::class)->names([
-            'index' => 'admin.schedules.index',
-            'create' => 'admin.schedules.create',
-            'store' => 'admin.schedules.store',
-            'show' => 'admin.schedules.show',
-            'edit' => 'admin.schedules.edit',
-            'update' => 'admin.schedules.update',
+            'index'   => 'admin.schedules.index',
+            'create'  => 'admin.schedules.create',
+            'store'   => 'admin.schedules.store',
+            'show'    => 'admin.schedules.show',
+            'edit'    => 'admin.schedules.edit',
+            'update'  => 'admin.schedules.update',
             'destroy' => 'admin.schedules.destroy',
         ]);
 
@@ -130,11 +129,13 @@ Route::middleware('auth')->group(function () {
         Route::get('attendances/report', [MuridAttendanceController::class, 'generateReport'])->name('attendances.report.generate');
     });
 
-    // --- Rute Admin/Guru (tidak berubah) ---
     Route::prefix('adminNGuru')->middleware('role:admin|guru')->group(function () {
         Route::get('/guru/murid-pending', [App\Http\Controllers\Guru\MuridVerificationController::class, 'index'])->name('guru.murid.pending');
         Route::post('/guru/murid-verifikasi/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'verify'])->name('guru.murid.verify');
         Route::post('/guru/murid-tolak/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'reject'])->name('guru.murid.reject');
+
+        Route::delete('/guru/murid-delete/{user}', [App\Http\Controllers\Guru\MuridVerificationController::class, 'delete'])->name('guru.murid.delete');
+
     });
 
     Route::get('/belum-verifikasi', function () {

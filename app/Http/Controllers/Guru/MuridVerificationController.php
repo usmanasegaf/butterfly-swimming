@@ -5,17 +5,16 @@ namespace App\Http\Controllers\Guru;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MuridVerificationController extends Controller
 {
-    // Tampilkan daftar murid yang statusnya pending
     public function index()
     {
         $murids = User::where('role', 'murid')->where('status', 'pending')->get();
         return view('guru.verification.murid_pending', compact('murids'));
     }
 
-    // Verifikasi murid (set status active)
     public function verify(User $user)
     {
         if ($user->role === 'murid' && $user->status === 'pending') {
@@ -25,13 +24,35 @@ class MuridVerificationController extends Controller
         return redirect()->route('guru.murid.pending')->with('success', 'Murid berhasil diverifikasi.');
     }
 
-    // Tolak murid (set status rejected)
+    // Metode reject untuk MENOLAK dan memblokir email (dengan mengubah status menjadi 'rejected')
     public function reject(User $user)
     {
         if ($user->role === 'murid' && $user->status === 'pending') {
-            $user->status = 'rejected';
+            $user->status = 'rejected'; // Tandai sebagai ditolak/diblokir
             $user->save();
         }
-        return redirect()->route('guru.murid.pending')->with('success', 'Murid berhasil ditolak.');
+        return redirect()->route('guru.murid.pending')->with('success', 'Murid berhasil ditolak dan email diblokir.');
+    }
+
+    // Metode baru untuk MENGHAPUS data pengguna sepenuhnya (memungkinkan pendaftaran ulang)
+    public function delete(User $user)
+    {
+        if ($user->role === 'murid' && $user->status === 'pending') {
+            DB::beginTransaction();
+            try {
+                // Hapus semua relasi terkait murid ini
+                $user->gurus()->detach(); // Lepaskan dari guru pembimbing jika ada
+                $user->schedules()->detach(); // Lepaskan dari jadwal jika terhubung
+                $user->attendances()->delete(); // Hapus semua absensi murid ini
+
+                $user->delete(); // Hapus user dari tabel users
+                DB::commit();
+                return redirect()->route('guru.murid.pending')->with('success', 'Data murid berhasil dihapus.');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Gagal menghapus data murid: ' . $e->getMessage());
+            }
+        }
+        return redirect()->route('guru.murid.pending')->with('error', 'Murid tidak ditemukan atau tidak dalam status pending.');
     }
 }
