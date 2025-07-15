@@ -23,22 +23,30 @@
                                 </ul>
                             </div>
                         @endif
+
+                        {{-- Pastikan bagian ini ada untuk menampilkan pesan sukses --}}
+                        @if (session('success'))
+                            <div class="alert alert-success" role="alert">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
                         <form action="{{ route('login.action') }}" method="POST">
                             @csrf
                             <div class="mb-4">
                                 <div class="form-floating">
-                                    <input type="email" name="email" class="form-control rounded-pill" id="email" placeholder="Masukkan Alamat Email" value="{{ old('email') }}">
+                                    <input type="email" name="email" class="form-control rounded-pill" id="email" placeholder="Masukkan Alamat Email" value="{{ old('email') }}" required autofocus>
                                     <label for="email" class="form-label">Email</label>
                                 </div>
                             </div>
                             <div class="mb-4">
                                 <div class="form-floating">
-                                    <input type="password" name="password" class="form-control rounded-pill" id="password" placeholder="Password">
+                                    <input type="password" name="password" class="form-control rounded-pill" id="password" placeholder="Password" required>
                                     <label for="password" class="form-label">Password</label>
                                 </div>
                             </div>
                             <div class="form-check d-flex justify-content-start mb-4">
-                                {{-- PERUBAHAN: id dan label untuk show password --}}
+                                {{-- Pastikan id 'showPasswordToggle' dan 'password' sesuai --}}
                                 <input class="form-check-input me-2 rounded border-primary" type="checkbox" id="showPasswordToggle">
                                 <label class="form-check-label" for="showPasswordToggle">
                                     Tampilkan Kata Sandi

@@ -18,31 +18,31 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'     => 'required',
-            'email'    => 'required|email|unique:users', // Unique only for active/pending users
+            'email'    => 'required|email|unique:users',
             'password' => 'required|confirmed',
             'role'     => 'required|in:guru,murid',
         ]);
 
         // Cek apakah email sudah ada dengan status 'rejected' (diblokir)
-        // Ini akan mencegah pendaftaran ulang jika email pernah ditolak
         $existingRejectedUser = User::where('email', $request->email)->where('status', 'rejected')->first();
         if ($existingRejectedUser) {
             return redirect()->back()->withInput()->withErrors(['email' => 'Email ini telah diblokir dan tidak dapat digunakan untuk pendaftaran.']);
         }
 
-        $validator->validate(); // Lanjutkan validasi setelah cek blokir
+        $validator->validate();
 
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'role'     => $request->role,
-            'status'   => 'pending', // status default untuk pendaftaran baru
+            'status'   => 'pending',
         ]);
 
         $user->assignRole($request->role);
 
-        return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Silakan tunggu verifikasi.');
+        // PERUBAHAN DI SINI: Pesan sukses yang lebih informatif
+        return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Akun Anda telah disubmit. Mohon tunggu verifikasi oleh guru/admin.');
     }
 
     public function login()

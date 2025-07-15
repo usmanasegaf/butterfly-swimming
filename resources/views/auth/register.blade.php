@@ -25,34 +25,42 @@
                                 </ul>
                             </div>
                         @endif
+
+                        {{-- Bagian ini akan menampilkan pesan sukses jika ada --}}
+                        @if (session('success'))
+                            <div class="alert alert-success" role="alert">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
                         <form action="{{ route('register.save') }}" method="POST">
                             @csrf
                             <div class="mb-4 ps-2">
                                 <label for="role" class="block mb-1">Daftar Sebagai</label>
                                 <select name="role" id="role" class="w-full border px-3 py-2 rounded" required>
-                                    <option value="murid">Murid</option>
-                                    <option value="guru">Guru</option>
+                                    <option value="murid" {{ old('role') == 'murid' ? 'selected' : '' }}>Murid</option>
+                                    <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>Guru</option>
                                 </select>
                             </div>
                             <div class="mb-4">
                                 <div class="form-floating">
                                     <input type="text" name="name" class="form-control rounded-pill"
-                                        id="name" placeholder="Nama Lengkap" value="{{ old('name') }}">
+                                        id="name" placeholder="Nama Lengkap" value="{{ old('name') }}" required>
                                     <label for="name" class="form-label">Nama Lengkap</label>
                                 </div>
                             </div>
                             <div class="mb-4">
                                 <div class="form-floating">
                                     <input type="email" name="email" class="form-control rounded-pill"
-                                        id="email" placeholder="Alamat Email" value="{{ old('email') }}">
+                                        id="email" placeholder="Alamat Email" value="{{ old('email') }}" required>
                                     <label for="email" class="form-label">Email</label>
                                 </div>
                             </div>
-                            <div class="row mb-4">
+                            <div class="row mb-2"> {{-- Mengurangi mb menjadi mb-2 agar tidak terlalu jauh dengan checkbox --}}
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3 mb-md-0">
                                         <input type="password" name="password" class="form-control rounded-pill"
-                                            id="password" placeholder="Password">
+                                            id="password" placeholder="Password" required>
                                         <label for="password" class="form-label">Password</label>
                                     </div>
                                 </div>
@@ -60,10 +68,17 @@
                                     <div class="form-floating">
                                         <input type="password" name="password_confirmation"
                                             class="form-control rounded-pill" id="password_confirmation"
-                                            placeholder="Ulangi Password">
+                                            placeholder="Ulangi Password" required>
                                         <label for="password_confirmation" class="form-label">Ulangi Password</label>
                                     </div>
                                 </div>
+                            </div>
+                            {{-- Tambahkan checkbox untuk menampilkan password --}}
+                            <div class="form-check d-flex justify-content-start mb-4 ps-0"> {{-- ps-0 untuk menghilangkan padding kiri default --}}
+                                <input class="form-check-input me-2 rounded border-primary" type="checkbox" id="showPasswordsToggle">
+                                <label class="form-check-label" for="showPasswordsToggle">
+                                    Tampilkan Kata Sandi
+                                </label>
                             </div>
                             <button class="btn btn-primary btn-lg w-100 rounded-pill" type="submit">Daftar
                                 Akun</button>
@@ -104,6 +119,23 @@
                     }
                 });
             });
+
+            // SKRIP BARU UNTUK TOGGLE SHOW PASSWORD
+            const passwordField = document.getElementById('password');
+            const repeatPasswordField = document.getElementById('password_confirmation');
+            const showPasswordsToggle = document.getElementById('showPasswordsToggle');
+
+            if (showPasswordsToggle && passwordField && repeatPasswordField) {
+                showPasswordsToggle.addEventListener('change', function() {
+                    if (this.checked) {
+                        passwordField.type = 'text';
+                        repeatPasswordField.type = 'text';
+                    } else {
+                        passwordField.type = 'password';
+                        repeatPasswordField.type = 'password';
+                    }
+                });
+            }
         });
     </script>
 </body>
