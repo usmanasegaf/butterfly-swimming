@@ -109,6 +109,10 @@
                 <span>Murid Bimbingan</span>
             </a>
         </li>
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading">
+            Verifikasi
+        </div>
         <li class="nav-item {{ request()->routeIs('guru.murid.pending') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('guru.murid.pending') }}">
                 <i class="fas fa-fw fa-user-check"></i>
