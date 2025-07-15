@@ -21,7 +21,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('schedules.store') }}" method="POST">
+            <form action="{{ route('admin.schedules.store') }}" method="POST">
                 @csrf
 
                 <div class="form-group">
@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <a href="{{ route('schedules.index') }}" class="btn btn-secondary">Batal</a>
+                    <a href="{{ route('admin.schedules.index') }}" class="btn btn-secondary">Batal</a>
                     <button type="submit" class="btn btn-primary">Simpan Jadwal</button>
                 </div>
             </form>

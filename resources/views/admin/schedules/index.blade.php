@@ -4,13 +4,14 @@
 
 @section('content')
 <div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Manajemen Jadwal Kursus</h1>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Daftar Semua Jadwal</h6>
-            {{-- @can('create schedule') --}}
-            <a href="{{ route('schedules.create') }}" class="btn btn-primary btn-sm">Tambah Jadwal Baru</a>
-            {{-- @endcan --}}
+            @can('create schedule')
+            <a href="{{ route('admin.schedules.create') }}" class="btn btn-primary btn-sm">Tambah Jadwal Baru</a>
+            @endcan
         </div>
         <div class="card-body">
             @if (session('success'))
@@ -63,16 +64,16 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Aksi Jadwal">
-                                            {{-- @can('edit schedule') --}}
-                                            <a href="{{ route('schedules.edit', $schedule->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                            {{-- @endcan --}}
-                                            {{-- @can('delete schedule') --}}
-                                            <form action="{{ route('schedules.destroy', $schedule->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus jadwal ini?')">
+                                            @can('edit schedule')
+                                            <a href="{{ route('admin.schedules.edit', $schedule->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                            @endcan
+                                            @can('delete schedule')
+                                            <form action="{{ route('admin.schedules.destroy', $schedule->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus jadwal ini?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                             </form>
-                                            {{-- @endcan --}}
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

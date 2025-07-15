@@ -21,7 +21,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('schedules.update', $schedule->id) }}" method="POST">
+            <form action="{{ route('admin.schedules.update', $schedule->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -117,7 +117,7 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <a href="{{ route('schedules.index') }}" class="btn btn-secondary">Batal</a>
+                    <a href="{{ route('admin.schedules.index') }}" class="btn btn-secondary">Batal</a>
                     <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                 </div>
             </form>

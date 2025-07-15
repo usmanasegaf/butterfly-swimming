@@ -72,6 +72,7 @@ class AdminScheduleController extends Controller
             'status'             => $request->status,
         ]);
 
+        // PERBAIKAN: Mengubah redirect()->route('schedules.index') menjadi redirect()->route('admin.schedules.index')
         return redirect()->route('admin.schedules.index')->with('success', 'Jadwal berhasil ditambahkan!');
     }
 
@@ -121,6 +122,7 @@ class AdminScheduleController extends Controller
             'status'             => $request->status,
         ]);
 
+        // PERBAIKAN: Mengubah redirect()->route('schedules.index') menjadi redirect()->route('admin.schedules.index')
         return redirect()->route('admin.schedules.index')->with('success', 'Jadwal berhasil diperbarui!');
     }
 
@@ -134,6 +136,7 @@ class AdminScheduleController extends Controller
     {
         $schedule->delete();
 
+        // PERBAIKAN: Mengubah redirect()->route('schedules.index') menjadi redirect()->route('admin.schedules.index')
         return redirect()->route('admin.schedules.index')->with('success', 'Jadwal berhasil dihapus!');
     }
 }

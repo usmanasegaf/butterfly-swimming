@@ -30,11 +30,17 @@
                 <span>Manajemen Kursus Renang</span>
             </a>
         </li>
-        {{-- PERBAIKAN: Mengubah admin.schedules.* menjadi schedules.* dan route('admin.schedules.index') menjadi route('schedules.index') --}}
-        <li class="nav-item {{ request()->routeIs('schedules.*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('schedules.index') }}">
-                <i class="fas fa-fw fa-calendar-alt"></i> {{-- Menggunakan ikon kalender --}}
+        {{-- schedules, attendances, murids menggunakan awalan 'admin.' --}}
+        <li class="nav-item {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.schedules.index') }}">
+                <i class="fas fa-fw fa-calendar-alt"></i>
                 <span>Manajemen Jadwal Kursus</span>
+            </a>
+        </li>
+        <li class="nav-item {{ request()->routeIs('admin.attendances.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.attendances.index') }}">
+                <i class="fas fa-fw fa-clipboard-list"></i>
+                <span>Manajemen Absensi Global</span>
             </a>
         </li>
         <li class="nav-item {{ request()->routeIs('admin.guru.list') ? 'active' : '' }}">
@@ -43,16 +49,10 @@
                 <span>Daftar Guru & Murid per Guru</span>
             </a>
         </li>
-        <li class="nav-item {{ request()->routeIs('admin.attendances.*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.attendances.index') }}">
-                <i class="fas fa-fw fa-clipboard-list"></i> {{-- Menggunakan ikon clipboard list --}}
-                <span>Manajemen Absensi Global</span>
-            </a>
-        </li>
         <li class="nav-item {{ request()->routeIs('admin.murids.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.murids.index') }}">
-                <i class="fas fa-fw fa-user-graduate"></i> {{-- Menggunakan ikon user-graduate --}}
-                <span>Manajemen Murid</span>
+                <i class="fas fa-fw fa-user-graduate"></i>
+                <span>Manajemen Murid Aktif</span>
             </a>
         </li>
 
