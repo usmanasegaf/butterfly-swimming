@@ -57,6 +57,7 @@
         </div>
     </div>
 
+    {{-- Total Pemasukan Card (BARU, di samping statistik lain) --}}
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body">
@@ -76,9 +77,42 @@
 </div>
 
 <div class="row">
-    {{-- Area Chart: Pendaftaran Murid Baru Per Bulan (Sekarang mengambil seluruh lebar) --}}
-    <div class="col-xl-12 col-lg-12"> {{-- Mengubah menjadi col-xl-12 col-lg-12 --}}
-        <div class="card shadow mb-4">
+    {{-- Pemasukan Per Guru Table (BARU, ditempatkan di baris terpisah di bawah statistik) --}}
+    <div class="col-xl-6 col-lg-6 mb-4"> {{-- Menggunakan col-xl-6 untuk setengah lebar --}}
+        <div class="card shadow h-100 py-2">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Pemasukan Per Guru</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="pemasukanPerGuruTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Guru</th>
+                                <th>Pemasukan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($pemasukanPerGuru as $data)
+                            <tr>
+                                <td>{{ $data->guru_name }}</td>
+                                <td>Rp{{ number_format($data->total_biaya, 0, ',', '.') }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="2" class="text-center">Belum ada pemasukan yang tercatat.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Pendaftaran Murid Baru Per Bulan Chart (Dipindahkan ke bawah dan mengambil setengah lebar) --}}
+    <div class="col-xl-6 col-lg-6 mb-4"> {{-- Menggunakan col-xl-6 untuk setengah lebar --}}
+        <div class="card shadow h-100 py-2">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Pendaftaran Murid Baru Per Bulan (Tahun {{ date('Y') }})</h6>
             </div>
@@ -89,8 +123,6 @@
             </div>
         </div>
     </div>
-
-    {{-- Pie Chart, Pendaftaran Terbaru, dan Kursus Populer dihapus dari sini --}}
 </div>
 
 @endsection
@@ -212,7 +244,5 @@ var myLineChart = new Chart(ctxArea, {
         }
     }
 });
-
-// Kode untuk Pie Chart, Pendaftaran Terbaru, dan Kursus Populer dihapus dari sini
 </script>
 @endpush

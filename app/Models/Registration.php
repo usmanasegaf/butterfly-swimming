@@ -12,26 +12,30 @@ class Registration extends Model
     protected $fillable = [
         'user_id',
         'swimming_course_id',
+        'guru_id', // <<< Pastikan ini ada dan fillable
         'start_date',
         'end_date',
         'status',
-        'payment_status',
-        'notes'
+        'biaya'
     ];
 
-    /**
-     * Get the user that owns the registration.
-     */
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the swimming course that owns the registration.
-     */
     public function swimmingCourse()
     {
         return $this->belongsTo(SwimmingCourse::class);
+    }
+
+    public function guru()
+    {
+        return $this->belongsTo(User::class, 'guru_id');
     }
 }

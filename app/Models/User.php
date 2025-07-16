@@ -11,11 +11,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -32,21 +27,11 @@ class User extends Authenticatable
         'course_assigned_at', // Ditambahkan untuk tanggal penugasan kursus
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at'  => 'datetime',
         'password'           => 'hashed',
@@ -55,17 +40,11 @@ class User extends Authenticatable
         'course_assigned_at' => 'datetime', // Dicast sebagai datetime
     ];
 
-    /**
-     * Relasi dengan guru yang membimbing murid ini (jika user adalah murid).
-     */
     public function guru()
     {
         return $this->belongsTo(User::class, 'guru_id');
     }
 
-    /**
-     * Relasi dengan murid yang dibimbing oleh guru ini (jika user adalah guru).
-     */
     public function murids()
     {
         return $this->belongsToMany(User::class, 'guru_murid', 'guru_id', 'murid_id');
@@ -76,9 +55,6 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'guru_murid', 'murid_id', 'guru_id');
     }
 
-    /**
-     * Relasi dengan jadwal les (melalui tabel pivot schedule_murid).
-     */
     public function schedules()
     {
         return $this->belongsToMany(Schedule::class, 'schedule_murid', 'murid_id', 'schedule_id');
@@ -89,19 +65,21 @@ class User extends Authenticatable
         return $this->hasMany(Schedule::class, 'guru_id');
     }
 
-    /**
-     * Relasi dengan SwimmingCourse yang ditetapkan kepada murid ini.
-     */
     public function swimmingCourse()
     {
         return $this->belongsTo(SwimmingCourse::class);
     }
 
     /**
-     * Accessor untuk menghitung sisa hari les.
-     * Mengembalikan null jika tidak ada kursus yang ditetapkan atau tanggal penugasan.
-     * Mengembalikan 0 jika sudah expired atau durasi tidak valid.
+     * Get the registrations for the user.
      */
+    public function registrations()
+    {
+        // Relasi ini akan mengambil semua pendaftaran yang dimiliki oleh user ini
+        // dengan asumsi kolom foreign key di tabel 'registrations' adalah 'user_id'.
+        return $this->hasMany(Registration::class, 'user_id');
+    }
+
 
     public function getRemainingLessonDaysAttribute()
     {
@@ -124,11 +102,7 @@ class User extends Authenticatable
 
         $diff = now()->diff($expirationDate);
 
-        // ===============================================
-        // --- PERUBAHAN DI SINI: Bulatkan ke bawah untuk hari ---
-        // Menggunakan floor() untuk menghilangkan desimal pada hari.
         $days = floor($diff->totalDays);
-        // ===============================================
 
         $hours   = $diff->h;
         $minutes = $diff->i;
