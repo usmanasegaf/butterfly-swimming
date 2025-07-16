@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">Murid Bimbingan Saya</h1>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -62,13 +61,25 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Aksi Murid">
-                                            {{-- Tombol Tugaskan Kursus yang memicu modal --}}
+                                            {{-- Tombol Tugaskan/Ubah Kursus --}}
                                             <button type="button" class="btn btn-info btn-sm assign-course-btn"
                                                     data-toggle="modal" data-target="#assignCourseModal"
                                                     data-murid-id="{{ $murid->id }}"
-                                                    data-murid-name="{{ $murid->name }}">
-                                                Tugaskan Kursus
+                                                    data-murid-name="{{ $murid->name }}"
+                                                    data-current-course-id="{{ $murid->swimming_course_id ?? '' }}">
+                                                Tugaskan/Ubah Kursus
                                             </button>
+
+                                            {{-- Tombol Perpanjang Kursus (hanya tampil jika ada kursus aktif) --}}
+                                            @if ($murid->swimmingCourse && $murid->course_assigned_at)
+                                                <button type="button" class="btn btn-success btn-sm extend-course-btn"
+                                                        data-toggle="modal" data-target="#extendCourseModal"
+                                                        data-murid-id="{{ $murid->id }}"
+                                                        data-murid-name="{{ $murid->name }}"
+                                                        data-current-end-date="{{ $murid->registrations->first()->end_date ?? '' }}">
+                                                    Perpanjang Kursus
+                                                </button>
+                                            @endif
 
                                             <form action="{{ route('guru.murid.destroy', $murid->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin melepaskan bimbingan murid ini?')">
                                                 @csrf
@@ -90,12 +101,12 @@
     </div>
 </div>
 
-{{-- Modal untuk Menugaskan Kursus --}}
+{{-- Modal untuk Menugaskan/Mengubah Kursus --}}
 <div class="modal fade" id="assignCourseModal" tabindex="-1" role="dialog" aria-labelledby="assignCourseModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="assignCourseModalLabel">Tugaskan Kursus ke Murid</h5>
+                <h5 class="modal-title" id="assignCourseModalLabel">Tugaskan/Ubah Kursus untuk Murid</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -103,11 +114,11 @@
             <form id="assignCourseForm" method="POST">
                 @csrf
                 <div class="modal-body">
-                    <p>Menugaskan kursus untuk: <strong id="muridNameInModal"></strong></p>
-                    <input type="hidden" name="murid_id" id="muridIdInput">
+                    <p>Menugaskan/Mengubah kursus untuk: <strong id="muridNameAssignModal"></strong></p>
+                    <input type="hidden" name="murid_id" id="muridIdAssignInput">
                     <div class="form-group">
-                        <label for="swimming_course_id">Pilih Kursus Renang:</label>
-                        <select name="swimming_course_id" id="swimming_course_id" class="form-control" required>
+                        <label for="swimming_course_id_assign">Pilih Kursus Renang:</label>
+                        <select name="swimming_course_id" id="swimming_course_id_assign" class="form-control" required>
                             <option value="">-- Pilih Kursus --</option>
                             @foreach ($availableCourses as $course)
                                 <option value="{{ $course->id }}">
@@ -119,7 +130,37 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Tugaskan Kursus</button>
+                    <button type="submit" class="btn btn-primary">Tugaskan/Ubah Kursus</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Modal untuk Memperpanjang Kursus --}}
+<div class="modal fade" id="extendCourseModal" tabindex="-1" role="dialog" aria-labelledby="extendCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="extendCourseModalLabel">Perpanjang Kursus Murid</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="extendCourseForm" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <p>Perpanjang kursus untuk: <strong id="muridNameExtendModal"></strong></p>
+                    <p>Tanggal Selesai Saat Ini: <strong id="currentEndDateExtendModal"></strong></p>
+                    <input type="hidden" name="murid_id" id="muridIdExtendInput">
+                    <div class="form-group">
+                        <label for="additional_weeks">Jumlah Minggu Tambahan:</label>
+                        <input type="number" name="additional_weeks" id="additional_weeks" class="form-control" min="1" value="1" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success">Perpanjang Kursus</button>
                 </div>
             </form>
         </div>
@@ -131,28 +172,24 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        // Ketika tombol "Tugaskan Kursus" diklik
+        // --- Logika untuk Modal Tugaskan/Ubah Kursus ---
         $('.assign-course-btn').on('click', function() {
             const muridId = $(this).data('murid-id');
             const muridName = $(this).data('murid-name');
+            const currentCourseId = $(this).data('current-course-id'); // ID kursus saat ini
 
             // Isi data ke dalam modal
-            $('#muridNameInModal').text(muridName);
-            $('#muridIdInput').val(muridId);
+            $('#muridNameAssignModal').text(muridName);
+            $('#muridIdAssignInput').val(muridId);
+
+            // Pre-select kursus saat ini jika ada
+            $('#swimming_course_id_assign').val(currentCourseId);
 
             // Set action URL untuk form di dalam modal
-            // Menggunakan route helper Laravel dengan ID murid
             const formAction = "{{ url('guru/murid') }}/" + muridId + "/assign-course";
             $('#assignCourseForm').attr('action', formAction);
-
-            // Opsional: Reset pilihan dropdown jika perlu
-            $('#swimming_course_id').val('');
         });
 
-        // Handle form submission via AJAX (opsional, tapi lebih baik untuk UX modal)
-        // Jika Anda ingin tetap menggunakan redirect Laravel, bagian ini tidak perlu
-        // Namun, untuk pengalaman modal yang lebih baik, AJAX disarankan.
-        // Jika tidak menggunakan AJAX, form akan submit dan halaman akan refresh.
         $('#assignCourseForm').on('submit', function(e) {
             e.preventDefault(); // Mencegah submit form default
 
@@ -167,14 +204,14 @@
                 success: function(response) {
                     // Tutup modal
                     $('#assignCourseModal').modal('hide');
-                    // Tampilkan pesan sukses (gunakan NotificationSystem jika ada)
+                    // Tampilkan pesan sukses
                     if (typeof notifications !== 'undefined') {
                         notifications.success(response.success);
                     } else {
-                        alert(response.success); // Fallback jika NotificationSystem tidak ada
+                        alert(response.success);
                     }
-                    // Refresh halaman atau perbarui tabel murid
-                    location.reload(); // Cara sederhana untuk refresh data
+                    // Refresh halaman untuk memperbarui tabel
+                    location.reload();
                 },
                 error: function(xhr) {
                     // Tutup modal
@@ -186,14 +223,77 @@
                     }
                     if (typeof notifications !== 'undefined') {
                         notifications.error(errorMessage);
-                        // Jika ada error validasi, tampilkan juga
                         if (xhr.responseJSON && xhr.responseJSON.errors) {
                             $.each(xhr.responseJSON.errors, function(key, value) {
                                 notifications.error(value[0]);
                             });
                         }
                     } else {
-                        alert(errorMessage); // Fallback
+                        alert(errorMessage);
+                    }
+                }
+            });
+        });
+
+        // --- Logika untuk Modal Perpanjang Kursus ---
+        $('.extend-course-btn').on('click', function() {
+            const muridId = $(this).data('murid-id');
+            const muridName = $(this).data('murid-name');
+            const currentEndDate = $(this).data('current-end-date'); // Tanggal selesai saat ini
+
+            // Isi data ke dalam modal
+            $('#muridNameExtendModal').text(muridName);
+            $('#muridIdExtendInput').val(muridId);
+            $('#currentEndDateExtendModal').text(currentEndDate ? new Date(currentEndDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : 'N/A');
+
+            // Set action URL untuk form di dalam modal
+            const formAction = "{{ url('guru/murid') }}/" + muridId + "/extend-course";
+            $('#extendCourseForm').attr('action', formAction);
+
+            // Reset input minggu tambahan
+            $('#additional_weeks').val(1);
+        });
+
+        $('#extendCourseForm').on('submit', function(e) {
+            e.preventDefault(); // Mencegah submit form default
+
+            const form = $(this);
+            const url = form.attr('action');
+            const formData = form.serialize(); // Ambil data form
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function(response) {
+                    // Tutup modal
+                    $('#extendCourseModal').modal('hide');
+                    // Tampilkan pesan sukses
+                    if (typeof notifications !== 'undefined') {
+                        notifications.success(response.success);
+                    } else {
+                        alert(response.success);
+                    }
+                    // Refresh halaman untuk memperbarui tabel
+                    location.reload();
+                },
+                error: function(xhr) {
+                    // Tutup modal
+                    $('#extendCourseModal').modal('hide');
+                    // Tampilkan pesan error
+                    let errorMessage = 'Terjadi kesalahan. Silakan coba lagi.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    if (typeof notifications !== 'undefined') {
+                        notifications.error(errorMessage);
+                        if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            $.each(xhr.responseJSON.errors, function(key, value) {
+                                notifications.error(value[0]);
+                            });
+                        }
+                    } else {
+                        alert(errorMessage);
                     }
                 }
             });

@@ -88,7 +88,7 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('admin.dashboard');
     });
 
-    // --- Rute Guru (tidak berubah) ---
+    // --- Rute Guru ---
     Route::get('/guru/dashboard', [App\Http\Controllers\Guru\GuruDashboardController::class, 'index'])->name('guru.dashboard')->middleware(['auth', 'role:guru']);
 
     Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {
@@ -113,14 +113,16 @@ Route::middleware('auth')->group(function () {
         Route::get('schedules/{schedule}/attendance', [GuruAttendanceController::class, 'showAttendanceForm'])->name('schedules.show_attendance_form');
         Route::post('schedules/{schedule}/attendance', [GuruAttendanceController::class, 'storeAttendance'])->name('schedules.store_attendance');
 
-        Route::get('attendance', [GuruAttendanceController::class, 'index'])->name('attendance.index');
+        // Hapus rute lama untuk assign-course-form yang merender halaman terpisah
+        // Route::get('murid/{murid}/assign-course', [App\Http\Controllers\Guru\GuruMuridController::class, 'assignCourseForm'])->name('murid.assign_course_form');
 
-        Route::get('murid/{murid}/assign-course', [App\Http\Controllers\Guru\GuruMuridController::class, 'assignCourseForm'])->name('murid.assign_course_form');
+        // Rute untuk menugaskan/mengubah kursus melalui modal (POST)
         Route::post('murid/{murid}/assign-course', [App\Http\Controllers\Guru\GuruMuridController::class, 'assignCourse'])->name('murid.assign_course');
-
+        // Rute BARU untuk memperpanjang kursus melalui modal (POST)
+        Route::post('murid/{murid}/extend-course', [App\Http\Controllers\Guru\GuruMuridController::class, 'extendCourse'])->name('murid.extend_course');
     });
 
-    // --- Rute Murid (tidak berubah) ---
+    // --- Rute Murid ---
     Route::get('/murid/dashboard', [App\Http\Controllers\Murid\MuridDashboardController::class, 'index'])->name('murid.dashboard')->middleware(['auth', 'role:murid']);
     Route::get('/murid', [App\Http\Controllers\Murid\MuridController::class, 'index'])->name('murid.index')->middleware(['auth', 'role:murid']);
 
