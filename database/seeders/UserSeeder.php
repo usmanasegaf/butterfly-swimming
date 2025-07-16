@@ -53,3 +53,4 @@ class UserSeeder extends Seeder
         $guru->murids()->attach($murid->id);
     }
 }
+// backup dan test
