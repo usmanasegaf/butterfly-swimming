@@ -33,17 +33,17 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/#program">Program</a>
                     </li>
+                    {{-- <li class="nav-item"> --}}
+                        {{-- <a class="nav-link" href="/#jadwal">Jadwal</a> --}}
+                    {{-- </li> --}}
+                    {{-- <li class="nav-item"> --}}
+                        {{-- <a class="nav-link" href="/#pelatih">Pelatih</a> --}}
+                    {{-- </li> --}}
                     <li class="nav-item">
-                        <a class="nav-link" href="/jadwal">Jadwal</a>
+                        <a class="nav-link" href="/#tentang">Tentang Kami</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/pelatih">Pelatih</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/tentang">Tentang Kami</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/kontak">Kontak</a>
+                        <a class="nav-link" href="/#kontak">Kontak</a>
                     </li>
 
                     {{-- Bagian dinamis berdasarkan status login --}}
@@ -71,6 +71,9 @@
                         <li class="nav-item">
                             <a class="nav-link btn btn-outline-light btn-sm ms-2 px-3" href="{{ route('login') }}">Login</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-warning btn-sm ms-2 px-3" href="{{ route('register') }}">Daftar</a>
+                        </li>
                     @endauth
 
                 </ul>
@@ -97,13 +100,13 @@
                 </div>
                 <div class="col-md-4 mb-4 mb-md-0">
                     <h5 class="mb-4" style="color: #F8F8FF;">Kontak Kami</h5>
-                    <p><i class="fas fa-map-marker-alt me-2"></i> TKI Sport Center, Belakang Griya TKI 2, Bandung</p>
-                    <p><i class="fas fa-phone me-2"></i> (021) 1234-5678</p>
+                    <p><i class="fas fa-map-marker-alt me-2"></i> Jl. Margacinta No.98, Cijaura, Kec. Buahbatu, Kota Bandung, Jawa Barat 40287</p>
+                    <p><i class="fas fa-phone me-2"></i> 081320111868</p>
                     <p><i class="fas fa-envelope me-2"></i> info@butterflyswimming.com</p>
                 </div>
                 <div class="col-md-4">
                     <h5 class="mb-4" style="color: #F8F8FF;">Jam Operasional</h5>
-                    <p>Senin - Minggu: 07.00 - 18.00</p>
+                    <p>Senin - Minggu: 08.00 - 18.00</p>
                 </div>
             </div>
             <hr class="my-4">

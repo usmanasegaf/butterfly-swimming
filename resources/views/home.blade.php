@@ -11,6 +11,7 @@
             color: white;
             padding: 150px 0;
             margin-top: 56px;
+            /* Untuk menggeser konten di bawah navbar fixed-top */
         }
 
         .program-card {
@@ -63,12 +64,48 @@
             font-size: 1.1rem;
             color: rgb(0, 0, 0);
         }
+
+        /* CSS tambahan untuk padding section agar tidak tertutup navbar */
+        .section-padding {
+            padding-top: 100px;
+            /* Sesuaikan dengan tinggi navbar Anda */
+            padding-bottom: 60px;
+        }
+
+        /* Styling khusus untuk bagian Tentang Kami */
+        .about-us-content {
+            background-color: #ffffff;
+            /* Latar belakang putih */
+            padding: 40px;
+            /* Padding di dalam kotak */
+            border-radius: 15px;
+            /* Sudut membulat */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            /* Bayangan lembut */
+            text-align: justify;
+            /* Teks rata kiri-kanan */
+        }
+
+        .about-us-content p {
+            font-size: 1.15rem;
+            /* Ukuran font sedikit lebih besar dari sebelumnya */
+            line-height: 1.8;
+            /* Jarak antar baris untuk keterbacaan lebih baik */
+            margin-bottom: 1.5rem;
+            /* Jarak antar paragraf sedikit lebih besar */
+        }
+
+        .about-us-content p:last-child {
+            margin-bottom: 0;
+            /* Hapus margin bawah pada paragraf terakhir */
+        }
     </style>
 @endpush
 
 @section('content')
-    <!-- Hero Section -->
-    <section class="hero-section">
+
+    <!-- Bagian Beranda -->
+    <section id="beranda" class="hero-section">
         <div class="container text-center">
             <h1 class="display-4 fw-bold mb-4" style="color: #F8F8FF;">Belajar Berenang dengan Metode Terbaik</h1>
             <p class="lead mb-5">Butterfly Swimming Course menawarkan program kursus renang untuk semua usia dan tingkat
@@ -80,9 +117,8 @@
         </div>
     </section>
 
-
     <!-- Features Section -->
-    <section class="py-5">
+    <section class="py-5 section-padding">
         <div class="container">
             <div class="row text-center mb-5">
                 <div class="col-lg-8 mx-auto">
@@ -121,7 +157,7 @@
     </section>
 
     <!-- Stats Section -->
-    <section class="stats-section py-5">
+    <section class="stats-section py-5 section-padding">
         <div class="container">
             <div class="row g-4">
                 <div class="col-md-3 col-6">
@@ -153,7 +189,7 @@
     </section>
 
     <!-- Programs Section -->
-    <section id="program" class="py-5">
+    <section id="program" class="py-5 section-padding">
         <div class="container">
             <div class="row text-center mb-5">
                 <div class="col-lg-8 mx-auto">
@@ -185,8 +221,44 @@
         </div>
     </section>
 
+    <!-- Bagian Tentang Kami -->
+    <section id="tentang" class="section-padding bg-white">
+        <div class="container">
+            <div class="row justify-content-center text-center mb-1">
+                <div class="col-lg-8 col-md-2">
+                    <h2 class="fw-bold text-primary border-bottom pb-2">
+                        Tentang Butterfly Swimming Course
+                    </h2>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="about-us-content p-4 p-md-5 bg-light border rounded-4 shadow-sm">
+                        <p class="lead text-dark">
+                            <strong>Butterfly Swimming Course</strong> didirikan dengan visi untuk menjadi pusat pelatihan
+                            renang
+                            terkemuka yang memberikan pengalaman belajar yang menyenangkan dan efektif bagi semua tingkatan
+                            usia.
+                        </p>
+                        <p class="text-dark">
+                            Kami percaya bahwa renang adalah keterampilan hidup yang penting, dan kami berkomitmen untuk
+                            membantu setiap individu mencapai potensi maksimal mereka di dalam air. Dengan <strong>fasilitas
+                                modern</strong> dan
+                            <strong>tim pelatih bersertifikat</strong>, kami memastikan lingkungan belajar yang aman,
+                            suportif, dan inspiratif.
+                        </p>
+                        <p class="fw-semibold text-dark mb-0">
+                            🌊 Bergabunglah dengan kami dan rasakan perbedaan dalam perjalanan renang Anda!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
     <!-- Testimonials Section -->
-    <section class="py-5 bg-light">
+    <section class="py-5 bg-light section-padding">
         <div class="container">
             <div class="row text-center mb-5">
                 <div class="col-lg-8 mx-auto">
@@ -219,36 +291,73 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section py-5">
+    <section class="cta-section py-5 section-padding">
         <div class="container text-center py-4">
             <h2 class="fw-bold mb-4" style="color: #F8F8FF;">Siap Untuk Mulai Berenang?</h2>
             <p class="lead mb-4">Daftar sekarang dan mulai perjalanan berenang Anda bersama kami!</p>
             <a href="{{ route('register') }}" class="btn btn-light btn-lg px-5">Daftar Sekarang</a>
         </div>
     </section>
+
+    <!-- Bagian Kontak -->
+    <section id="kontak" class="section-padding bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Hubungi Kami</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <p class="text-center lead mb-4">
+                        Kami siap menjawab pertanyaan Anda. Jangan ragu untuk menghubungi kami melalui informasi di bawah
+                        ini:
+                    </p>
+                    <ul class="list-unstyled text-center fs-5">
+                        <li class="mb-3">
+                            <i class="fas fa-map-marker-alt me-3 text-primary"></i>
+                            Jl. Margacinta No.98, Cijaura, Kec. Buahbatu, Kota Bandung, Jawa Barat 40287
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-phone me-3 text-primary"></i>
+                            081320111868
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-envelope me-3 text-primary"></i>
+                            info@butterflyswimming.com
+                        </li>
+                        <li class="mb-3">
+                            <i class="fab fa-instagram me-3 text-primary"></i>
+                            @butterflyswimmingcourse
+                        </li>
+                    </ul>
+                    <div class="text-center mt-5">
+                        <a href="{{ route('register-course') }}" class="btn btn-primary btn-lg">Daftar Kursus
+                            Sekarang</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 @endsection
 
 @push('scripts')
     <script>
-        // Memastikan gambar dimuat dengan benar
-        document.addEventListener('DOMContentLoaded', function() {
-            const images = document.querySelectorAll('img');
-            images.forEach(img => {
-                img.onerror = function() {
-                    console.error('Error loading image:', this.src);
-                    // Optional: set fallback image
-                    this.src = '{{ asset('images/placeholder.jpg') }}';
-                };
-            });
-        });
-
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                const targetId = this.getAttribute('href').substring(1); // Get the ID without '#'
+                const targetElement = document.getElementById(targetId);
+
+                if (targetElement) {
+                    // Calculate offset for fixed navbar
+                    const navbarHeight = document.querySelector('.navbar.fixed-top').offsetHeight;
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = elementPosition - navbarHeight;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
             });
         });
     </script>
