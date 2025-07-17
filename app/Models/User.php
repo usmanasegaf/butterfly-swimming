@@ -25,6 +25,7 @@ class User extends Authenticatable
         'profile_picture',
         'swimming_course_id', // Ditambahkan untuk penugasan kursus
         'course_assigned_at', // Ditambahkan untuk tanggal penugasan kursus
+        'status',
     ];
 
     protected $hidden = [

@@ -113,8 +113,8 @@ Route::middleware('auth')->group(function () {
         Route::get('schedules/{schedule}/attendance', [GuruAttendanceController::class, 'showAttendanceForm'])->name('schedules.show_attendance_form');
         Route::post('schedules/{schedule}/attendance', [GuruAttendanceController::class, 'storeAttendance'])->name('schedules.store_attendance');
 
-        // Hapus rute lama untuk assign-course-form yang merender halaman terpisah
-        // Route::get('murid/{murid}/assign-course', [App\Http\Controllers\Guru\GuruMuridController::class, 'assignCourseForm'])->name('murid.assign_course_form');
+        Route::get('murid/create-account', [App\Http\Controllers\Guru\GuruMuridController::class, 'createMuridAccountForm'])->name('murid.create_account_form');
+        Route::post('murid/store-account', [App\Http\Controllers\Guru\GuruMuridController::class, 'storeMuridAccount'])->name('murid.store_account');
 
         // Rute untuk menugaskan/mengubah kursus melalui modal (POST)
         Route::post('murid/{murid}/assign-course', [App\Http\Controllers\Guru\GuruMuridController::class, 'assignCourse'])->name('murid.assign_course');

@@ -11,6 +11,9 @@
             <a href="{{ route('guru.murid.create') }}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Tambah Murid Bimbingan
             </a>
+                                <a href="{{ route('guru.murid.create_account_form') }}" class="btn btn-success btn-sm">
+                        <i class="fas fa-user-plus"></i> Buat Akun Murid Bimbingan
+                    </a>
         </div>
         <div class="card-body">
             @if (session('success'))
