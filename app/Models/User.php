@@ -71,6 +71,11 @@ class User extends Authenticatable
         return $this->belongsTo(SwimmingCourse::class);
     }
 
+        public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'student_id');
+    }
+
     /**
      * Get the registrations for the user.
      */
