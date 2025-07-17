@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
 
     @stack('styles')
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container">
@@ -22,7 +24,8 @@
                 <i class="fas fa-swimming-pool me-2"></i>
                 Butterfly Swimming
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -33,11 +36,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/#program">Program</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#testimoni">Testimoni</a>
+                    </li>
                     {{-- <li class="nav-item"> --}}
-                        {{-- <a class="nav-link" href="/#jadwal">Jadwal</a> --}}
+                    {{-- <a class="nav-link" href="/#jadwal">Jadwal</a> --}}
                     {{-- </li> --}}
                     {{-- <li class="nav-item"> --}}
-                        {{-- <a class="nav-link" href="/#pelatih">Pelatih</a> --}}
+                    {{-- <a class="nav-link" href="/#pelatih">Pelatih</a> --}}
                     {{-- </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="/#tentang">Tentang Kami</a>
@@ -52,13 +58,16 @@
                             <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
                                 Selamat datang<br>{{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 {{-- Anda bisa tambahkan link profil atau pengaturan di sini --}}
                                 <li><a class="dropdown-item" href="/profile">Profil</a></li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                         @csrf
@@ -100,7 +109,8 @@
                 </div>
                 <div class="col-md-4 mb-4 mb-md-0">
                     <h5 class="mb-4" style="color: #F8F8FF;">Kontak Kami</h5>
-                    <p><i class="fas fa-map-marker-alt me-2"></i> Jl. Margacinta No.98, Cijaura, Kec. Buahbatu, Kota Bandung, Jawa Barat 40287</p>
+                    <p><i class="fas fa-map-marker-alt me-2"></i> Jl. Margacinta No.98, Cijaura, Kec. Buahbatu, Kota
+                        Bandung, Jawa Barat 40287</p>
                     <p><i class="fas fa-phone me-2"></i> 081320111868</p>
                     <p><i class="fas fa-envelope me-2"></i> info@butterflyswimming.com</p>
                 </div>
@@ -122,4 +132,5 @@
 
     @stack('scripts')
 </body>
+
 </html>
