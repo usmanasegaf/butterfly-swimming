@@ -244,7 +244,7 @@
                     @foreach(\App\Models\SwimmingCourse::where('is_active', true)->take(3)->get() as $course)
                     <div class="col-lg-4 mb-4">
                         <div class="card h-100"> {{-- Tambahkan h-100 untuk tinggi kartu yang sama --}}
-                            <img class="card-img-top" src="{{ asset('images/' . ($course->image ?? 'pool1.jpg')) }}" alt="{{ $course->name }}">
+                            <img class="card-img-top" src="{{ asset('images/' . ($course->image ?? 'pool1.1.jpg')) }}" alt="{{ $course->name }}">
                             <div class="card-body d-flex flex-column"> {{-- Gunakan flex-column untuk tata letak yang lebih baik --}}
                                 <h5 class="card-title text-primary font-weight-bold">{{ $course->name }}</h5>
                                 <p class="card-text text-secondary">{{ \Illuminate\Support\Str::limit($course->description, 100) }}</p>

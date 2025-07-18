@@ -5,7 +5,7 @@
 @push('styles')
     <style>
         .hero-section {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('images/pool1.jpg') }}');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('images/pool1.1.jpg') }}');
             background-size: cover;
             background-position: center;
             color: white;
