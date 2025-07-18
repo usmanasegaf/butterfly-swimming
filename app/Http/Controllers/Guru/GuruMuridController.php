@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash; // Untuk hashing password
 use Illuminate\Support\Str; // Untuk string manipulation (email, password generation)
 use Illuminate\Support\Facades\DB; // Untuk transaksi database
 use Illuminate\Validation\Rule; // Untuk Rule::unique jika masih ada
+use Carbon\Carbon;
 
 class GuruMuridController extends Controller
 {
