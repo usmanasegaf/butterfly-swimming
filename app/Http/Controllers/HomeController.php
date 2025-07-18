@@ -17,7 +17,7 @@ class HomeController extends Controller
                 'description' => 'Kursus dasar untuk pemula yang belum pernah berenang sebelumnya.',
                 'level' => 'Pemula',
                 'price' => 500000,
-                'image' => 'pool1.jpg'
+                'image' => 'program-pemula.jpg'
             ],
             [
                 'id' => 2,
@@ -33,7 +33,7 @@ class HomeController extends Controller
                 'description' => 'Kursus untuk perenang yang ingin menyempurnakan teknik dan kecepatan.',
                 'level' => 'Lanjutan',
                 'price' => 1000000,
-                'image' => 'pool3.jpg'
+                'image' => 'program-lanjutan.jpg'
             ]
         ];
 
