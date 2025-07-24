@@ -22,7 +22,7 @@ class GuruCourseController extends Controller
         $swimmingCourses = SwimmingCourse::all();
 
         // Ambil jadwal yang sudah dibuat oleh guru yang sedang login
-        $guruSchedules = Auth::user()->jadwalGuru()->with('swimmingCourse', 'location')->get();
+        $guruSchedules = Auth::user()->jadwalGuru()->with('swimmingCourse', 'location', 'murid')->get();
 
         // Mengembalikan view yang benar: guru.courses.index
         return view('guru.courses.index', compact('swimmingCourses', 'guruSchedules'));
@@ -36,8 +36,10 @@ class GuruCourseController extends Controller
         // Ambil daftar lokasi untuk dropdown di form
         $locations = Location::all();
 
+        $murids = Auth::user()->murids;
+
         // Mengembalikan view yang benar: guru.courses.create_schedule
-        return view('guru.courses.create_schedule', compact('swimmingCourse', 'locations'));
+        return view('guru.courses.create_schedule', compact('swimmingCourse', 'locations', 'murids'));
     }
 
     /**
@@ -48,7 +50,7 @@ class GuruCourseController extends Controller
         $request->validate([
             'swimming_course_id' => 'required|exists:swimming_courses,id',
             'location_id'        => 'required|exists:locations,id',
-            'max_students'       => 'required|integer|min:1',
+            'murid_id'           => 'required|exists:users,id',
             'day_of_week'       => 'required|integer|min:1|max:7', // 1=Senin, 7=Minggu
             'start_time_of_day' => 'required|date_format:H:i', // Format jam:menit (misal: 14:30)
             'end_time_of_day'   => 'required|date_format:H:i|after:start_time_of_day', // Harus setelah jam mulai
@@ -58,10 +60,11 @@ class GuruCourseController extends Controller
             'swimming_course_id' => $request->swimming_course_id,
             'guru_id'            => Auth::id(),
             'location_id'        => $request->location_id,
+            'murid_id'           => $request->murid_id, 
             'day_of_week'       => $request->day_of_week,
             'start_time_of_day' => $request->start_time_of_day,
             'end_time_of_day'   => $request->end_time_of_day,
-            'max_students'       => $request->max_students,
+            'max_students'       => 1,
             'status'             => 'active', // Set status default
         ]);
         // dd($schedule);
@@ -77,8 +80,9 @@ class GuruCourseController extends Controller
 
         $swimmingCourses = SwimmingCourse::all(); // Untuk dropdown pilihan kursus jika ingin diubah
         $locations = Location::all(); // Untuk dropdown pilihan lokasi
+        $murids = Auth::user()->murids;
 
-        return view('guru.courses.edit_schedule', compact('schedule', 'swimmingCourses', 'locations'));
+        return view('guru.courses.edit_schedule', compact('schedule', 'swimmingCourses', 'locations', 'murids'));
     }
 
     /**
@@ -90,7 +94,7 @@ class GuruCourseController extends Controller
         $request->validate([
             'swimming_course_id' => 'required|exists:swimming_courses,id',
             'location_id'        => 'required|exists:locations,id',
-            'max_students'       => 'required|integer|min:1',
+            'murid_id'           => 'required|exists:users,id',
             'day_of_week'       => 'required|integer|min:1|max:7',
             'start_time_of_day' => 'required|date_format:H:i',
             'end_time_of_day'   => 'required|date_format:H:i|after:start_time_of_day',
@@ -99,10 +103,11 @@ class GuruCourseController extends Controller
         $schedule->update([
             'swimming_course_id' => $request->swimming_course_id,
             'location_id'        => $request->location_id,
+            'murid_id'           => $request->murid_id, 
             'day_of_week'       => $request->day_of_week,
             'start_time_of_day' => $request->start_time_of_day,
             'end_time_of_day'   => $request->end_time_of_day,
-            'max_students'       => $request->max_students,
+            'max_students'       => 1,
             // 'status'             => $request->status, // Jika status bisa diubah dari form
         ]);
 

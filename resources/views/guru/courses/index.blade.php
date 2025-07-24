@@ -55,11 +55,11 @@
                             <thead>
                                 <tr>
                                     <th>Kursus</th>
+                                    <th>Murid</th>
                                     <th>Lokasi</th>
                                     <th>Hari</th> {{-- MENAMBAHKAN TH UNTUK HARI --}}
                                     <th>Waktu Mulai</th>
                                     <th>Waktu Selesai</th>
-                                    <th>Max Murid</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -68,6 +68,7 @@
                                 @foreach ($guruSchedules as $schedule)
                                     <tr>
                                         <td>{{ $schedule->swimmingCourse->name ?? 'Kursus Tidak Ditemukan' }}</td>
+                                        <td>{{ $schedule->murid->name ?? 'Belum ada' }}</td> 
                                         <td>{{ $schedule->location->name ?? 'Lokasi Tidak Ditemukan' }}</td>
                                         {{-- MENAMBAHKAN TD UNTUK HARI DAN MENGUBAH ANGKA KE NAMA HARI --}}
                                         <td>
@@ -88,8 +89,6 @@
                                         <td>{{ \Carbon\Carbon::parse($schedule->start_time_of_day)->format('H:i') }}</td>
                                         {{-- PERBAIKAN: Menggunakan nama kolom yang benar dan format waktu H:i --}}
                                         <td>{{ \Carbon\Carbon::parse($schedule->end_time_of_day)->format('H:i') }}</td>
-                                        {{-- PERBAIKAN: Menampilkan max_students langsung tanpa Carbon --}}
-                                        <td>{{ $schedule->max_students }}</td>
                                         {{-- Ini sudah benar untuk status --}}
                                         <td>{{ ucfirst($schedule->status) }}</td>
                                         <td>

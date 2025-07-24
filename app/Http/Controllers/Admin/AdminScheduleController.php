@@ -20,10 +20,10 @@ class AdminScheduleController extends Controller
     public function index()
     {
         // Mengambil semua jadwal dengan eager loading relasi yang dibutuhkan
-        $schedules = Schedule::with(['swimmingCourse', 'guru', 'location'])
+        $schedules = Schedule::with(['swimmingCourse', 'guru', 'location', 'murid'])
                              ->orderBy('day_of_week')
                              ->orderBy('start_time_of_day')
-                             ->paginate(10); // Menampilkan 10 jadwal per halaman
+                             ->paginate(10);
 
         return view('admin.schedules.index', compact('schedules'));
     }
@@ -37,9 +37,10 @@ class AdminScheduleController extends Controller
     {
         $swimmingCourses = SwimmingCourse::all();
         $locations = Location::all();
-        $gurus = User::where('role', 'guru')->where('status', 'active')->get(); // Ambil semua guru aktif
+        $gurus = User::where('role', 'guru')->where('status', 'active')->get();
+        $murids = User::where('role', 'murid')->where('status', 'active')->get();
 
-        return view('admin.schedules.create', compact('swimmingCourses', 'locations', 'gurus'));
+        return view('admin.schedules.create', compact('swimmingCourses', 'locations', 'gurus', 'murids'));
     }
 
     /**
@@ -54,10 +55,10 @@ class AdminScheduleController extends Controller
             'swimming_course_id' => 'required|exists:swimming_courses,id',
             'guru_id'            => 'required|exists:users,id', // Validasi guru_id
             'location_id'        => 'required|exists:locations,id',
+            'murid_id'           => 'required|exists:users,id',
             'day_of_week'        => 'required|integer|min:1|max:7', // 1=Senin, 7=Minggu
             'start_time_of_day'  => 'required|date_format:H:i',
             'end_time_of_day'    => 'required|date_format:H:i|after:start_time_of_day',
-            'max_students'       => 'required|integer|min:1',
             'status'             => 'required|string|in:active,cancelled', // Admin bisa set status
         ]);
 
@@ -65,10 +66,11 @@ class AdminScheduleController extends Controller
             'swimming_course_id' => $request->swimming_course_id,
             'guru_id'            => $request->guru_id,
             'location_id'        => $request->location_id,
+            'murid_id'           => $request->murid_id,
             'day_of_week'        => $request->day_of_week,
             'start_time_of_day'  => $request->start_time_of_day,
             'end_time_of_day'    => $request->end_time_of_day,
-            'max_students'       => $request->max_students,
+            'max_students'       => 1,   
             'status'             => $request->status,
         ]);
 
@@ -86,9 +88,10 @@ class AdminScheduleController extends Controller
     {
         $swimmingCourses = SwimmingCourse::all();
         $locations = Location::all();
-        $gurus = User::where('role', 'guru')->where('status', 'active')->get(); // Ambil semua guru aktif
+        $gurus = User::where('role', 'guru')->where('status', 'active')->get(); 
+        $murids = User::where('role', 'murid')->where('status', 'active')->get();
 
-        return view('admin.schedules.edit', compact('schedule', 'swimmingCourses', 'locations', 'gurus'));
+        return view('admin.schedules.edit', compact('schedule', 'swimmingCourses', 'locations', 'gurus', 'murids'));
     }
 
     /**
@@ -104,10 +107,10 @@ class AdminScheduleController extends Controller
             'swimming_course_id' => 'required|exists:swimming_courses,id',
             'guru_id'            => 'required|exists:users,id',
             'location_id'        => 'required|exists:locations,id',
+            'murid_id'           => 'required|exists:users,id', 
             'day_of_week'        => 'required|integer|min:1|max:7',
             'start_time_of_day'  => 'required|date_format:H:i',
             'end_time_of_day'    => 'required|date_format:H:i|after:start_time_of_day',
-            'max_students'       => 'required|integer|min:1',
             'status'             => 'required|string|in:active,cancelled',
         ]);
 
@@ -115,23 +118,17 @@ class AdminScheduleController extends Controller
             'swimming_course_id' => $request->swimming_course_id,
             'guru_id'            => $request->guru_id,
             'location_id'        => $request->location_id,
+            'murid_id'           => $request->murid_id,
             'day_of_week'        => $request->day_of_week,
             'start_time_of_day'  => $request->start_time_of_day,
             'end_time_of_day'    => $request->end_time_of_day,
-            'max_students'       => $request->max_students,
+            'max_students'       => 1,
             'status'             => $request->status,
         ]);
 
-        // PERBAIKAN: Mengubah redirect()->route('schedules.index') menjadi redirect()->route('admin.schedules.index')
         return redirect()->route('admin.schedules.index')->with('success', 'Jadwal berhasil diperbarui!');
     }
 
-    /**
-     * Remove the specified schedule from storage.
-     *
-     * @param  \App\Models\Schedule  $schedule
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function destroy(Schedule $schedule)
     {
         $schedule->delete();
