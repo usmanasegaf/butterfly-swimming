@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\HasMany; 
 
 class User extends Authenticatable
 {
@@ -15,17 +16,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
-        'is_verified',
-        'google_id',
-        'guru_id',
-        'phone_number',
-        'address',
-        'birthdate',
-        'profile_picture',
+        'role', 
         'swimming_course_id', // Ditambahkan untuk penugasan kursus
         'course_assigned_at', // Ditambahkan untuk tanggal penugasan kursus
         'status',
+        'jumlah_pertemuan_paket',
+        'pertemuan_ke',
     ];
 
     protected $hidden = [
@@ -36,8 +32,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at'  => 'datetime',
         'password'           => 'hashed',
-        'is_verified'        => 'boolean',
-        'birthdate'          => 'date',
         'course_assigned_at' => 'datetime', // Dicast sebagai datetime
     ];
 
@@ -56,9 +50,10 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'guru_murid', 'murid_id', 'guru_id');
     }
 
-    public function schedules()
+    public function schedules(): HasMany
     {
-        return $this->belongsToMany(Schedule::class, 'schedule_murid', 'murid_id', 'schedule_id');
+        // Seorang murid bisa memiliki banyak jadwal (jika memperpanjang kursus)
+        return $this->hasMany(Schedule::class, 'murid_id');
     }
 
     public function jadwalGuru()
@@ -71,7 +66,7 @@ class User extends Authenticatable
         return $this->belongsTo(SwimmingCourse::class);
     }
 
-        public function attendances()
+    public function attendances()
     {
         return $this->hasMany(Attendance::class, 'student_id');
     }
@@ -85,7 +80,6 @@ class User extends Authenticatable
         // dengan asumsi kolom foreign key di tabel 'registrations' adalah 'user_id'.
         return $this->hasMany(Registration::class, 'user_id');
     }
-
 
     public function getRemainingLessonDaysAttribute()
     {
