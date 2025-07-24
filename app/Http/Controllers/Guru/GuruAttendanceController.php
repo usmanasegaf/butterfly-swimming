@@ -107,6 +107,7 @@ class GuruAttendanceController extends Controller
             // 2. Jika statusnya 'hadir', update hitungan pertemuan
             if ($request->attendance_status === 'hadir') {
                 $murid->increment('pertemuan_ke');
+                $courseName = $murid->swimmingCourse->name;
 
                 // 3. Cek apakah kuota pertemuan sudah habis
                 if ($murid->pertemuan_ke >= $murid->jumlah_pertemuan_paket) {
@@ -118,7 +119,17 @@ class GuruAttendanceController extends Controller
                     $murid->pertemuan_ke           = 0; // Reset
                     $murid->save();
 
-                    // Di sini kita akan menambahkan notifikasi di Langkah 5
+                    try {
+                        // Kirim notifikasi ke murid
+                        $murid->notify(new MuridCourseMeetingExpired($murid, $courseName));
+
+                        // Kirim notifikasi ke guru
+                        $guru = Auth::user();
+                        $guru->notify(new MuridCourseMeetingExpired($murid, $courseName));
+                    } catch (\Exception $e) {
+                        Log::error("Gagal mengirim notifikasi kursus habis untuk murid {$murid->id}: " . $e->getMessage());
+                    }
+
                 }
             }
 

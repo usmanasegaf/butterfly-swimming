@@ -7,6 +7,7 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\SendMuridCourseReminder; // <<< TAMBAHKAN INI
 use App\Console\Commands\SendMuridExpiredReminder; // Sudah ada
 use App\Console\Commands\SendMuridScheduleInAppReminder; // Sudah ada
+use App\Console\Commands\SendMeetingExpiryReminder;
 
 class Kernel extends ConsoleKernel
 {
@@ -21,6 +22,7 @@ class Kernel extends ConsoleKernel
         // Pastikan command lain yang sudah ada juga terdaftar jika belum
         SendMuridExpiredReminder::class,
         SendMuridScheduleInAppReminder::class,
+        SendMeetingExpiryReminder::class,
     ];
 
     /**
@@ -34,6 +36,7 @@ class Kernel extends ConsoleKernel
         // Jadwal command yang sudah ada sebelumnya:
         $schedule->command('murid:send-inapp-schedule-reminder')->everyMinute();
         $schedule->command('murid:send-expired-reminder')->daily();
+        $schedule->command('murid:send-meeting-expiry-reminder')->dailyAt('08:30');
     }
 
     /**

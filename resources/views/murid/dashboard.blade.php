@@ -4,33 +4,38 @@
 @section('title', 'Dashboard Murid')
 
 @section('content')
-<div class="container">
+    <div class="container">
 
-    <p>Selamat datang, {{ $user->name }}!</p>
+        <p>Selamat datang, {{ $user->name }}!</p>
 
-    {{-- INFORMASI KURSUS RENANG ANDA DIHAPUS DARI SINI --}}
-    {{-- Blok ini akan dipindahkan ke resources/views/murid/index.blade.php --}}
 
-    {{-- Informasi Jadwal Les Selanjutnya (INI TETAP DI SINI) --}}
-    <div style="margin-top: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 8px;">
-        <h4>Jadwal Les Selanjutnya</h4>
-        @if ($nextSchedule)
-            <p>
-                <strong>Tanggal:</strong> {{ $nextSchedule->occurrence->format('d M Y') }}
-                <br>
-                <strong>Jam:</strong> {{ \Carbon\Carbon::parse($nextSchedule->schedule->start_time_of_day)->format('H:i') }} - {{ \Carbon\Carbon::parse($nextSchedule->schedule->end_time_of_day)->format('H:i') }}
-                <br>
-                <strong>Lokasi:</strong> {{ $location ?? 'Belum diatur' }}
-                ({{ $nextSchedule->schedule->location->address ?? '' }})
-                <br>
-                <strong>Guru:</strong> {{ $nextSchedule->schedule->guru->name ?? 'N/A' }}
-            </p>
-        @else
-            <p>Belum ada jadwal les selanjutnya yang ditemukan untuk kursus Anda.</p>
-        @endif
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Informasi Kursus Aktif</h6>
+            </div>
+            <div class="card-body">
+                @if ($user->swimmingCourse)
+                    <p><strong>Kursus Anda:</strong> {{ $user->swimmingCourse->name }} ({{ $user->swimmingCourse->level }})
+                    </p>
+
+                    {{-- <<< PENAMBAHAN BLOK INI >>> --}}
+                    <p><strong>Progres Pertemuan:</strong> {{ $user->pertemuan_ke }} dari
+                        {{ $user->jumlah_pertemuan_paket }} pertemuan telah diikuti.</p>
+                    <div class="progress mb-3">
+                        <div class="progress-bar" role="progressbar"
+                            style="width: {{ ($user->pertemuan_ke / $user->jumlah_pertemuan_paket) * 100 }}%"
+                            aria-valuenow="{{ $user->pertemuan_ke }}" aria-valuemin="0"
+                            aria-valuemax="{{ $user->jumlah_pertemuan_paket }}"></div>
+                    </div>
+                    {{-- <<< AKHIR PENAMBAHAN >>> --}}
+
+                    <p><strong>Sisa Waktu Les Berdasarkan Durasi:</strong> {{ $user->remaining_lesson_days ?? 'N/A' }}</p>
+                    <small class="text-muted">*Kursus akan berakhir jika kuota pertemuan atau sisa waktu les telah habis,
+                        mana saja yang tercapai lebih dulu.</small>
+                @else
+                    <p>Anda tidak sedang mengikuti kursus aktif saat ini.</p>
+                @endif
+            </div>
+        </div>
     </div>
-
-    {{-- Anda bisa menambahkan konten dashboard lainnya di sini --}}
-
-</div>
 @endsection
