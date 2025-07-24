@@ -187,52 +187,38 @@ class GuruMuridController extends Controller
         ]);
 
         $selectedCourse = SwimmingCourse::find($request->swimming_course_id);
-        $biaya = $selectedCourse ? $selectedCourse->price : 0;
+        
+        DB::beginTransaction();
+        try {
+            // Update data di tabel user
+            $murid->swimming_course_id = $selectedCourse->id;
+            $murid->course_assigned_at = Carbon::now();
+            $murid->course_end_date = Carbon::now()->addWeeks($selectedCourse->duration); // Tetap simpan end_date
+            $murid->jumlah_pertemuan_paket = $selectedCourse->jumlah_pertemuan; // Simpan kuota pertemuan
+            $murid->pertemuan_ke = 0; // Reset hitungan pertemuan
+            $murid->save();
 
-        $startDate = Carbon::now();
-        $endDate = $startDate->copy()->addWeeks($selectedCourse->duration);
-
-        $existingTodayRegistration = $murid->registrations()
-                                            ->where('status', 'approved')
-                                            ->whereDate('start_date', $startDate->toDateString())
-                                            ->first();
-
-        if ($existingTodayRegistration) {
-            $existingTodayRegistration->update([
-                'swimming_course_id' => $request->swimming_course_id,
-                'end_date'           => $endDate, // Perbarui end_date sesuai durasi kursus baru
-                'biaya'              => $biaya,   // Perbarui biaya
-                'guru_id'            => Auth::id(), // Pastikan guru_id tetap guru yang login
+            // (Opsional) Anda bisa membuat entri di tabel `registrations` jika masih diperlukan untuk rekam jejak
+            Registration::create([
+                'user_id'            => $murid->id,
+                'swimming_course_id' => $selectedCourse->id,
+                'start_date'         => Carbon::now(),
+                'end_date'           => $murid->course_end_date,
+                'status'             => 'approved',
+                'biaya'              => $selectedCourse->price,
+                'guru_id'            => Auth::id(),
             ]);
-            $message = 'Kursus murid berhasil diubah!';
-        } else {
-            $activeRegistration = $murid->registrations()
-                                        ->where('status', 'approved')
-                                        ->where('end_date', '>=', Carbon::now()->toDateString())
-                                        ->first();
 
-            if ($activeRegistration) {
-                return response()->json(['error' => 'Murid ini masih memiliki kursus aktif yang belum selesai. Gunakan fitur "Perpanjang Kursus" jika ingin menambah durasi, atau batalkan kursus sebelumnya.'], 400);
-            } else {
-                Registration::create([
-                    'user_id'            => $murid->id,
-                    'swimming_course_id' => $request->swimming_course_id,
-                    'start_date'         => $startDate,
-                    'end_date'           => $endDate,
-                    'status'             => 'approved', // Langsung disetujui oleh guru
-                    'biaya'              => $biaya, // Simpan biaya
-                    'guru_id'            => Auth::id(), // Guru yang login adalah guru_id
-                ]);
-                $message = 'Kursus berhasil ditugaskan kepada murid!';
-            }
+            DB::commit();
+            return response()->json(['success' => 'Kursus berhasil ditugaskan kepada murid!']);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Gagal menugaskan kursus: ' . $e->getMessage()], 500);
         }
-
-        $murid->swimming_course_id = $request->swimming_course_id;
-        $murid->course_assigned_at = $startDate; // Gunakan start_date sebagai course_assigned_at
-        $murid->save();
-
-        return response()->json(['success' => $message]);
+        
     }
+
 
     public function extendCourse(Request $request, User $murid)
     {
@@ -241,24 +227,39 @@ class GuruMuridController extends Controller
         }
 
         $request->validate([
-            'additional_weeks' => 'required|integer|min:1',
+            'swimming_course_id' => 'required|exists:swimming_courses,id',
         ]);
 
-        $activeRegistration = $murid->registrations()
-                                    ->where('status', 'approved')
-                                    ->where('end_date', '>=', Carbon::now()->toDateString())
-                                    ->first();
+        $selectedCourse = SwimmingCourse::find($request->swimming_course_id);
 
-        if (! $activeRegistration) {
-            return response()->json(['error' => 'Murid ini tidak memiliki kursus aktif yang bisa diperpanjang.'], 400);
+        // ========== LOGIKA BARU UNTUK PERPANJANG/PERBARUI KURSUS ==========
+        DB::beginTransaction();
+        try {
+            // Logika ini sama persis dengan assignCourse, efektif me-reset kursus murid
+            $murid->swimming_course_id = $selectedCourse->id;
+            $murid->course_assigned_at = Carbon::now();
+            $murid->course_end_date = Carbon::now()->addWeeks($selectedCourse->duration);
+            $murid->jumlah_pertemuan_paket = $selectedCourse->jumlah_pertemuan;
+            $murid->pertemuan_ke = 0; // Reset hitungan pertemuan
+            $murid->save();
+
+            Registration::create([
+                'user_id'            => $murid->id,
+                'swimming_course_id' => $selectedCourse->id,
+                'start_date'         => Carbon::now(),
+                'end_date'           => $murid->course_end_date,
+                'status'             => 'approved',
+                'biaya'              => $selectedCourse->price,
+                'guru_id'            => Auth::id(),
+            ]);
+
+            DB::commit();
+            return response()->json(['success' => 'Kursus murid berhasil diperbarui/diperpanjang!']);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Gagal memperbarui kursus: ' . $e->getMessage()], 500);
         }
-
-        $newEndDate = Carbon::parse($activeRegistration->end_date)->addWeeks($request->additional_weeks);
-
-        $activeRegistration->update([
-            'end_date' => $newEndDate,
-        ]);
-
-        return response()->json(['success' => 'Kursus berhasil diperpanjang hingga ' . $newEndDate->format('d M Y') . '!']);
+        // ========== AKHIR PERUBAHAN ==========
     }
 }
