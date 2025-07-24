@@ -2,11 +2,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\Relations\HasMany; 
 
 class User extends Authenticatable
 {
@@ -16,7 +16,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', 
+        'role',
         'swimming_course_id', // Ditambahkan untuk penugasan kursus
         'course_assigned_at', // Ditambahkan untuk tanggal penugasan kursus
         'status',
@@ -86,7 +86,11 @@ class User extends Authenticatable
         if (! $this->swimmingCourse || ! $this->course_assigned_at) {
             return null;
         }
-
+        
+        if (isset($this->jumlah_pertemuan_paket) && $this->pertemuan_ke >= $this->jumlah_pertemuan_paket) {
+            return 'Kursus telah berakhir (kuota pertemuan habis).';
+        }
+       
         $durationWeeks = $this->swimmingCourse->duration;
 
         if (! is_numeric($durationWeeks) || $durationWeeks <= 0) {

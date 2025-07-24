@@ -108,8 +108,10 @@ class GuruAttendanceController extends Controller
             if ($request->attendance_status === 'hadir') {
                 $murid->increment('pertemuan_ke');
                 $courseName = $murid->swimmingCourse->name;
+                
+                $attendance->pertemuan_ke = $murid->pertemuan_ke;
+                $attendance->save();
 
-                // 3. Cek apakah kuota pertemuan sudah habis
                 if ($murid->pertemuan_ke >= $murid->jumlah_pertemuan_paket) {
                     // Habiskan kursus
                     $murid->swimming_course_id     = null;

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('schedules', function (Blueprint $table) {
             // Menambahkan kolom murid_id untuk relasi 1-to-1 jadwal dengan murid.
             // Kolom ini bisa null karena jadwal bisa dibuat tanpa langsung menugaskan murid.
-            $table->foreignId('murid_id')->after('max_murid')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('murid_id')->after('max_students')->nullable()->constrained('users')->onDelete('cascade');
         });
     }
 

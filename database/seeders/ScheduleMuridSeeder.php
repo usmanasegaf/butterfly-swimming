@@ -1,10 +1,10 @@
 <?php
-
 namespace Database\Seeders;
 
+use App\Models\Schedule;
+use App\Models\User; // Asumsi guru dan murid adalah model User
 use Illuminate\Database\Seeder;
-use App\Models\User;     // Asumsi guru dan murid adalah model User
-use App\Models\Schedule; // Pastikan model Schedule sudah diimport
+// Pastikan model Schedule sudah diimport
 
 class ScheduleMuridSeeder extends Seeder
 {
@@ -25,9 +25,8 @@ class ScheduleMuridSeeder extends Seeder
         $schedule = Schedule::where('guru_id', $guru->id)->first();
 
         if ($guru && $murid && $schedule) {
-            // Lampirkan murid ke jadwal ini menggunakan relasi many-to-many
-            // Ini akan mengisi tabel pivot 'schedule_murid'
-            $schedule->murids()->attach($murid->id);
+            $schedule->murid_id = $murid->id;
+            $schedule->save();
 
             $this->command->info('Murid ' . $murid->name . ' berhasil dilampirkan ke jadwal ' . $schedule->id . ' guru ' . $guru->name . '.');
         } else {

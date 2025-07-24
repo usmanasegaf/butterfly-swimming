@@ -225,6 +225,7 @@
                                         <td>{{ $attendance->student->name ?? 'N/A' }}</td>
                                         <td>
                                             @if ($attendance->status == 'hadir')
+                                                {{ $attendance->pertemuan_ke ?? 'N/A' }}
                                                 <span class="badge badge-success">Hadir</span>
                                             @else
                                                 <span class="badge badge-danger">Alpha</span>

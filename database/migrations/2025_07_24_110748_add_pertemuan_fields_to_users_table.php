@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Menambahkan kolom untuk menyimpan total pertemuan yang dibeli murid.
-            $table->integer('jumlah_pertemuan_paket')->after('course_end_date')->nullable();
+            $table->integer('jumlah_pertemuan_paket')->after('course_assigned_at')->nullable();
             // Menambahkan kolom untuk melacak pertemuan saat ini.
             $table->integer('pertemuan_ke')->after('jumlah_pertemuan_paket')->default(0);
         });

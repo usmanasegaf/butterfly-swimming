@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -10,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('swimming_courses', function (Blueprint $table) {
-            // Menambahkan kolom untuk menyimpan jumlah pertemuan per paket kursus.
-            $table->integer('jumlah_pertemuan')->after('price')->nullable();
+        Schema::table('attendances', function (Blueprint $table) {
+            $table->integer('pertemuan_ke')->nullable()->after('status');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('swimming_courses', function (Blueprint $table) {
-            $table->dropColumn('jumlah_pertemuan');
+        Schema::table('attendances', function (Blueprint $table) {
+            //
         });
     }
 };
