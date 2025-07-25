@@ -106,8 +106,9 @@
                 const submitBtn = document.getElementById('submitAttendanceBtn');
                 const gpsStatusSpan = document.getElementById('gpsStatus');
                 const distanceSpan = document.getElementById('distanceToLocation');
-                const teacherLatInput = document.getElementById('teacherLatInput');
-                const teacherLonInput = document.getElementById('teacherLonInput');
+
+                const teacherLatInput = document.getElementById('teacher_latitude');
+                const teacherLonInput = document.getElementById('teacher_longitude');
 
                 const locationLat = parseFloat(document.getElementById('locationLat').innerText);
                 const locationLon = parseFloat(document.getElementById('locationLon').innerText);
@@ -144,19 +145,15 @@
 
                     // Update status GPS berdasarkan jarak (ini tetap informatif)
                     if (distance <= allowedRadius) {
-                        gpsStatusSpan.innerText = "Lokasi ditemukan (dalam radius). Siap absen.";
-                        gpsStatusSpan.classList.remove('text-warning', 'text-danger', 'text-info');
-                        gpsStatusSpan.classList.add('text-success');
-                        // submitBtn.disabled = false; // Baris ini dikomentari agar tombol tidak diatur di sini
+                        gpsStatusSpan.innerHTML =
+                            '<i class="fas fa-check-circle"></i> Lokasi ditemukan (Anda berada dalam radius).';
+                        gpsStatusSpan.className = 'text-success font-weight-bold';
                     } else {
-                        gpsStatusSpan.innerText =
-                            `Lokasi ditemukan (${distance.toFixed(2)} meter dari lokasi kursus - di luar radius).`;
-                        gpsStatusSpan.classList.remove('text-warning', 'text-success', 'text-danger');
-                        gpsStatusSpan.classList.add('text-info');
-                        // submitBtn.disabled = true; // Baris ini dikomentari agar tombol tidak diatur di sini
+                        gpsStatusSpan.innerHTML =
+                            '<i class="fas fa-exclamation-triangle"></i> Lokasi ditemukan (Anda berada di luar radius).';
+                        gpsStatusSpan.className = 'text-info font-weight-bold';
                     }
 
-                    // **PERUBAHAN BARU:** Selalu aktifkan tombol submit setelah lokasi berhasil ditemukan
                     submitBtn.disabled = false;
                 }
 
@@ -180,7 +177,10 @@
                     gpsStatusSpan.innerText = errorMessage;
                     gpsStatusSpan.classList.remove('text-warning', 'text-success', 'text-info');
                     gpsStatusSpan.classList.add('text-danger');
-                    submitBtn.disabled = true; // Nonaktifkan tombol submit jika ada error
+                    teacherLatInput.value = 0;
+                    teacherLonInput.value = 0;
+                    distanceSpan.innerText = 'Gagal menghitung';
+                    submitBtn.disabled = false;
                 }
 
                 // Cek apakah browser mendukung Geolocation API

@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Guru;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\Location;
-use App\Models\Schedule; // Pastikan ini diimpor karena murid juga User
+use App\Models\Schedule;
 use App\Models\User;
+use App\Notifications\MuridCourseMeetingExpired;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class GuruAttendanceController extends Controller
@@ -41,13 +44,8 @@ class GuruAttendanceController extends Controller
         // Ambil user yang sedang login (ini adalah guru).
         $guruUser = Auth::user();
 
-                                              // **PERBAIKAN DI SINI:**
-                                              // Panggil relasi `murids()` dan tambahkan `.get()` untuk mendapatkan koleksi murid.
-                                              // Relasi `murids()` ada di model User dan mengambil murid bimbingan.
-        $murids = $guruUser->murids()->get(); // Mengambil koleksi murid dari relasi `murids()`
-
-                                         // Dapatkan detail lokasi kursus (tetap diperlukan untuk perhitungan jarak di frontend)
-        $location = $schedule->location; // Asumsi Schedule model masih memiliki relasi ke Location
+        $murids   = $guruUser->murids()->get();
+        $location = $schedule->location;
 
         return view('guru.attendance.show', compact('schedule', 'murids', 'location'));
     }
@@ -88,8 +86,7 @@ class GuruAttendanceController extends Controller
 
         DB::beginTransaction();
         try {
-            // 1. Catat absensi
-            Attendance::updateOrCreate(
+            $attendance = Attendance::updateOrCreate(
                 [
                     'schedule_id'     => $schedule->id,
                     'student_id'      => $murid->id,
@@ -106,21 +103,19 @@ class GuruAttendanceController extends Controller
 
             // 2. Jika statusnya 'hadir', update hitungan pertemuan
             if ($request->attendance_status === 'hadir') {
-                $murid->increment('pertemuan_ke');
-                $courseName = $murid->swimmingCourse->name;
-                
+
+                // 1. Tambah nilai pertemuan_ke secara manual
+                $murid->pertemuan_ke += 1;
+                $murid->save(); // Simpan perubahan pada murid
+
+                // 2. Simpan nilai pertemuan_ke yang baru ke dalam data absensi
                 $attendance->pertemuan_ke = $murid->pertemuan_ke;
                 $attendance->save();
 
+                // 3. Cek apakah kuota pertemuan sudah habis
                 if ($murid->pertemuan_ke >= $murid->jumlah_pertemuan_paket) {
-                    // Habiskan kursus
-                    $murid->swimming_course_id     = null;
-                    $murid->course_assigned_at     = null;
-                    $murid->course_end_date        = null;
-                    $murid->jumlah_pertemuan_paket = null;
-                    $murid->pertemuan_ke           = 0; // Reset
-                    $murid->save();
 
+                    $courseName = $murid->swimmingCourse->name;
                     try {
                         // Kirim notifikasi ke murid
                         $murid->notify(new MuridCourseMeetingExpired($murid, $courseName));
@@ -131,8 +126,8 @@ class GuruAttendanceController extends Controller
                     } catch (\Exception $e) {
                         Log::error("Gagal mengirim notifikasi kursus habis untuk murid {$murid->id}: " . $e->getMessage());
                     }
-
                 }
+               
             }
 
             DB::commit();
