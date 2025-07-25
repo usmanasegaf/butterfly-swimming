@@ -18,10 +18,10 @@ class LocationSeeder extends Seeder
 
         // Data lokasi pertama
         Location::create([
-            'name'      => 'Kolam Renang Mekarwangi', // Berikan nama yang deskriptif
-            'address'   => 'Jl. Taman Mekar Abadi I No.36a, Mekarwangi, Kec. Bojongloa Kidul, Kota Bandung, Jawa Barat 40237',
-            'latitude'  => -6.954972877110996,
-            'longitude' => 107.60699357229478,
+            'name'      => 'Kolam Renang Margacinta',
+            'address'   => 'Jl. Margacinta No.98, Cijaura, Kec. Buahbatu, Kota Bandung, Jawa Barat 40287',
+            'latitude'  => -6.954964775277822,
+            'longitude' => 107.64793337116431,
         ]);
 
         // Anda bisa menambahkan lokasi lain di sini jika ada

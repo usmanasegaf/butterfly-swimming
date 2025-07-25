@@ -40,10 +40,9 @@ class MuridVerificationController extends Controller
         if ($user->role === 'murid' && $user->status === 'pending') {
             DB::beginTransaction();
             try {
-                // Hapus semua relasi terkait murid ini
-                $user->gurus()->detach(); // Lepaskan dari guru pembimbing jika ada
-                $user->schedules()->detach(); // Lepaskan dari jadwal jika terhubung
-                $user->attendances()->delete(); // Hapus semua absensi murid ini
+                $user->gurus()->detach(); 
+                $user->schedules()->delete(); 
+                $user->attendances()->delete(); 
 
                 $user->delete(); // Hapus user dari tabel users
                 DB::commit();
