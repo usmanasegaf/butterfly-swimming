@@ -101,11 +101,9 @@ class AdminMuridController extends Controller
 
         DB::beginTransaction();
         try {
-            // Update basic user details
-            // Perbarui detail dasar pengguna
             $murid->name  = $request->name;
             $murid->email = $request->email;
-            // Status tidak diubah di sini, hanya melalui verifikasi
+            
             $murid->save();
 
             // Sync guru relationship
