@@ -117,17 +117,14 @@ class GuruAttendanceController extends Controller
 
                     $courseName = $murid->swimmingCourse->name;
                     try {
-                        // Kirim notifikasi ke murid
                         $murid->notify(new MuridCourseMeetingExpired($murid, $courseName));
-
-                        // Kirim notifikasi ke guru
                         $guru = Auth::user();
                         $guru->notify(new MuridCourseMeetingExpired($murid, $courseName));
                     } catch (\Exception $e) {
                         Log::error("Gagal mengirim notifikasi kursus habis untuk murid {$murid->id}: " . $e->getMessage());
                     }
                 }
-               
+
             }
 
             DB::commit();

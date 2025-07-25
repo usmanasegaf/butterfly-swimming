@@ -197,12 +197,11 @@ class GuruMuridController extends Controller
             $murid->pertemuan_ke           = 0;                                 // Reset hitungan pertemuan
             $murid->save();
 
-            // (Opsional) Anda bisa membuat entri di tabel `registrations` jika masih diperlukan untuk rekam jejak
             Registration::create([
                 'user_id'            => $murid->id,
                 'swimming_course_id' => $selectedCourse->id,
                 'start_date'         => Carbon::now(),
-
+                'end_date'           => Carbon::now()->addWeeks($selectedCourse->duration), 
                 'status'             => 'approved',
                 'biaya'              => $selectedCourse->price,
                 'guru_id'            => Auth::id(),
