@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
         Route::post('guru-verifikasi/{user}', [App\Http\Controllers\Admin\GuruVerificationController::class, 'verify'])->name('admin.guru.verify');
         Route::post('guru-tolak/{user}', [App\Http\Controllers\Admin\GuruVerificationController::class, 'reject'])->name('admin.guru.reject');
         Route::get('guru-list', [App\Http\Controllers\Admin\GuruListController::class, 'index'])->name('admin.guru.list');
-        Route::delete('guru/{user}', [GuruVerificationController::class, 'delete'])->name('admin.guru.delete'); // <<< TAMBAHKAN INI
+        Route::delete('guru/{user}', [App\Http\Controllers\Admin\GuruVerificationController::class, 'delete'])->name('admin.guru.delete');
 
         // Rute dashboard admin (sudah benar dengan admin. prefix)
         Route::get('dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('admin.dashboard');

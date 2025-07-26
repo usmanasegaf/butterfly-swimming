@@ -1,18 +1,17 @@
 <?php
-
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\SwimmingCourse;
 use App\Models\Registration;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash; // Untuk hashing password
-use Illuminate\Support\Str; // Untuk string manipulation (email, password generation)
-use Illuminate\Support\Facades\DB; // Untuk transaksi database
-use Illuminate\Validation\Rule; // Untuk Rule::unique jika masih ada
+use App\Models\SwimmingCourse;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // Untuk hashing password
+use Illuminate\Support\Facades\DB;   // Untuk string manipulation (email, password generation)
+use Illuminate\Support\Facades\Hash; // Untuk transaksi database
+use Illuminate\Support\Str;          // Untuk Rule::unique jika masih ada
+use Illuminate\Validation\Rule;
 
 class GuruMuridController extends Controller
 {
@@ -25,11 +24,11 @@ class GuruMuridController extends Controller
         $murids = User::whereHas('gurus', function ($query) use ($guruId) {
             $query->where('guru_id', $guruId);
         })
-        ->where('role', 'murid')
-        ->with(['swimmingCourse', 'registrations' => function($query) {
-            $query->where('status', 'approved')->latest('start_date');
-        }])
-        ->paginate(10);
+            ->where('role', 'murid')
+            ->with(['swimmingCourse', 'registrations' => function ($query) {
+                $query->where('status', 'approved')->latest('start_date');
+            }])
+            ->paginate(10);
 
         $availableCourses = SwimmingCourse::where('is_active', true)->get();
 
@@ -42,13 +41,13 @@ class GuruMuridController extends Controller
      */
     public function create()
     {
-        $guruUser = Auth::user();
+        $guruUser         = Auth::user();
         $existingMuridIds = $guruUser->murids()->pluck('users.id')->toArray();
 
         $murids = User::where('role', 'murid')
-                      ->where('status', 'active')
-                      ->whereNotIn('id', $existingMuridIds)
-                      ->get();
+            ->where('status', 'active')
+            ->whereNotIn('id', $existingMuridIds)
+            ->get();
 
         return view('guru.murid.create', compact('murids'));
     }
@@ -100,19 +99,19 @@ class GuruMuridController extends Controller
         try {
             $guruUser = Auth::user();
 
-            // Bersihkan nama untuk email: lowercase, hapus spasi, ambil 10 karakter pertama
-            $cleanName = Str::slug(substr($request->name, 0, 10), ''); // Menghapus spasi dan karakter khusus, ambil 10
-            $uniqueNumber = random_int(100, 999); // Generate 3 digit angka unik
+                                                                          // Bersihkan nama untuk email: lowercase, hapus spasi, ambil 10 karakter pertama
+            $cleanName    = Str::slug(substr($request->name, 0, 10), ''); // Menghapus spasi dan karakter khusus, ambil 10
+            $uniqueNumber = random_int(100, 999);                         // Generate 3 digit angka unik
 
-            $email = $cleanName . $uniqueNumber . '@butterfly.com';
+            $email       = $cleanName . $uniqueNumber . '@butterfly.com';
             $rawPassword = $cleanName . $uniqueNumber; // Password mentah
 
             // Pastikan email unik, jika tidak, coba lagi dengan angka unik yang berbeda
             $counter = 0;
             while (User::where('email', $email)->exists() && $counter < 10) { // Batasi percobaan
                 $uniqueNumber = random_int(100, 999);
-                $email = $cleanName . $uniqueNumber . '@butterfly.com';
-                $rawPassword = $cleanName . $uniqueNumber;
+                $email        = $cleanName . $uniqueNumber . '@butterfly.com';
+                $rawPassword  = $cleanName . $uniqueNumber;
                 $counter++;
             }
 
@@ -127,7 +126,7 @@ class GuruMuridController extends Controller
                 'password' => Hash::make($rawPassword), // Hash password
                 'role'     => 'murid',
                 'status'   => 'active', // Langsung aktif (approved)
-                'is_nacc'  => false, // Ini adalah akun murid, bukan NACC. Kolom ini tetap ada di DB.
+                'is_nacc'  => false,    // Ini adalah akun murid, bukan NACC. Kolom ini tetap ada di DB.
             ]);
 
             // Assign role 'murid' (penting untuk Spatie)
@@ -153,7 +152,7 @@ class GuruMuridController extends Controller
     {
         // Pastikan guru yang login memiliki hak untuk melepaskan murid ini
         $guruUser = Auth::user();
-        if (!$guruUser->murids()->where('murid_id', $id)->exists()) {
+        if (! $guruUser->murids()->where('murid_id', $id)->exists()) {
             return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk melepaskan murid ini.');
         }
 
@@ -187,51 +186,35 @@ class GuruMuridController extends Controller
         ]);
 
         $selectedCourse = SwimmingCourse::find($request->swimming_course_id);
-        $biaya = $selectedCourse ? $selectedCourse->price : 0;
 
-        $startDate = Carbon::now();
-        $endDate = $startDate->copy()->addWeeks($selectedCourse->duration);
+        DB::beginTransaction();
+        try {
+            // Update data di tabel user
+            $murid->swimming_course_id = $selectedCourse->id;
+            $murid->course_assigned_at = Carbon::now();
 
-        $existingTodayRegistration = $murid->registrations()
-                                            ->where('status', 'approved')
-                                            ->whereDate('start_date', $startDate->toDateString())
-                                            ->first();
+            $murid->jumlah_pertemuan_paket = $selectedCourse->jumlah_pertemuan; // Simpan kuota pertemuan
+            $murid->pertemuan_ke           = 0;                                 // Reset hitungan pertemuan
+            $murid->save();
 
-        if ($existingTodayRegistration) {
-            $existingTodayRegistration->update([
-                'swimming_course_id' => $request->swimming_course_id,
-                'end_date'           => $endDate, // Perbarui end_date sesuai durasi kursus baru
-                'biaya'              => $biaya,   // Perbarui biaya
-                'guru_id'            => Auth::id(), // Pastikan guru_id tetap guru yang login
+            Registration::create([
+                'user_id'            => $murid->id,
+                'swimming_course_id' => $selectedCourse->id,
+                'start_date'         => Carbon::now(),
+                'end_date'           => Carbon::now()->addWeeks($selectedCourse->duration), 
+                'status'             => 'approved',
+                'biaya'              => $selectedCourse->price,
+                'guru_id'            => Auth::id(),
             ]);
-            $message = 'Kursus murid berhasil diubah!';
-        } else {
-            $activeRegistration = $murid->registrations()
-                                        ->where('status', 'approved')
-                                        ->where('end_date', '>=', Carbon::now()->toDateString())
-                                        ->first();
 
-            if ($activeRegistration) {
-                return response()->json(['error' => 'Murid ini masih memiliki kursus aktif yang belum selesai. Gunakan fitur "Perpanjang Kursus" jika ingin menambah durasi, atau batalkan kursus sebelumnya.'], 400);
-            } else {
-                Registration::create([
-                    'user_id'            => $murid->id,
-                    'swimming_course_id' => $request->swimming_course_id,
-                    'start_date'         => $startDate,
-                    'end_date'           => $endDate,
-                    'status'             => 'approved', // Langsung disetujui oleh guru
-                    'biaya'              => $biaya, // Simpan biaya
-                    'guru_id'            => Auth::id(), // Guru yang login adalah guru_id
-                ]);
-                $message = 'Kursus berhasil ditugaskan kepada murid!';
-            }
+            DB::commit();
+            return response()->json(['success' => 'Kursus berhasil ditugaskan kepada murid!']);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Gagal menugaskan kursus: ' . $e->getMessage()], 500);
         }
 
-        $murid->swimming_course_id = $request->swimming_course_id;
-        $murid->course_assigned_at = $startDate; // Gunakan start_date sebagai course_assigned_at
-        $murid->save();
-
-        return response()->json(['success' => $message]);
     }
 
     public function extendCourse(Request $request, User $murid)
@@ -241,24 +224,39 @@ class GuruMuridController extends Controller
         }
 
         $request->validate([
-            'additional_weeks' => 'required|integer|min:1',
+            'swimming_course_id' => 'required|exists:swimming_courses,id',
         ]);
 
-        $activeRegistration = $murid->registrations()
-                                    ->where('status', 'approved')
-                                    ->where('end_date', '>=', Carbon::now()->toDateString())
-                                    ->first();
+        $selectedCourse = SwimmingCourse::find($request->swimming_course_id);
 
-        if (! $activeRegistration) {
-            return response()->json(['error' => 'Murid ini tidak memiliki kursus aktif yang bisa diperpanjang.'], 400);
+        // ========== LOGIKA BARU UNTUK PERPANJANG/PERBARUI KURSUS ==========
+        DB::beginTransaction();
+        try {
+            // Logika ini sama persis dengan assignCourse, efektif me-reset kursus murid
+            $murid->swimming_course_id = $selectedCourse->id;
+            $murid->course_assigned_at = Carbon::now();
+
+            $murid->jumlah_pertemuan_paket = $selectedCourse->jumlah_pertemuan;
+            $murid->pertemuan_ke           = 0; // Reset hitungan pertemuan
+            $murid->save();
+
+            Registration::create([
+                'user_id'            => $murid->id,
+                'swimming_course_id' => $selectedCourse->id,
+                'start_date'         => Carbon::now(),
+                'end_date'           => Carbon::now()->addWeeks($selectedCourse->duration),
+                'status'             => 'approved',
+                'biaya'              => $selectedCourse->price,
+                'guru_id'            => Auth::id(),
+            ]);
+
+            DB::commit();
+            return response()->json(['success' => 'Kursus murid berhasil diperbarui/diperpanjang!']);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Gagal memperbarui kursus: ' . $e->getMessage()], 500);
         }
-
-        $newEndDate = Carbon::parse($activeRegistration->end_date)->addWeeks($request->additional_weeks);
-
-        $activeRegistration->update([
-            'end_date' => $newEndDate,
-        ]);
-
-        return response()->json(['success' => 'Kursus berhasil diperpanjang hingga ' . $newEndDate->format('d M Y') . '!']);
+        // ========== AKHIR PERUBAHAN ==========
     }
 }

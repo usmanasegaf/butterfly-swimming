@@ -8,9 +8,7 @@ use Illuminate\Http\Request;
 
 class SwimmingCourseManagementController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
+
     public function __construct()
     {
         $this->middleware('permission:view swimming courses')->only(['index', 'show']);
@@ -47,6 +45,7 @@ class SwimmingCourseManagementController extends Controller
             'description' => 'required|string',
             'price' => 'required|integer|min:0',
             'duration' => 'required|integer|min:1',
+            'jumlah_pertemuan' => 'required|integer|in:4,8,12',
             'is_active' => 'boolean',
         ]);
         
@@ -87,6 +86,7 @@ class SwimmingCourseManagementController extends Controller
             'description' => 'required|string',
             'price' => 'required|integer|min:0',
             'duration' => 'required|integer|min:1',
+            'jumlah_pertemuan' => 'required|integer|in:4,8,12',
             'is_active' => 'boolean',
         ]);
         

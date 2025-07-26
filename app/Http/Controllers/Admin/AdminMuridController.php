@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User; // Digunakan untuk model Murid dan Guru
-use App\Models\SwimmingCourse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Untuk transaksi database
+use App\Models\SwimmingCourse; // Digunakan untuk model Murid dan Guru
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request; // Untuk transaksi database
+use Illuminate\Support\Facades\DB;
 
 class AdminMuridController extends Controller
 {
@@ -21,15 +20,15 @@ class AdminMuridController extends Controller
     public function index(Request $request)
     {
         $query = User::where('role', 'murid')
-                     ->where('status', 'active') // Hanya tampilkan murid aktif
-                     ->with(['gurus', 'swimmingCourse']); // Eager load guru pembimbing dan kursus
+            ->where('status', 'active')          // Hanya tampilkan murid aktif
+            ->with(['gurus', 'swimmingCourse']); // Eager load guru pembimbing dan kursus
 
         // Filter berdasarkan nama/email murid
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('email', 'like', '%' . $search . '%');
+                    ->orWhere('email', 'like', '%' . $search . '%');
             });
         }
 
@@ -46,10 +45,10 @@ class AdminMuridController extends Controller
         }
 
         $murids = $query->orderBy('name')
-                        ->paginate(15); // Paginasi 15 murid per halaman
+            ->paginate(15); // Paginasi 15 murid per halaman
 
         // Data untuk dropdown filter
-        $gurus = User::where('role', 'guru')->where('status', 'active')->get();
+        $gurus   = User::where('role', 'guru')->where('status', 'active')->get();
         $courses = SwimmingCourse::all();
 
         return view('admin.murids.index', compact('murids', 'gurus', 'courses'));
@@ -69,7 +68,7 @@ class AdminMuridController extends Controller
             return redirect()->route('admin.murids.index')->with('error', 'Murid tidak ditemukan atau belum diverifikasi.');
         }
 
-        $gurus = User::where('role', 'guru')->where('status', 'active')->get();
+        $gurus           = User::where('role', 'guru')->where('status', 'active')->get();
         $swimmingCourses = SwimmingCourse::all();
 
         // Ambil guru pembimbing saat ini (jika ada)
@@ -102,11 +101,9 @@ class AdminMuridController extends Controller
 
         DB::beginTransaction();
         try {
-            // Update basic user details
-            // Perbarui detail dasar pengguna
-            $murid->name = $request->name;
+            $murid->name  = $request->name;
             $murid->email = $request->email;
-            // Status tidak diubah di sini, hanya melalui verifikasi
+            
             $murid->save();
 
             // Sync guru relationship
@@ -117,17 +114,22 @@ class AdminMuridController extends Controller
                 $murid->gurus()->detach(); // Lepaskan semua guru jika tidak ada guru yang dipilih
             }
 
-            // Update swimming course assignment
-            // Perbarui penugasan kursus renang
             if ($request->filled('swimming_course_id')) {
-                $murid->swimming_course_id = $request->swimming_course_id;
-                // Hanya set course_assigned_at jika belum pernah di-set atau jika kursus berubah
-                if (is_null($murid->course_assigned_at) || $murid->isDirty('swimming_course_id')) {
-                    $murid->course_assigned_at = Carbon::now();
+                $selectedCourse = SwimmingCourse::find($request->swimming_course_id);
+
+                // Hanya reset jika kursus benar-benar baru atau berbeda
+                if ($murid->swimming_course_id != $selectedCourse->id) {
+                    $murid->swimming_course_id     = $selectedCourse->id;
+                    $murid->course_assigned_at     = Carbon::now();
+                    $murid->jumlah_pertemuan_paket = $selectedCourse->jumlah_pertemuan; // <<< PENTING
+                    $murid->pertemuan_ke           = 0;                                 // <<< PENTING
                 }
             } else {
-                $murid->swimming_course_id = null;
-                $murid->course_assigned_at = null;
+                // Jika kursus dikosongkan, hapus semua data terkait
+                $murid->swimming_course_id     = null;
+                $murid->course_assigned_at     = null;
+                $murid->jumlah_pertemuan_paket = null; // <<< PENTING
+                $murid->pertemuan_ke           = 0;    // <<< PENTING
             }
             $murid->save(); // Simpan lagi setelah update kursus
 

@@ -139,9 +139,8 @@
                 <div class="col-md-4">
                     <div class="text-center p-4">
                         <i class="fas fa-users feature-icon"></i>
-                        <h4>Kelas Kecil</h4>
-                        <p class="text-muted">Kami membatasi jumlah peserta per kelas untuk memastikan setiap peserta
-                            mendapat perhatian yang cukup.</p>
+                        <h4>Kelas Privat</h4>
+                        <p class="text-muted">Kami menerapkan sistem privat satu guru satu murid per jadwal, agar setiap peserta mendapatkan bimbingan yang optimal dan sesuai dengan kebutuhan masing-masing.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -168,7 +167,7 @@
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="stat-item p-3">
-                        <div class="stat-number">15+</div>
+                        <div class="stat-number">25+</div>
                         <div class="stat-text">Pelatih Profesional</div>
                     </div>
                 </div>
@@ -180,7 +179,7 @@
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="stat-item p-3">
-                        <div class="stat-number">5</div>
+                        <div class="stat-number">5+</div>
                         <div class="stat-text">Lokasi Kolam</div>
                     </div>
                 </div>

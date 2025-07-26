@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Guru;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\Location;
-use App\Models\Schedule; // Pastikan ini diimpor karena murid juga User
+use App\Models\Schedule;
 use App\Models\User;
+use App\Notifications\MuridCourseMeetingExpired;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class GuruAttendanceController extends Controller
@@ -41,13 +44,8 @@ class GuruAttendanceController extends Controller
         // Ambil user yang sedang login (ini adalah guru).
         $guruUser = Auth::user();
 
-                                              // **PERBAIKAN DI SINI:**
-                                              // Panggil relasi `murids()` dan tambahkan `.get()` untuk mendapatkan koleksi murid.
-                                              // Relasi `murids()` ada di model User dan mengambil murid bimbingan.
-        $murids = $guruUser->murids()->get(); // Mengambil koleksi murid dari relasi `murids()`
-
-                                         // Dapatkan detail lokasi kursus (tetap diperlukan untuk perhitungan jarak di frontend)
-        $location = $schedule->location; // Asumsi Schedule model masih memiliki relasi ke Location
+        $murids   = $guruUser->murids()->get();
+        $location = $schedule->location;
 
         return view('guru.attendance.show', compact('schedule', 'murids', 'location'));
     }
@@ -57,56 +55,86 @@ class GuruAttendanceController extends Controller
      */
     public function storeAttendance(Request $request, Schedule $schedule)
     {
-        // Pastikan guru hanya bisa mengakses jadwal miliknya sendiri
         if ($schedule->guru_id !== Auth::id()) {
             return redirect()->back()->withErrors(['auth_error' => 'Anda tidak memiliki akses untuk mengambil absensi jadwal ini.']);
         }
 
-        // Validasi data absensi dan koordinat guru
+        // ========== PERUBAHAN LOGIKA ABSENSI ==========
         $request->validate([
-            'attendance_status.*' => 'required|in:hadir,alpha', // array status absensi untuk setiap murid
-            'teacher_latitude'    => 'required|numeric',
-            'teacher_longitude'   => 'required|numeric',
+            'attendance_status' => 'required|in:hadir,alpha', // Sekarang hanya satu status
+            'murid_id'          => 'required|exists:users,id',
+            'teacher_latitude'  => 'required|numeric',
+            'teacher_longitude' => 'required|numeric',
         ]);
 
-        // Dapatkan koordinat lokasi kursus
-        $locationLat = $schedule->location->latitude;
-        $locationLon = $schedule->location->longitude;
-
-        // Dapatkan koordinat guru dari request (dari JavaScript frontend)
-        $teacherLat = $request->input('teacher_latitude');
-        $teacherLon = $request->input('teacher_longitude');
-
-        // Hitung jarak antara lokasi guru dan lokasi kursus
-        $distance = $this->calculateDistance($locationLat, $locationLon, $teacherLat, $teacherLon);
-
-        $allowedRadius = 400; // Radius yang diizinkan dalam meter
-
-        // Periksa apakah guru berada dalam radius yang diizinkan (bagian ini sudah dikomentari sesuai permintaan)
-        // if ($distance > $allowedRadius) {
-        //     return redirect()->back()->withErrors(['location_error' => 'Anda terlalu jauh dari lokasi kursus (' . round($distance) . ' meter). Absensi hanya bisa diambil dalam radius ' . $allowedRadius . ' meter.']);
-        // }
-
-        // Proses absensi setiap murid
-        foreach ($request->input('attendance_status') as $muridId => $status) {
-            Attendance::updateOrCreate(
-                [
-                    'schedule_id'     => $schedule->id,
-                    'student_id'      => $muridId,        // Pastikan student_id di tabel attendances merujuk ke ID murid yang benar
-                    'attendance_date' => Carbon::today(), // Absensi untuk hari ini
-                ],
-                [
-                    'status'               => $status,
-                    'attended_at'          => Carbon::now(), // Waktu absensi dicatat
-                                                             // Simpan koordinat guru saat absensi dicatat
-                    'teacher_latitude'     => $teacherLat,
-                    'teacher_longitude'    => $teacherLon,
-                    'distance_from_course' => round($distance), // Simpan jarak juga sebagai informasi
-                ]
-            );
+        $murid = User::find($request->murid_id);
+        if (! $murid || ! $murid->swimmingCourse) {
+            return redirect()->back()->with('error', 'Murid tidak memiliki kursus aktif.');
         }
 
-        return redirect()->route('guru.attendance.index')->with('success', 'Absensi berhasil disimpan!');
+        // Validasi jarak
+        $locationLat   = $schedule->location->latitude;
+        $locationLon   = $schedule->location->longitude;
+        $teacherLat    = $request->input('teacher_latitude');
+        $teacherLon    = $request->input('teacher_longitude');
+        $distance      = $this->calculateDistance($locationLat, $locationLon, $teacherLat, $teacherLon);
+        $allowedRadius = 400; // Radius dalam meter
+
+        if ($distance > $allowedRadius) {
+            // return redirect()->back()->with('error', 'Anda berada terlalu jauh dari lokasi kursus untuk mengambil absensi.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $attendance = Attendance::updateOrCreate(
+                [
+                    'schedule_id'     => $schedule->id,
+                    'student_id'      => $murid->id,
+                    'attendance_date' => Carbon::today(),
+                ],
+                [
+                    'status'               => $request->attendance_status,
+                    'attended_at'          => Carbon::now(),
+                    'teacher_latitude'     => $teacherLat,
+                    'teacher_longitude'    => $teacherLon,
+                    'distance_from_course' => round($distance),
+                ]
+            );
+
+            // 2. Jika statusnya 'hadir', update hitungan pertemuan
+            if ($request->attendance_status === 'hadir') {
+
+                // 1. Tambah nilai pertemuan_ke secara manual
+                $murid->pertemuan_ke += 1;
+                $murid->save(); // Simpan perubahan pada murid
+
+                // 2. Simpan nilai pertemuan_ke yang baru ke dalam data absensi
+                $attendance->pertemuan_ke = $murid->pertemuan_ke;
+                $attendance->save();
+
+                // 3. Cek apakah kuota pertemuan sudah habis
+                if ($murid->pertemuan_ke >= $murid->jumlah_pertemuan_paket) {
+
+                    $courseName = $murid->swimmingCourse->name;
+                    try {
+                        $murid->notify(new MuridCourseMeetingExpired($murid, $courseName));
+                        $guru = Auth::user();
+                        $guru->notify(new MuridCourseMeetingExpired($murid, $courseName));
+                    } catch (\Exception $e) {
+                        Log::error("Gagal mengirim notifikasi kursus habis untuk murid {$murid->id}: " . $e->getMessage());
+                    }
+                }
+
+            }
+
+            DB::commit();
+            return redirect()->route('guru.attendance.index')->with('success', 'Absensi berhasil disimpan!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal menyimpan absensi: ' . $e->getMessage());
+        }
+        // ========== AKHIR PERUBAHAN ==========
     }
 
     public function generateReport(Request $request)

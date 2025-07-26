@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">Buat Jadwal Kursus Baru</h1>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -97,9 +96,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="max_students">Maksimal Murid</label>
-                    <input type="number" class="form-control @error('max_students') is-invalid @enderror" id="max_students" name="max_students" value="{{ old('max_students') }}" min="1" required>
-                    @error('max_students')
+                    <label for="murid_id">Murid</label>
+                    <select class="form-control @error('murid_id') is-invalid @enderror" id="murid_id" name="murid_id" required>
+                        <option value="">Pilih Murid</option>
+                        @foreach ($murids as $murid)
+                            <option value="{{ $murid->id }}" {{ old('murid_id') == $murid->id ? 'selected' : '' }}>{{ $murid->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('murid_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

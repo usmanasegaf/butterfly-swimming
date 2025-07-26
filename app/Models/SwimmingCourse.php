@@ -15,7 +15,8 @@ class SwimmingCourse extends Model
         'description',
         'price',
         'duration',
-        'is_active'
+        'is_active',
+        'jumlah_pertemuan',
     ];
 
     /**

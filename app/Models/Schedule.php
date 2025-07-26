@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo; 
 
 class Schedule extends Model
 {
     use HasFactory;
 
-    // ... (properti fillable atau guarded Anda yang sudah ada)
     protected $fillable = [
         'swimming_course_id',
         'guru_id',
@@ -19,6 +19,7 @@ class Schedule extends Model
         'end_time_of_day',
         'max_students',
         'status',
+        'murid_id',
     ];
 
     public function swimmingCourse()
@@ -37,16 +38,6 @@ class Schedule extends Model
         return $this->belongsTo(Location::class);
     }
 
-    // Relasi untuk murid yang terdaftar pada jadwal ini
-    // ASUMSI: Murid terdaftar ke jadwal melalui tabel pivot 'schedule_user'
-    // Jika struktur database Anda berbeda, relasi ini perlu disesuaikan.
-    public function students()
-    {
-        // Ubah 'schedule_user' jika nama tabel pivot Anda berbeda
-        // Ubah 'user_id' jika nama kolom foreign key untuk user di pivot berbeda
-        return $this->belongsToMany(User::class, 'schedule_user', 'schedule_id', 'user_id')
-                    ->where('role', 'murid'); // Hanya ambil user dengan role 'murid'
-    }
 
     // Relasi untuk absensi yang terkait dengan jadwal ini
     public function attendances()
@@ -54,8 +45,8 @@ class Schedule extends Model
         return $this->hasMany(Attendance::class);
     }
 
-        public function murids()
+    public function murid(): BelongsTo
     {
-        return $this->belongsToMany(User::class, 'schedule_murid', 'schedule_id', 'murid_id');
+        return $this->belongsTo(User::class, 'murid_id');
     }
 }

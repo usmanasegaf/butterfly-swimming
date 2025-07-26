@@ -75,8 +75,8 @@ class AdminAttendanceController extends Controller
 
         // Data for filter dropdowns
         // Data untuk dropdown filter
-        $gurus = User::where('role', 'guru')->get();
-        $murids = User::where('role', 'murid')->get();
+        $gurus = User::where('role', 'guru')->where('status', 'active')->get();
+        $murids = User::where('role', 'murid')->where('status', 'active')->get();
         $courses = SwimmingCourse::all();
         $locations = Location::all();
 

@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">Manajemen Jadwal Kursus</h1>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -32,10 +31,10 @@
                                 <th>ID</th>
                                 <th>Kursus</th>
                                 <th>Guru</th>
+                                <th>Murid</th>
                                 <th>Lokasi</th>
                                 <th>Hari</th>
                                 <th>Waktu</th>
-                                <th>Max Murid</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -46,6 +45,7 @@
                                     <td>{{ $schedule->id }}</td>
                                     <td>{{ $schedule->swimmingCourse->name ?? 'N/A' }}</td>
                                     <td>{{ $schedule->guru->name ?? 'N/A' }}</td>
+                                    <td>{{ $schedule->murid->name ?? 'Belum ada' }}</td> 
                                     <td>{{ $schedule->location->name ?? 'N/A' }}</td>
                                     <td>
                                         @php
@@ -54,7 +54,6 @@
                                         {{ $days[$schedule->day_of_week] ?? 'N/A' }}
                                     </td>
                                     <td>{{ \Carbon\Carbon::parse($schedule->start_time_of_day)->format('H:i') }} - {{ \Carbon\Carbon::parse($schedule->end_time_of_day)->format('H:i') }}</td>
-                                    <td>{{ $schedule->max_students }}</td>
                                     <td>
                                         @if($schedule->status == 'active')
                                             <span class="badge badge-success">Aktif</span>

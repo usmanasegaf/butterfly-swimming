@@ -13,26 +13,26 @@ class HomeController extends Controller
         $programs = [
             [
                 'id' => 1,
-                'name' => 'Kelas Pemula',
+                'name' => 'Kelas Privat Anak',
                 'description' => 'Kursus dasar untuk pemula yang belum pernah berenang sebelumnya.',
                 'level' => 'Pemula',
-                'price' => 500000,
+                'price' => 600000,
                 'image' => 'program-pemula.jpg'
             ],
             [
                 'id' => 2,
-                'name' => 'Kelas Menengah',
+                'name' => 'Kelas Hydroterapy',
                 'description' => 'Kursus untuk yang sudah memiliki dasar berenang dan ingin meningkatkan teknik.',
                 'level' => 'Menengah',
-                'price' => 750000,
+                'price' => 1200000,
                 'image' => 'pool2.jpg'
             ],
             [
                 'id' => 3,
-                'name' => 'Kelas Lanjutan',
+                'name' => 'Kelas Privat',
                 'description' => 'Kursus untuk perenang yang ingin menyempurnakan teknik dan kecepatan.',
                 'level' => 'Lanjutan',
-                'price' => 1000000,
+                'price' => 600000,
                 'image' => 'program-lanjutan.jpg'
             ]
         ];
