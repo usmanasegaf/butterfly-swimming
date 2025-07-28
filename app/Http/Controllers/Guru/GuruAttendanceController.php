@@ -17,10 +17,6 @@ use Illuminate\Support\Str;
 
 class GuruAttendanceController extends Controller
 {
-    /**
-     * Menampilkan daftar jadwal milik guru untuk dipilih absensinya.
-     * Ini adalah halaman pertama yang akan diakses dari sidebar "Absensi".
-     */
     public function index()
     {
         $guruId = Auth::id();
@@ -31,8 +27,14 @@ class GuruAttendanceController extends Controller
             ->orderBy('start_time_of_day')
             ->get();
 
-        // Mengirim data jadwal ke view untuk ditampilkan
-        return view('guru.attendance.index', compact('schedules'));
+        $attendances = Attendance::whereHas('schedule', function ($query) use ($guruId) {
+            $query->where('guru_id', $guruId);
+        })
+            ->with(['student', 'schedule.swimmingCourse'])
+            ->latest('attended_at') 
+            ->take(30)             
+            ->get();
+        return view('guru.attendance.index', compact('schedules', 'attendances'));
     }
 
     /**

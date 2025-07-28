@@ -133,6 +133,55 @@
                 </form>
             </div>
         </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">30 Riwayat Absensi Terakhir</h6>
+            </div>
+            <div class="card-body">
+                @if ($attendances->isEmpty())
+                    <div class="alert alert-info">
+                        Belum ada riwayat absensi yang tercatat.
+                    </div>
+                @else
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Waktu Absen</th>
+                                    <th>Kursus</th>
+                                    <th>Murid</th>
+                                    <th>Status</th>
+                                    <th>Pertemuan Ke</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($attendances as $attendance)
+                                    <tr>
+                                        <td>{{ $attendance->attended_at->format('d M Y, H:i') }}</td>
+                                        <td>{{ $attendance->schedule->swimmingCourse->name ?? 'N/A' }}</td>
+                                        <td>{{ $attendance->student->name ?? 'N/A' }}</td>
+                                        <td>
+                                            @if ($attendance->status == 'hadir')
+                                                <span class="badge badge-success">Hadir</span>
+                                            @else
+                                                <span class="badge badge-danger">Alpha</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($attendance->status == 'hadir')
+                                                <span class="badge badge-info">{{ $attendance->pertemuan_ke }}</span>
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
 @endsection
 
