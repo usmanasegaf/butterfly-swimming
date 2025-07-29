@@ -103,7 +103,7 @@
                 <span>Absensi</span>
             </a>
         </li>
-        <li class="nav-item {{ request()->routeIs('guru.murid.*') ? 'active' : '' }}">
+        <li class="nav-item {{ (request()->routeIs('guru.murid.*') && !request()->routeIs('guru.murid.pending')) ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('guru.murid.index') }}">
                 <i class="fas fa-fw fa-users"></i>
                 <span>Murid Bimbingan</span>
